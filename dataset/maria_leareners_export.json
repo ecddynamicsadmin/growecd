@@ -1,0 +1,15 @@
+{
+	"name": "maria_leareners_export",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MySql1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_learnerscrm_export`"
+		}
+	}
+}
