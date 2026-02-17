@@ -1,0 +1,9 @@
+{
+	"name": "growecddatafactorydev",
+	"location": "northeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "31e2e40f-011f-4a77-8df0-8dec0d044ce6",
+		"tenantId": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+	}
+}
