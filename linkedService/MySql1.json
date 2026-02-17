@@ -1,0 +1,18 @@
+{
+	"name": "MySql1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"server": "102.130.112.164",
+			"port": 3306,
+			"database": "crm",
+			"username": "cognate",
+			"sslMode": 1,
+			"useSystemTrustStore": 0,
+			"driverVersion": "v2",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDI5RDUyQUVBLTc3NzYtNDZGMC1BMUQ4LTIwNDhCMjNFN0RBRF80NGRjNjAwMi0yNjFiLTQ2MmQtOGY5NC0zY2FhZDlmMjc4YzAiDQp9"
+		}
+	}
+}
