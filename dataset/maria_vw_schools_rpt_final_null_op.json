@@ -1,0 +1,15 @@
+{
+	"name": "maria_vw_schools_rpt_final_null_op",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MySql1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_schools_rpt_final_null_op`"
+		}
+	}
+}
