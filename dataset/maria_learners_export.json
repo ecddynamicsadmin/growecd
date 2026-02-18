@@ -2,14 +2,11 @@
 	"name": "maria_learners_export",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "MySql1",
+			"referenceName": "mysql_crm",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "MySqlTable",
-		"schema": [],
-		"typeProperties": {
-			"tableName": "`vw_learnerscrm_export`"
-		}
+		"schema": []
 	}
 }
