@@ -1,5 +1,5 @@
 {
-	"name": "maria_leareners_export",
+	"name": "maria_learners_export",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MySql1",
