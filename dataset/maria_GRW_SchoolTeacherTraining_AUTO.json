@@ -1,0 +1,15 @@
+{
+	"name": "maria_GRW_SchoolTeacherTraining_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_crm",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`teacher_training_attendance`"
+		}
+	}
+}
