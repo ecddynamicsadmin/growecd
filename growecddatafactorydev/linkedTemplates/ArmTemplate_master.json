@@ -1,0 +1,112 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "growecddatafactorydev"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"mysql_crm_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'mysql_crm'"
+		},
+		"mysql_growecd_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'mysql_growecd'"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://growecdstorage.dfs.core.windows.net/"
+		},
+		"mysql_crm_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"mysql_crm_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "crm"
+		},
+		"mysql_crm_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
+		},
+		"mysql_growecd_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"mysql_growecd_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "growecd_growecd"
+		},
+		"mysql_growecd_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "growecddatafactorydev_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"mysql_crm_password": {
+						"value": "[parameters('mysql_crm_password')]"
+					},
+					"mysql_growecd_password": {
+						"value": "[parameters('mysql_growecd_password')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"mysql_crm_properties_typeProperties_server": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_server')]"
+					},
+					"mysql_crm_properties_typeProperties_database": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_database')]"
+					},
+					"mysql_crm_properties_typeProperties_username": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_username')]"
+					},
+					"mysql_growecd_properties_typeProperties_server": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_server')]"
+					},
+					"mysql_growecd_properties_typeProperties_database": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_database')]"
+					},
+					"mysql_growecd_properties_typeProperties_username": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_username')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
