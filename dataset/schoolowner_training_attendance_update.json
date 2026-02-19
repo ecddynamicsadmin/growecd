@@ -1,0 +1,15 @@
+{
+	"name": "schoolowner_training_attendance_update",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_crm",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`schoolowner_training_attendance_update`"
+		}
+	}
+}
