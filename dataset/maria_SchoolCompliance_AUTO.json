@@ -1,0 +1,15 @@
+{
+	"name": "maria_SchoolCompliance_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_growecd",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`school_government_compliences`"
+		}
+	}
+}
