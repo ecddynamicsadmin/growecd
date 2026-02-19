@@ -1,0 +1,15 @@
+{
+	"name": "maria_GRW_StaffStatsImport_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_crm",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_staff_attendance_stats_3months`"
+		}
+	}
+}
