@@ -1,5 +1,5 @@
 {
-	"name": "maria_vw_schoolsalaries_3months",
+	"name": "maria_GRW_SchoolsSalaries_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",
@@ -7,6 +7,9 @@
 		},
 		"annotations": [],
 		"type": "MySqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_schoolsalaries_3months`"
+		}
 	}
 }
