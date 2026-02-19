@@ -1,5 +1,5 @@
 {
-	"name": "maria_learners_export",
+	"name": "maria_GRW_SchoolIncome_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",
@@ -7,6 +7,9 @@
 		},
 		"annotations": [],
 		"type": "MySqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_schoolincome_3months`"
+		}
 	}
 }

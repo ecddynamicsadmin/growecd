@@ -1,5 +1,5 @@
 {
-	"name": "maria_vw_schoolstaff_export_all",
+	"name": "maria_GRW_SchoolStaff_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",

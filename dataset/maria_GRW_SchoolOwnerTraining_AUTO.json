@@ -1,5 +1,5 @@
 {
-	"name": "maria_schoolowner_training_attendance_update",
+	"name": "maria_GRW_SchoolOwnerTraining_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",

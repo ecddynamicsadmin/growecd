@@ -41,7 +41,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "maria_learners_export",
+						"referenceName": "maria_GRW_SchoolIncome_AUTO",
 						"type": "DatasetReference"
 					}
 				],
@@ -91,7 +91,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "maria_vw_schools_rpt_final_null_op",
+						"referenceName": "maria_GRW_LearnersStats_AUTO",
 						"type": "DatasetReference"
 					}
 				],
