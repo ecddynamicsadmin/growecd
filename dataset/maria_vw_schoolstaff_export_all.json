@@ -9,7 +9,7 @@
 		"type": "MySqlTable",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "`vw_schools_rpt_final_null_op`"
+			"tableName": "`vw_schoolstaff_export_all`"
 		}
 	}
 }
