@@ -1,0 +1,15 @@
+{
+	"name": "maria_GRW_SchoolExpense_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_crm",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_schoolexpenses_3months`"
+		}
+	}
+}
