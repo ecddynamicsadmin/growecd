@@ -1,5 +1,5 @@
 {
-	"name": "maria_vw_schools_rpt_final_null_op",
+	"name": "maria_GRW_LearnersStats_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",
@@ -7,6 +7,9 @@
 		},
 		"annotations": [],
 		"type": "MySqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`vw_learner_attendance_stats_3months`"
+		}
 	}
 }
