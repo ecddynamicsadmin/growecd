@@ -1,5 +1,5 @@
 {
-	"name": "dataflow2",
+	"name": "dataflow_GRW_SchoolOwners_AUTO",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,16 +9,31 @@
 						"referenceName": "Json_Persons",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "jsonpersonfile"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "storage_GRW_SchoolOwners_AUTO",
+						"type": "DatasetReference"
+					},
+					"name": "sinktocsv"
+				}
+			],
 			"transformations": [],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> source1"
+				"     documentForm: 'documentPerLine') ~> jsonpersonfile",
+				"jsonpersonfile sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinktocsv"
 			]
 		}
 	}
