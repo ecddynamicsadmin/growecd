@@ -55,11 +55,13 @@
 				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
 				"removeformatting sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:[''],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sinktocsv"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sinktocsv"
 			]
 		}
 	}
