@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "persons..json",
+				"fileName": "persons.json",
 				"fileSystem": "giraffe"
 			}
 		},
