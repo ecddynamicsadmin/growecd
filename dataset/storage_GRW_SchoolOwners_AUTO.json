@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "persons.csv",
-				"folderPath": "giraffe"
+				"fileSystem": "giraffe"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
