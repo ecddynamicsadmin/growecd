@@ -1,0 +1,19 @@
+{
+	"name": "excl_GRW_SchoolOwners_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "persons.xlsx",
+				"folderPath": "giraffe"
+			}
+		},
+		"schema": []
+	}
+}
