@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "vw_schools_rpt_final_null_op.csv",
-				"folderPath": "giraffe"
+				"fileSystem": "giraffe"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
