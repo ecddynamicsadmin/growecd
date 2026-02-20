@@ -31,7 +31,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> jsonschoolupdatefile",
-				"jsonschoolupdatefile derive() ~> removeformatting",
+				"jsonschoolupdatefile derive(test = 5) ~> removeformatting",
 				"removeformatting sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['persons.csv'],",
