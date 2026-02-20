@@ -1,0 +1,19 @@
+{
+	"name": "storage_GRW_SchoolsUpdate_AUTO_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "vw_schools_rpt_final_null_op.json",
+				"fileSystem": "giraffe"
+			}
+		},
+		"schema": {}
+	}
+}
