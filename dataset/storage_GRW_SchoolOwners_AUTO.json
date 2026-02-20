@@ -13,10 +13,10 @@
 				"fileName": "persons.csv",
 				"folderPath": "giraffe"
 			},
-			"columnDelimiter": "|",
-			"escapeChar": "",
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
 			"firstRowAsHeader": false,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
