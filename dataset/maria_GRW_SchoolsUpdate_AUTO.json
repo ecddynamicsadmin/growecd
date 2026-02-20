@@ -1,5 +1,5 @@
 {
-	"name": "maria_GRW_SchoolsUpdate_AUTO_csv",
+	"name": "maria_GRW_SchoolsUpdate_AUTO",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "mysql_crm",

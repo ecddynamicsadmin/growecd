@@ -15,20 +15,39 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "MySqlSource"
+					},
 					"sink": {
-						"type": "JsonSink",
+						"type": "DelimitedTextSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "JsonWriteSettings"
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
+				"inputs": [
+					{
+						"referenceName": "maria_GRW_SchoolsUpdate_AUTO",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
-						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
+						"referenceName": "storage_GRW_SchoolsUpdate_AUTO_csv",
 						"type": "DatasetReference"
 					}
 				]
@@ -54,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "dataflow_GRW_SchoolOwners_AUTO",
+						"referenceName": "dataflow_GRW_SchoolsUpdate_AUTO",
 						"type": "DataFlowReference"
 					},
 					"compute": {
