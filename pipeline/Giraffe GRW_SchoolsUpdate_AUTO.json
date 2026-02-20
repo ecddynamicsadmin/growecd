@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SchoolOwnerJSON",
+				"name": "SchoolUpdateJSON",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -15,9 +15,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "MySqlSource"
-					},
 					"sink": {
 						"type": "JsonSink",
 						"storeSettings": {
@@ -29,12 +26,6 @@
 					},
 					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "maria_GRW_SchoolOwners_AUTO",
-						"type": "DatasetReference"
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
@@ -47,7 +38,7 @@
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "SchoolOwnerJSON",
+						"activity": "SchoolUpdateJSON",
 						"dependencyConditions": [
 							"Succeeded"
 						]
