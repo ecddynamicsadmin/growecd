@@ -8,6 +8,7 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
+			"sheetName": "Persons",
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "persons.xlsx",
