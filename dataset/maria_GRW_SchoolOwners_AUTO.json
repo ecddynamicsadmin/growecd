@@ -1,0 +1,15 @@
+{
+	"name": "maria_GRW_SchoolOwners_AUTO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "mysql_growecd",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`persons`"
+		}
+	}
+}
