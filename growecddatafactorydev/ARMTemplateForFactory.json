@@ -1937,7 +1937,7 @@
 						"jsonschoolupdatefile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
 						"removeformatting sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     partitionFileNames:['persons.csv'],",
+						"     partitionFileNames:['vw_schools_rpt_final_null_op.csv'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
