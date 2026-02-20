@@ -1187,9 +1187,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1215,9 +1215,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1243,9 +1243,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1271,9 +1271,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1299,9 +1299,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1327,9 +1327,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1380,7 +1380,7 @@
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
-					"firstRowAsHeader": false,
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": []
@@ -1408,7 +1408,7 @@
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
-					"firstRowAsHeader": false,
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": []
@@ -1435,9 +1435,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1463,9 +1463,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1492,7 +1492,7 @@
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
-					"firstRowAsHeader": false,
+					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
 				"schema": []
@@ -1519,9 +1519,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1547,9 +1547,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
+					"escapeChar": "\\",
 					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1710,11 +1710,13 @@
 						"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
 						"removeformatting sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     partitionFileNames:['persons.csv'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinktocsv"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinktocsv"
 					]
 				}
 			},
