@@ -23,7 +23,7 @@
 			],
 			"transformations": [
 				{
-					"name": "derivedColumn1"
+					"name": "removeformatting"
 				}
 			],
 			"scriptLines": [
@@ -52,8 +52,8 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> jsonpersonfile",
-				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
+				"removeformatting sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
