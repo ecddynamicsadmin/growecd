@@ -21,13 +21,39 @@
 					"name": "sinktocsv"
 				}
 			],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          address as string,",
+				"          alternative_number as long,",
+				"          city_id as short,",
+				"          contact_no as integer,",
+				"          country_of_birth_id as short,",
+				"          created_at as string,",
+				"          date_of_birth as string,",
+				"          email as string,",
+				"          first_name as string,",
+				"          gender as string,",
+				"          id as short,",
+				"          last_name as string,",
+				"          other_country_of_birth_id as string,",
+				"          preferred_name as string,",
+				"          province_id as short,",
+				"          race_type_id as short,",
+				"          region_id as short,",
+				"          updated_at as string,",
+				"          zip_code as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> jsonpersonfile",
-				"jsonpersonfile sink(allowSchemaDrift: true,",
+				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',') ) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
