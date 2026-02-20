@@ -729,7 +729,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "storage_GRW_SchoolsUpdate_AUTO",
+								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_csv",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -808,7 +808,7 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]"
 			]
 		},
@@ -907,6 +907,103 @@
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflow_GRW_SchoolOwners_AUTO')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Giraffe GRW_SchoolsUpdate_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "SchoolUpdateJSON",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "maria_GRW_SchoolsUpdate_AUTO",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_Json",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "schoolupdate_csv_create",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "SchoolUpdateJSON",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow_GRW_SchoolsUpdate_AUTO",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"jsonschoolupdatefile": {},
+									"sinktocsv": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolsUpdate_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_Json')]",
+				"[concat(variables('factoryId'), '/dataflows/dataflow_GRW_SchoolsUpdate_AUTO')]"
 			]
 		},
 		{
@@ -1474,7 +1571,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsUpdate_AUTO')]",
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsUpdate_AUTO_Json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schools_rpt_final_null_op.json",
+						"fileSystem": "giraffe"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsUpdate_AUTO_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1488,7 +1609,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "vw_schools_rpt_final_null_op.csv",
-						"folderPath": "giraffe"
+						"fileSystem": "giraffe"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",
@@ -1723,6 +1844,112 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow_GRW_SchoolsUpdate_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_Json",
+								"type": "DatasetReference"
+							},
+							"name": "jsonschoolupdatefile"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_csv",
+								"type": "DatasetReference"
+							},
+							"name": "sinktocsv"
+						}
+					],
+					"transformations": [
+						{
+							"name": "removeformatting"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          address as string,",
+						"          agreement_type as string,",
+						"          break_even_fee as short,",
+						"          business_mentor_email as string,",
+						"          business_mentor_id as short,",
+						"          business_mentor_name as string,",
+						"          business_mentor_phone_number as string,",
+						"          capacity as short,",
+						"          city_id as short,",
+						"          closing_hours_friday as string,",
+						"          closing_hours_monday_to_thursday as string,",
+						"          contract as string,",
+						"          contract_end_date as string,",
+						"          contract_start_date as string,",
+						"          created_at as string,",
+						"          created_by as short,",
+						"          ecd_code as string,",
+						"          ecd_start_date as string,",
+						"          education_mentor_email as string,",
+						"          education_mentor_id as short,",
+						"          education_mentor_name as string,",
+						"          education_mentor_phone_number as string,",
+						"          form_11 as boolean,",
+						"          franchisee_id as short,",
+						"          grow_id as string,",
+						"          hourly_late_or_early_fee as short,",
+						"          hr_email as string,",
+						"          hr_staff_code as string,",
+						"          id as short,",
+						"          inventory_group_id as string,",
+						"          is_caregiver_access as boolean,",
+						"          is_learner_assessment as boolean,",
+						"          is_learner_attendance as boolean,",
+						"          is_learner_payment as boolean,",
+						"          learner_capacity as short,",
+						"          logo as string,",
+						"          monthly_salaries as double,",
+						"          name as string,",
+						"          number_of_classrooms as short,",
+						"          opening_hours_monday_to_friday as string,",
+						"          operating_days as string,",
+						"          owner_id as short,",
+						"          program_status as string,",
+						"          province_id as short,",
+						"          region_id as short,",
+						"          school_commencement_date as string,",
+						"          school_id as string,",
+						"          school_status as string,",
+						"          segment as string,",
+						"          updated_at as string,",
+						"          updated_by as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> jsonschoolupdatefile",
+						"jsonschoolupdatefile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
+						"removeformatting sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     partitionFileNames:['persons.csv'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinktocsv"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_Json')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
 			]
 		}
 	]
