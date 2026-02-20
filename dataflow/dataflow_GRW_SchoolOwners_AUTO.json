@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Json_Persons",
+						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 						"type": "DatasetReference"
 					},
 					"name": "jsonpersonfile"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "storage_GRW_SchoolOwners_AUTO",
+						"referenceName": "storage_GRW_SchoolOwners_AUTO_csv",
 						"type": "DatasetReference"
 					},
 					"name": "sinktocsv"
@@ -52,7 +52,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> jsonpersonfile",
-				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',') ) ~> derivedColumn1",
+				"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",

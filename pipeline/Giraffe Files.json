@@ -598,7 +598,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "storage_GRW_SchoolOwners_AUTO",
+						"referenceName": "storage_GRW_SchoolOwners_AUTO_csv",
 						"type": "DatasetReference"
 					}
 				]
@@ -688,7 +688,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Json_Persons",
+						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 						"type": "DatasetReference"
 					}
 				]

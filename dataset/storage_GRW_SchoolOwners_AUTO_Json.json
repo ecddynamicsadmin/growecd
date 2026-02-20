@@ -1,5 +1,5 @@
 {
-	"name": "Json_GRW_SchoolOwners_AUTO",
+	"name": "storage_GRW_SchoolOwners_AUTO_Json",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
