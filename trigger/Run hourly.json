@@ -1,0 +1,25 @@
+{
+	"name": "Run hourly",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Giraffe Files",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 1,
+				"startTime": "2026-02-20T04:36:00",
+				"endTime": "2026-02-21T04:36:00",
+				"timeZone": "South Africa Standard Time"
+			}
+		}
+	}
+}
