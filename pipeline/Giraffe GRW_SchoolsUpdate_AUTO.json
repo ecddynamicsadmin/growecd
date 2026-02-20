@@ -19,25 +19,15 @@
 						"type": "MySqlSource"
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "JsonSink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
 						},
 						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"type": "JsonWriteSettings"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
@@ -47,13 +37,13 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "storage_GRW_SchoolsUpdate_AUTO_csv",
+						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 						"type": "DatasetReference"
 					}
 				]
 			},
 			{
-				"name": "person_csv_create",
+				"name": "schoolupdate_csv_create",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
