@@ -14,6 +14,7 @@
 				"folderPath": "giraffe"
 			},
 			"columnDelimiter": ",",
+			"rowDelimiter": "",
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
 			"quoteChar": "\""
