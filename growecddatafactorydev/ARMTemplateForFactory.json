@@ -677,7 +677,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "storage_GRW_SchoolOwners_AUTO",
+								"referenceName": "storage_GRW_SchoolOwners_AUTO_csv",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -771,7 +771,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "Json_Persons",
+								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -807,9 +807,9 @@
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/Json_Persons')]"
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]"
 			]
 		},
 		{
@@ -854,7 +854,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "Json_Persons",
+								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -905,32 +905,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/Json_Persons')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
 				"[concat(variables('factoryId'), '/dataflows/dataflow_GRW_SchoolOwners_AUTO')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Json_Persons')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "persons.json",
-						"fileSystem": "giraffe"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
@@ -1362,7 +1338,31 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO')]",
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO_Json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "persons.json",
+						"fileSystem": "giraffe"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1661,7 +1661,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "Json_Persons",
+								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
 								"type": "DatasetReference"
 							},
 							"name": "jsonpersonfile"
@@ -1670,7 +1670,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "storage_GRW_SchoolOwners_AUTO",
+								"referenceName": "storage_GRW_SchoolOwners_AUTO_csv",
 								"type": "DatasetReference"
 							},
 							"name": "sinktocsv"
@@ -1678,7 +1678,7 @@
 					],
 					"transformations": [
 						{
-							"name": "derivedColumn1"
+							"name": "removeformatting"
 						}
 					],
 					"scriptLines": [
@@ -1707,8 +1707,8 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine') ~> jsonpersonfile",
-						"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> derivedColumn1",
-						"derivedColumn1 sink(allowSchemaDrift: true,",
+						"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
+						"removeformatting sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
 						"     preCommands: [],",
@@ -1719,8 +1719,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Json_Persons')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO')]"
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]"
 			]
 		}
 	]
