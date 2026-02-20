@@ -1214,9 +1214,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
-					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1242,9 +1242,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
-					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
@@ -1326,9 +1326,9 @@
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
-					"escapeChar": "",
-					"firstRowAsHeader": true,
-					"quoteChar": ""
+					"escapeChar": "\\",
+					"firstRowAsHeader": false,
+					"quoteChar": "\""
 				},
 				"schema": []
 			},
