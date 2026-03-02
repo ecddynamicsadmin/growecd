@@ -117,28 +117,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO_Json')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "persons.json",
-						"fileSystem": "giraffe"
-					}
-				},
-				"schema": {}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1024,48 +1002,6 @@
 								"parameters": {}
 							}
 						]
-					},
-					{
-						"name": "SchoolOwnerJSON",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MySqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "maria_GRW_SchoolOwners_AUTO",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
 					}
 				],
 				"policy": {
@@ -1084,32 +1020,8 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolTeacherTraining_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]"
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SchoolsUpdatePowerQuery')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "parquet_schoolsupdate",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> parquet_schoolsupdate",
-							"dataset": {
-								"referenceName": "parquet_schoolsupdate_source",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared parquet_schoolsupdate_source = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/schoolsupdatesource.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"parquet_schoolsupdate_source\",  \n  \n\n    SortedHeaders =\n    Table.ReorderColumns(\n        Source,\n        List.Sort(Table.ColumnNames(Source))\n    ),\n\n    #\"Replaced value\" =  \n        Table.ReplaceValue(SortedHeaders, \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value\", null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value 4\", null, \"\", Replacer.ReplaceValue, {\"ecd_start_date\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", null, \"0\", Replacer.ReplaceValue, {\"number_of_classrooms\"}),  \n  \n    #\"Added custom\" =  \n        Table.AddColumn(#\"Replaced value 2\", \"Importschool\", each true, type logical),  \n  \n    #\"Replaced value 5\" =  \n        Table.ReplaceValue(#\"Added custom\", \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),  \n  \n    #\"Sorted rows\" =  \n        Table.Sort(#\"Replaced value 5\", {{\"school_status\", Order.Descending}}),  \n  \n    #\"Replaced value 6\" =  \n        Table.ReplaceValue(#\"Sorted rows\", \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),  \n  \n    #\"Replaced value 7\" =  \n        Table.ReplaceValue(#\"Replaced value 6\", \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 7\", null, \"\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Replaced value 11\" =  \n        Table.ReplaceValue(#\"Replaced value 3\", \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Added custom 1\" =  \n        Table.AddColumn(#\"Replaced value 11\", \"Importschooldone\", each false, type logical),  \n  \n    #\"Added custom 2\" =  \n        Table.AddColumn(#\"Added custom 1\", \"countryid\", each 710),  \n  \n    #\"Added custom 3\" =  \n        Table.AddColumn(#\"Added custom 2\", \"triggerupdate\", each \"update\", type text),  \n  \n    #\"Replaced value 8\" =  \n        Table.ReplaceValue(#\"Added custom 3\", null, \"0\", Replacer.ReplaceValue, {\"learner_capacity\"}),\n  #\"Removed other columns\" = Table.SelectColumns(#\"Replaced value 8\", {\"address\", \"agreement_type\", \"break_even_fee\", \"capacity\", \"city_id\", \"contract_start_date\", \"countryid\", \"ecd_code\", \"id\", \"Importschool\", \"Importschooldone\", \"monthly_salaries\", \"name\", \"number_of_classrooms\", \"owner_id\", \"region_id\", \"school_commencement_date\", \"school_id\", \"school_status\", \"segment\"}),\n  #\"Renamed columns\" = Table.RenameColumns(#\"Removed other columns\", {{\"address\", \"tcbgrow_Address\"}, {\"agreement_type\", \"tcbgrow_PaymentType\"}, {\"break_even_fee\", \"tcbgrow_BreakEven\"}, {\"capacity\", \"tcbgrow_Capacity\"}, {\"city_id\", \"tcbgrow_ImportCityId\"}, {\"contract_start_date\", \"tcbgrow_AppAccountCreationDate\"}}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_AppAccountCreationDate\", \"tcbgrow_ContractDate\"),\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Duplicated column\", {{\"countryid\", \"tcbgrow_Country.tcbgrow_AppID\"}}),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Renamed columns 1\", \"tcbgrow_Country.tcbgrow_AppID\", \"tcbgrow_ImportCountryId\"),\n  #\"Renamed columns 2\" = Table.RenameColumns(#\"Duplicated column 1\", {{\"ecd_code\", \"tcbgrow_ImportECDCode\"}, {\"id\", \"tcbgrow_AppID\"}, {\"Importschool\", \"tcbgrow_SchoolImport\"}, {\"Importschooldone\", \"tcbgrow_SchoolImportDone\"}, {\"monthly_salaries\", \"tcbgrow_MonthlySalaries\"}, {\"name\", \"tcbgrow_Name\"}, {\"number_of_classrooms\", \"tcbgrow_NumberofClassrooms\"}, {\"owner_id\", \"tcbgrow_ECDOwner.tcbgrow_AppId\"}}),\n  #\"Duplicated column 2\" = Table.DuplicateColumn(#\"Renamed columns 2\", \"tcbgrow_ECDOwner.tcbgrow_AppId\", \"tcbgrow_ImportSchoolOwnerID\"),\n  #\"Renamed columns 3\" = Table.RenameColumns(#\"Duplicated column 2\", {{\"region_id\", \"tcbgrow_ImportProvinceId\"}, {\"school_commencement_date\", \"tcbgrow_CentreStartDate\"}}),\n  #\"Duplicated column 3\" = Table.DuplicateColumn(#\"Renamed columns 3\", \"tcbgrow_CentreStartDate\", \"tcbgrow_CommencementDate\"),\n  #\"Renamed columns 4\" = Table.RenameColumns(#\"Duplicated column 3\", {{\"school_id\", \"tcbgrow_GrowID\"}, {\"school_status\", \"tcbgrow_SchoolStatus\"}, {\"segment\", \"tcbgrow_tcbgrow_importsegment\"}}),  \n      SortedHeaders2 =\n    Table.ReorderColumns(\n        #\"Renamed columns 4\",\n        List.Sort(Table.ColumnNames(#\"Renamed columns 4\"))\n    )\nin  \n    SortedHeaders2;\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Giraffe_SchoolsUpdate_Dataverse')]",
@@ -1120,6 +1032,8 @@
 					{
 						"name": "SchoolUpdateParquet",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1732,57 +1646,6 @@
 								"parameters": {}
 							}
 						]
-					},
-					{
-						"name": "SchoolUpdateQuery",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "SchoolUpdateParquet",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "SchoolsUpdatePowerQuery",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"parquet_schoolsupdate": {},
-									"UserQueryparquetschoolsupdatedestination": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"queries": [
-								{
-									"queryName": "UserQuery",
-									"dataflowSinks": [
-										{
-											"name": "UserQueryparquetschoolsupdatedestination",
-											"dataset": {
-												"referenceName": "parquet_schoolsupdate_destination",
-												"type": "DatasetReference",
-												"parameters": {}
-											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tschool_id as string,\n\t\tfranchisee_id as long,\n\t\tregion_id as long,\n\t\tcity_id as long,\n\t\tprovince_id as long,\n\t\tgrow_id as string,\n\t\tname as string,\n\t\tlearner_capacity as string,\n\t\tnumber_of_classrooms as string,\n\t\tlogo as string,\n\t\taddress as string,\n\t\tschool_commencement_date as timestamp,\n\t\tbreak_even_fee as integer,\n\t\tcapacity as integer,\n\t\tform_11 as string,\n\t\thr_email as string,\n\t\thr_staff_code as string,\n\t\tecd_start_date as timestamp,\n\t\tecd_code as string,\n\t\tcontract as string,\n\t\tcontract_start_date as timestamp,\n\t\tcontract_end_date as timestamp,\n\t\tbusiness_mentor_id as decimal(38,0),\n\t\teducation_mentor_id as decimal(38,0),\n\t\tbusiness_mentor_name as string,\n\t\tbusiness_mentor_phone_number as string,\n\t\tbusiness_mentor_email as string,\n\t\teducation_mentor_name as string,\n\t\teducation_mentor_phone_number as string,\n\t\teducation_mentor_email as string,\n\t\thourly_late_or_early_fee as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tschool_status as string,\n\t\tinventory_group_id as decimal(38,0),\n\t\tmonthly_salaries as decimal(38,18),\n\t\tis_learner_payment as boolean,\n\t\tis_learner_attendance as boolean,\n\t\tis_learner_assessment as boolean,\n\t\tis_caregiver_access as boolean,\n\t\tsegment as string,\n\t\tagreement_type as string,\n\t\tprogram_status as string,\n\t\towner_id as long\n\t),\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQueryparquetschoolsupdatedestination"
-										}
-									]
-								}
-							]
-						}
 					}
 				],
 				"policy": {
@@ -1790,9 +1653,30 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/SchoolsUpdatePowerQuery')]"
-			]
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SchoolsUpdatePowerQuery')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "parquet_schoolsupdate",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> parquet_schoolsupdate",
+							"dataset": {
+								"referenceName": "parquet_schoolsupdate_source",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared parquet_schoolsupdate_source = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/schoolsupdatesource.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"parquet_schoolsupdate_source\",  \n  \n\n    SortedHeaders =\n    Table.ReorderColumns(\n        Source,\n        List.Sort(Table.ColumnNames(Source))\n    ),\n\n    #\"Replaced value\" =  \n        Table.ReplaceValue(SortedHeaders, \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value\", null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value 4\", null, \"\", Replacer.ReplaceValue, {\"ecd_start_date\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", null, \"0\", Replacer.ReplaceValue, {\"number_of_classrooms\"}),  \n  \n    #\"Added custom\" =  \n        Table.AddColumn(#\"Replaced value 2\", \"Importschool\", each true, type logical),  \n  \n    #\"Replaced value 5\" =  \n        Table.ReplaceValue(#\"Added custom\", \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),  \n  \n    #\"Sorted rows\" =  \n        Table.Sort(#\"Replaced value 5\", {{\"school_status\", Order.Descending}}),  \n  \n    #\"Replaced value 6\" =  \n        Table.ReplaceValue(#\"Sorted rows\", \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),  \n  \n    #\"Replaced value 7\" =  \n        Table.ReplaceValue(#\"Replaced value 6\", \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 7\", null, \"\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Replaced value 11\" =  \n        Table.ReplaceValue(#\"Replaced value 3\", \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Added custom 1\" =  \n        Table.AddColumn(#\"Replaced value 11\", \"Importschooldone\", each false, type logical),  \n  \n    #\"Added custom 2\" =  \n        Table.AddColumn(#\"Added custom 1\", \"countryid\", each 710),  \n  \n    #\"Added custom 3\" =  \n        Table.AddColumn(#\"Added custom 2\", \"triggerupdate\", each \"update\", type text),  \n  \n    #\"Replaced value 8\" =  \n        Table.ReplaceValue(#\"Added custom 3\", null, \"0\", Replacer.ReplaceValue, {\"learner_capacity\"}),\n  #\"Removed other columns\" = Table.SelectColumns(#\"Replaced value 8\", {\"address\", \"agreement_type\", \"break_even_fee\", \"capacity\", \"city_id\", \"contract_start_date\", \"countryid\", \"ecd_code\", \"id\", \"Importschool\", \"Importschooldone\", \"monthly_salaries\", \"name\", \"number_of_classrooms\", \"owner_id\", \"region_id\", \"school_commencement_date\", \"school_id\", \"school_status\", \"segment\"}),\n  #\"Renamed columns\" = Table.RenameColumns(#\"Removed other columns\", {{\"address\", \"tcbgrow_Address\"}, {\"agreement_type\", \"tcbgrow_PaymentType\"}, {\"break_even_fee\", \"tcbgrow_BreakEven\"}, {\"capacity\", \"tcbgrow_Capacity\"}, {\"city_id\", \"tcbgrow_ImportCityId\"}, {\"contract_start_date\", \"tcbgrow_AppAccountCreationDate\"}}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_AppAccountCreationDate\", \"tcbgrow_ContractDate\"),\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Duplicated column\", {{\"countryid\", \"tcbgrow_Country.tcbgrow_AppID\"}}),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Renamed columns 1\", \"tcbgrow_Country.tcbgrow_AppID\", \"tcbgrow_ImportCountryId\"),\n  #\"Renamed columns 2\" = Table.RenameColumns(#\"Duplicated column 1\", {{\"ecd_code\", \"tcbgrow_ImportECDCode\"}, {\"id\", \"tcbgrow_AppID\"}, {\"Importschool\", \"tcbgrow_SchoolImport\"}, {\"Importschooldone\", \"tcbgrow_SchoolImportDone\"}, {\"monthly_salaries\", \"tcbgrow_MonthlySalaries\"}, {\"name\", \"tcbgrow_Name\"}, {\"number_of_classrooms\", \"tcbgrow_NumberofClassrooms\"}, {\"owner_id\", \"tcbgrow_ECDOwner.tcbgrow_AppId\"}}),\n  #\"Duplicated column 2\" = Table.DuplicateColumn(#\"Renamed columns 2\", \"tcbgrow_ECDOwner.tcbgrow_AppId\", \"tcbgrow_ImportSchoolOwnerID\"),\n  #\"Renamed columns 3\" = Table.RenameColumns(#\"Duplicated column 2\", {{\"region_id\", \"tcbgrow_ImportProvinceId\"}, {\"school_commencement_date\", \"tcbgrow_CentreStartDate\"}}),\n  #\"Duplicated column 3\" = Table.DuplicateColumn(#\"Renamed columns 3\", \"tcbgrow_CentreStartDate\", \"tcbgrow_CommencementDate\"),\n  #\"Renamed columns 4\" = Table.RenameColumns(#\"Duplicated column 3\", {{\"school_id\", \"tcbgrow_GrowID\"}, {\"school_status\", \"tcbgrow_SchoolStatus\"}, {\"segment\", \"tcbgrow_tcbgrow_importsegment\"}}),  \n      SortedHeaders2 =\n    Table.ReorderColumns(\n        #\"Renamed columns 4\",\n        List.Sort(Table.ColumnNames(#\"Renamed columns 4\"))\n    )\nin  \n    SortedHeaders2;\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Run hourly')]",
