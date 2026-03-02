@@ -1,0 +1,9 @@
+{
+	"name": "SchoolsUpdatePowerQuery",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": []
+		}
+	}
+}
