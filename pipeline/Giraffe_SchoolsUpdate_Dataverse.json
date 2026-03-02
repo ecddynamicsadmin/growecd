@@ -16,8 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MySqlSource",
-						"query": "SELECT  \n    `address`,  \n    `contract_start_date`,  \n    `id`,  \n    `break_even_fee`,  \n    `capacity`,  \n    `school_commencement_date`,  \n    `countryid`,  \n    `owner_id`,  \n    `school_id`,  \n    `city_id`,  \n    `ecd_code`,  \n    `region_id`,  \n    `monthly_salaries`,  \n    `name`,  \n    `number_of_classrooms`,  \n    `agreement_type`,  \n    `Importschool`,  \n    `Importschooldone`,  \n    `school_status`,  \n    `segment`  \nFROM `crm`.`vw_schools_rpt_final_null_op`;  "
+						"type": "MySqlSource"
 					},
 					"sink": {
 						"type": "ParquetSink",
