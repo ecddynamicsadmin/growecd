@@ -1,0 +1,23 @@
+{
+	"name": "schoolsupdate",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Parque"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "parque",
+				"fileSystem": "giraffe"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
