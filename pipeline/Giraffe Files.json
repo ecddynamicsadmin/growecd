@@ -685,12 +685,6 @@
 						"referenceName": "maria_GRW_SchoolOwners_AUTO",
 						"type": "DatasetReference"
 					}
-				],
-				"outputs": [
-					{
-						"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
-						"type": "DatasetReference"
-					}
 				]
 			}
 		],
