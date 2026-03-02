@@ -1,5 +1,5 @@
 {
-	"name": "powerquery2",
+	"name": "SchoolsUpdate",
 	"properties": {
 		"type": "WranglingDataFlow",
 		"typeProperties": {
