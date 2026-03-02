@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -89,12 +92,14 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 alterRow(upsertIf(!isNull(tcbgrow_AppID))) ~> alterRow1",
-				"alterRow1 sink(allowSchemaDrift: false,",
+				"alterRow1 derive(tcbgrow_import_key = tcbgrow_AppID) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: false,",
 				"     validateSchema: false,",
 				"     deletable:false,",
-				"     insertable:true,",
+				"     insertable:false,",
 				"     updateable:false,",
-				"     upsertable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_import_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
@@ -106,7 +111,7 @@
 				"          tcbgrow_AppAccountCreationDate,",
 				"          tcbgrow_AppID = {tcbgrow_Country.tcbgrow_AppID},",
 				"          tcbgrow_ImportECDCode,",
-				"          tcbgrow_AppID,",
+				"          tcbgrow_import_key,",
 				"          tcbgrow_SchoolImport,",
 				"          tcbgrow_SchoolImportDone,",
 				"          tcbgrow_MonthlySalaries,",
