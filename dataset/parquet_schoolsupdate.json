@@ -1,5 +1,5 @@
 {
-	"name": "schoolsupdate",
+	"name": "parquet_schoolsupdate",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
