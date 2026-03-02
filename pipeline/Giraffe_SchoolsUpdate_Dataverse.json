@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SchoolUpdateParquet",
+				"name": "SchoolsUpdate_M",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -617,11 +617,11 @@
 				]
 			},
 			{
-				"name": "SchoolsUpdate",
+				"name": "SchoolsUpdate_Q",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
-						"activity": "SchoolUpdateParquet",
+						"activity": "SchoolsUpdate_M",
 						"dependencyConditions": [
 							"Completed"
 						]
