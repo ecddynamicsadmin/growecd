@@ -639,7 +639,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SchoolsUpdatePowerQuery",
+						"referenceName": "powerquery1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
