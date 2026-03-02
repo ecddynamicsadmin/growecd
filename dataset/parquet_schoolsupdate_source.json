@@ -1,5 +1,5 @@
 {
-	"name": "parquet_schoolsupdate",
+	"name": "parquet_schoolsupdate_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "schoolsupdate.parquet",
+				"fileName": "schoolsupdatesource.parquet",
 				"folderPath": "parque",
 				"fileSystem": "giraffe"
 			},
