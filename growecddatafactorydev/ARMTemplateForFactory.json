@@ -776,7 +776,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "SchoolUpdateParquet",
+						"name": "Schools Update from Maria",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -1392,11 +1392,11 @@
 						]
 					},
 					{
-						"name": "SchoolsUpdate",
+						"name": "Schools Update query Transformation",
 						"type": "ExecuteWranglingDataflow",
 						"dependsOn": [
 							{
-								"activity": "SchoolUpdateParquet",
+								"activity": "Schools Update from Maria",
 								"dependencyConditions": [
 									"Completed"
 								]
