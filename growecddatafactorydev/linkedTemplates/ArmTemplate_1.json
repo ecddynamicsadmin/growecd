@@ -13,6 +13,58 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolExpense_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolexpenses_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolFees_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolfees_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolIncome_AUTO')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1027,6 +1079,8 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsSalaries_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolStaff_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_SchoolCompliance_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolExpense_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolFees_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolTeacherTraining_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
@@ -1035,193 +1089,36 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow_GRW_SchoolOwners_AUTO')]",
+			"name": "[concat(parameters('factoryName'), '/SchoolsUpdatePowerQuery')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "MappingDataFlow",
+				"type": "WranglingDataFlow",
 				"typeProperties": {
 					"sources": [
 						{
+							"name": "parquet_schoolsupdate",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> parquet_schoolsupdate",
 							"dataset": {
-								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
+								"referenceName": "parquet_schoolsupdate_source",
 								"type": "DatasetReference"
-							},
-							"name": "jsonpersonfile"
+							}
 						}
 					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "storage_GRW_SchoolOwners_AUTO_csv",
-								"type": "DatasetReference"
-							},
-							"name": "sinktocsv"
-						}
-					],
-					"transformations": [
-						{
-							"name": "removeformatting"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          address as string,",
-						"          alternative_number as long,",
-						"          city_id as short,",
-						"          contact_no as integer,",
-						"          country_of_birth_id as short,",
-						"          created_at as string,",
-						"          date_of_birth as string,",
-						"          email as string,",
-						"          first_name as string,",
-						"          gender as string,",
-						"          id as short,",
-						"          last_name as string,",
-						"          other_country_of_birth_id as string,",
-						"          preferred_name as string,",
-						"          province_id as short,",
-						"          race_type_id as short,",
-						"          region_id as short,",
-						"          updated_at as string,",
-						"          zip_code as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> jsonpersonfile",
-						"jsonpersonfile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
-						"removeformatting sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     partitionFileNames:['persons.csv'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sinktocsv"
-					]
+					"script": "section Section1;\r\nshared parquet_schoolsupdate_source = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/schoolsupdatesource.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"parquet_schoolsupdate_source\",  \n  \n\n    SortedHeaders =\n    Table.ReorderColumns(\n        Source,\n        List.Sort(Table.ColumnNames(Source))\n    ),\n\n    #\"Replaced value\" =  \n        Table.ReplaceValue(SortedHeaders, \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value\", null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value 4\", null, \"\", Replacer.ReplaceValue, {\"ecd_start_date\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", null, \"0\", Replacer.ReplaceValue, {\"number_of_classrooms\"}),  \n  \n    #\"Added custom\" =  \n        Table.AddColumn(#\"Replaced value 2\", \"Importschool\", each true, type logical),  \n  \n    #\"Replaced value 5\" =  \n        Table.ReplaceValue(#\"Added custom\", \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),  \n  \n    #\"Sorted rows\" =  \n        Table.Sort(#\"Replaced value 5\", {{\"school_status\", Order.Descending}}),  \n  \n    #\"Replaced value 6\" =  \n        Table.ReplaceValue(#\"Sorted rows\", \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),  \n  \n    #\"Replaced value 7\" =  \n        Table.ReplaceValue(#\"Replaced value 6\", \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 7\", null, \"\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Replaced value 11\" =  \n        Table.ReplaceValue(#\"Replaced value 3\", \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),  \n  \n    #\"Added custom 1\" =  \n        Table.AddColumn(#\"Replaced value 11\", \"Importschooldone\", each false, type logical),  \n  \n    #\"Added custom 2\" =  \n        Table.AddColumn(#\"Added custom 1\", \"countryid\", each 710),  \n  \n    #\"Added custom 3\" =  \n        Table.AddColumn(#\"Added custom 2\", \"triggerupdate\", each \"update\", type text),  \n  \n    #\"Replaced value 8\" =  \n        Table.ReplaceValue(#\"Added custom 3\", null, \"0\", Replacer.ReplaceValue, {\"learner_capacity\"}),\n  #\"Removed other columns\" = Table.SelectColumns(#\"Replaced value 8\", {\"address\", \"agreement_type\", \"break_even_fee\", \"capacity\", \"city_id\", \"contract_start_date\", \"countryid\", \"ecd_code\", \"id\", \"Importschool\", \"Importschooldone\", \"monthly_salaries\", \"name\", \"number_of_classrooms\", \"owner_id\", \"region_id\", \"school_commencement_date\", \"school_id\", \"school_status\", \"segment\"}),\n  #\"Renamed columns\" = Table.RenameColumns(#\"Removed other columns\", {{\"address\", \"tcbgrow_Address\"}, {\"agreement_type\", \"tcbgrow_PaymentType\"}, {\"break_even_fee\", \"tcbgrow_BreakEven\"}, {\"capacity\", \"tcbgrow_Capacity\"}, {\"city_id\", \"tcbgrow_ImportCityId\"}, {\"contract_start_date\", \"tcbgrow_AppAccountCreationDate\"}}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_AppAccountCreationDate\", \"tcbgrow_ContractDate\"),\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Duplicated column\", {{\"countryid\", \"tcbgrow_Country.tcbgrow_AppID\"}}),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Renamed columns 1\", \"tcbgrow_Country.tcbgrow_AppID\", \"tcbgrow_ImportCountryId\"),\n  #\"Renamed columns 2\" = Table.RenameColumns(#\"Duplicated column 1\", {{\"ecd_code\", \"tcbgrow_ImportECDCode\"}, {\"id\", \"tcbgrow_AppID\"}, {\"Importschool\", \"tcbgrow_SchoolImport\"}, {\"Importschooldone\", \"tcbgrow_SchoolImportDone\"}, {\"monthly_salaries\", \"tcbgrow_MonthlySalaries\"}, {\"name\", \"tcbgrow_Name\"}, {\"number_of_classrooms\", \"tcbgrow_NumberofClassrooms\"}, {\"owner_id\", \"tcbgrow_ECDOwner.tcbgrow_AppId\"}}),\n  #\"Duplicated column 2\" = Table.DuplicateColumn(#\"Renamed columns 2\", \"tcbgrow_ECDOwner.tcbgrow_AppId\", \"tcbgrow_ImportSchoolOwnerID\"),\n  #\"Renamed columns 3\" = Table.RenameColumns(#\"Duplicated column 2\", {{\"region_id\", \"tcbgrow_ImportProvinceId\"}, {\"school_commencement_date\", \"tcbgrow_CentreStartDate\"}}),\n  #\"Duplicated column 3\" = Table.DuplicateColumn(#\"Renamed columns 3\", \"tcbgrow_CentreStartDate\", \"tcbgrow_CommencementDate\"),\n  #\"Renamed columns 4\" = Table.RenameColumns(#\"Duplicated column 3\", {{\"school_id\", \"tcbgrow_GrowID\"}, {\"school_status\", \"tcbgrow_SchoolStatus\"}, {\"segment\", \"tcbgrow_tcbgrow_importsegment\"}}),  \n      SortedHeaders2 =\n    Table.ReorderColumns(\n        #\"Renamed columns 4\",\n        List.Sort(Table.ColumnNames(#\"Renamed columns 4\"))\n    )\nin  \n    SortedHeaders2;\r\n",
+					"documentLocale": "en-us"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]"
-			]
+			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow_GRW_SchoolsUpdate_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_Json",
-								"type": "DatasetReference"
-							},
-							"name": "jsonschoolupdatefile"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_csv",
-								"type": "DatasetReference"
-							},
-							"name": "sinktocsv"
-						}
-					],
-					"transformations": [
-						{
-							"name": "removeformatting"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          address as string,",
-						"          agreement_type as string,",
-						"          break_even_fee as short,",
-						"          business_mentor_email as string,",
-						"          business_mentor_id as short,",
-						"          business_mentor_name as string,",
-						"          business_mentor_phone_number as string,",
-						"          capacity as short,",
-						"          city_id as short,",
-						"          closing_hours_friday as string,",
-						"          closing_hours_monday_to_thursday as string,",
-						"          contract as string,",
-						"          contract_end_date as string,",
-						"          contract_start_date as string,",
-						"          created_at as string,",
-						"          created_by as short,",
-						"          ecd_code as string,",
-						"          ecd_start_date as string,",
-						"          education_mentor_email as string,",
-						"          education_mentor_id as short,",
-						"          education_mentor_name as string,",
-						"          education_mentor_phone_number as string,",
-						"          form_11 as boolean,",
-						"          franchisee_id as short,",
-						"          grow_id as string,",
-						"          hourly_late_or_early_fee as short,",
-						"          hr_email as string,",
-						"          hr_staff_code as string,",
-						"          id as short,",
-						"          inventory_group_id as string,",
-						"          is_caregiver_access as boolean,",
-						"          is_learner_assessment as boolean,",
-						"          is_learner_attendance as boolean,",
-						"          is_learner_payment as boolean,",
-						"          learner_capacity as short,",
-						"          logo as string,",
-						"          monthly_salaries as double,",
-						"          name as string,",
-						"          number_of_classrooms as short,",
-						"          opening_hours_monday_to_friday as string,",
-						"          operating_days as string,",
-						"          owner_id as short,",
-						"          program_status as string,",
-						"          province_id as short,",
-						"          region_id as short,",
-						"          school_commencement_date as string,",
-						"          school_id as string,",
-						"          school_status as string,",
-						"          segment as string,",
-						"          updated_at as string,",
-						"          updated_by as short",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     documentForm: 'documentPerLine') ~> jsonschoolupdatefile",
-						"jsonschoolupdatefile derive(address = replace(replace(address, '\\n', ','), '\\r', ',')) ~> removeformatting",
-						"removeformatting sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     partitionFileNames:['vw_schools_rpt_final_null_op.csv'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sinktocsv"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_Json')]",
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Giraffe GRW_SchoolOwners_AUTO')]",
+			"name": "[concat(parameters('factoryName'), '/Giraffe_SchoolsUpdate_Dataverse')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "SchoolOwnerJSON",
+						"name": "SchoolUpdateParquet",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -1237,111 +1134,589 @@
 								"type": "MySqlSource"
 							},
 							"sink": {
-								"type": "JsonSink",
+								"type": "ParquetSink",
 								"storeSettings": {
 									"type": "AzureBlobFSWriteSettings"
 								},
 								"formatSettings": {
-									"type": "JsonWriteSettings"
+									"type": "ParquetWriteSettings"
 								}
 							},
-							"enableStaging": false
-						},
-						"inputs": [
-							{
-								"referenceName": "maria_GRW_SchoolOwners_AUTO",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "storage_GRW_SchoolOwners_AUTO_Json",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "person_csv_create",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "SchoolOwnerJSON",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "dataflow_GRW_SchoolOwners_AUTO",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"jsonpersonfile": {},
-									"sinktocsv": {}
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "school_id",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "school_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "franchisee_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "franchisee_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "grow_id",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "grow_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "learner_capacity",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "learner_capacity",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "number_of_classrooms",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "number_of_classrooms",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "logo",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "logo",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "school_commencement_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "school_commencement_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "break_even_fee",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "break_even_fee",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "capacity",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "capacity",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hr_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "hr_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hr_staff_code",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "hr_staff_code",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "ecd_start_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "ecd_start_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "ecd_code",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "ecd_code",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "contract",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "contract",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "contract_start_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "contract_start_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "contract_end_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "contract_end_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "business_mentor_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "education_mentor_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_phone_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_phone_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_phone_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_phone_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hourly_late_or_early_fee",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "hourly_late_or_early_fee",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "school_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "school_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "inventory_group_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "inventory_group_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "monthly_salaries",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "monthly_salaries",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_payment",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_payment",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_attendance",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_attendance",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_assessment",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_assessment",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_caregiver_access",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_caregiver_access",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "agreement_type",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "agreement_type",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "program_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "program_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "owner_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "owner_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
 								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_Json')]",
-				"[concat(variables('factoryId'), '/dataflows/dataflow_GRW_SchoolOwners_AUTO')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Giraffe GRW_SchoolsUpdate_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "SchoolUpdateJSON",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MySqlSource"
-							},
-							"sink": {
-								"type": "JsonSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "JsonWriteSettings"
-								}
-							},
-							"enableStaging": false
+							}
 						},
 						"inputs": [
 							{
@@ -1352,18 +1727,18 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "storage_GRW_SchoolsUpdate_AUTO_Json",
+								"referenceName": "parquet_schoolsupdate_source",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						]
 					},
 					{
-						"name": "schoolupdate_csv_create",
-						"type": "ExecuteDataFlow",
+						"name": "SchoolUpdateQuery",
+						"type": "ExecuteWranglingDataflow",
 						"dependsOn": [
 							{
-								"activity": "SchoolUpdateJSON",
+								"activity": "SchoolUpdateParquet",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1379,12 +1754,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflow_GRW_SchoolsUpdate_AUTO",
+								"referenceName": "SchoolsUpdatePowerQuery",
 								"type": "DataFlowReference",
-								"parameters": {},
 								"datasetParameters": {
-									"jsonschoolupdatefile": {},
-									"sinktocsv": {}
+									"parquet_schoolsupdate": {},
+									"UserQueryparquetschoolsupdatedestination": {}
 								}
 							},
 							"staging": {},
@@ -1392,7 +1766,22 @@
 								"coreCount": 8,
 								"computeType": "General"
 							},
-							"traceLevel": "Fine"
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQueryparquetschoolsupdatedestination",
+											"dataset": {
+												"referenceName": "parquet_schoolsupdate_destination",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tschool_id as string,\n\t\tfranchisee_id as long,\n\t\tregion_id as long,\n\t\tcity_id as long,\n\t\tprovince_id as long,\n\t\tgrow_id as string,\n\t\tname as string,\n\t\tlearner_capacity as string,\n\t\tnumber_of_classrooms as string,\n\t\tlogo as string,\n\t\taddress as string,\n\t\tschool_commencement_date as timestamp,\n\t\tbreak_even_fee as integer,\n\t\tcapacity as integer,\n\t\tform_11 as string,\n\t\thr_email as string,\n\t\thr_staff_code as string,\n\t\tecd_start_date as timestamp,\n\t\tecd_code as string,\n\t\tcontract as string,\n\t\tcontract_start_date as timestamp,\n\t\tcontract_end_date as timestamp,\n\t\tbusiness_mentor_id as decimal(38,0),\n\t\teducation_mentor_id as decimal(38,0),\n\t\tbusiness_mentor_name as string,\n\t\tbusiness_mentor_phone_number as string,\n\t\tbusiness_mentor_email as string,\n\t\teducation_mentor_name as string,\n\t\teducation_mentor_phone_number as string,\n\t\teducation_mentor_email as string,\n\t\thourly_late_or_early_fee as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tschool_status as string,\n\t\tinventory_group_id as decimal(38,0),\n\t\tmonthly_salaries as decimal(38,18),\n\t\tis_learner_payment as boolean,\n\t\tis_learner_attendance as boolean,\n\t\tis_learner_assessment as boolean,\n\t\tis_caregiver_access as boolean,\n\t\tsegment as string,\n\t\tagreement_type as string,\n\t\tprogram_status as string,\n\t\towner_id as long\n\t),\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQueryparquetschoolsupdatedestination"
+										}
+									]
+								}
+							]
 						}
 					}
 				],
@@ -1402,8 +1791,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_Json')]",
-				"[concat(variables('factoryId'), '/dataflows/dataflow_GRW_SchoolsUpdate_AUTO')]"
+				"[concat(variables('factoryId'), '/dataflows/SchoolsUpdatePowerQuery')]"
 			]
 		},
 		{
