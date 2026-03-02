@@ -8,7 +8,7 @@
 					"name": "parquet_schoolsupdate_source",
 					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  parquet_schoolsupdate_source",
 					"dataset": {
-						"referenceName": "parquet_schoolsupdate_source",
+						"referenceName": "p_schoolsupdate_s",
 						"type": "DatasetReference"
 					}
 				}
