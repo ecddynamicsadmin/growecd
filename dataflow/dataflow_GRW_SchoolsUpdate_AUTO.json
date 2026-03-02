@@ -6,14 +6,22 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "parquet_schoolsupdate",
+						"referenceName": "parquet_schoolsupdate_source",
 						"type": "DatasetReference"
 					},
 					"name": "schoolupdateparquet"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          id as long,",
@@ -67,7 +75,12 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     format: 'parquet') ~> schoolupdateparquet"
+				"     format: 'parquet') ~> schoolupdateparquet",
+				"schoolupdateparquet alterRow() ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}

@@ -611,7 +611,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "parquet_schoolsupdate",
+						"referenceName": "parquet_schoolsupdate_source",
 						"type": "DatasetReference"
 					}
 				]
@@ -623,7 +623,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Power Query1",
+						"activity": "SchoolUpdateQuery",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -650,7 +650,7 @@
 				}
 			},
 			{
-				"name": "Power Query1",
+				"name": "SchoolUpdateQuery",
 				"type": "ExecuteWranglingDataflow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -679,7 +679,21 @@
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"queries": []
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQueryparquetschoolsupdatedestination",
+									"dataset": {
+										"referenceName": "parquet_schoolsupdate_destination",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tschool_id as string,\n\t\tfranchisee_id as long,\n\t\tregion_id as long,\n\t\tcity_id as long,\n\t\tprovince_id as long,\n\t\tgrow_id as string,\n\t\tname as string,\n\t\tlearner_capacity as string,\n\t\tnumber_of_classrooms as string,\n\t\tlogo as string,\n\t\taddress as string,\n\t\tschool_commencement_date as timestamp,\n\t\tbreak_even_fee as integer,\n\t\tcapacity as integer,\n\t\tform_11 as string,\n\t\thr_email as string,\n\t\thr_staff_code as string,\n\t\tecd_start_date as timestamp,\n\t\tecd_code as string,\n\t\tcontract as string,\n\t\tcontract_start_date as timestamp,\n\t\tcontract_end_date as timestamp,\n\t\tbusiness_mentor_id as decimal(38,0),\n\t\teducation_mentor_id as decimal(38,0),\n\t\tbusiness_mentor_name as string,\n\t\tbusiness_mentor_phone_number as string,\n\t\tbusiness_mentor_email as string,\n\t\teducation_mentor_name as string,\n\t\teducation_mentor_phone_number as string,\n\t\teducation_mentor_email as string,\n\t\thourly_late_or_early_fee as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tschool_status as string,\n\t\tinventory_group_id as decimal(38,0),\n\t\tmonthly_salaries as decimal(38,18),\n\t\tis_learner_payment as boolean,\n\t\tis_learner_attendance as boolean,\n\t\tis_learner_assessment as boolean,\n\t\tis_caregiver_access as boolean,\n\t\tsegment as string,\n\t\tagreement_type as string,\n\t\tprogram_status as string,\n\t\towner_id as long\n\t),\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQueryparquetschoolsupdatedestination"
+								}
+							]
+						}
+					]
 				}
 			}
 		],
