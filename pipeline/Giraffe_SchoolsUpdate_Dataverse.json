@@ -639,7 +639,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "powerquery1",
+						"referenceName": "powerquery2",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -651,12 +651,12 @@
 							"queryName": "UserQuery",
 							"dataflowSinks": [
 								{
-									"name": "UserQueryparquetschoolsupdatedestination",
+									"name": "UserQuerypschoolsupdated",
 									"dataset": {
 										"referenceName": "p_schoolsupdate_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQueryparquetschoolsupdatedestination"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoolsupdated"
 								}
 							]
 						}
