@@ -13,16 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "`vw_schools_rpt_final_null_op`"
-					},
-					{
-						"name": "Destination",
-						"value": "giraffe/parque/p_schoolsupdate_s.parquet"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "MySqlSource"
@@ -614,7 +605,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "maria_GRW_SchoolsUpdate_AUTO",
+						"referenceName": "maria_SchoolsUpdate",
 						"type": "DatasetReference"
 					}
 				],
