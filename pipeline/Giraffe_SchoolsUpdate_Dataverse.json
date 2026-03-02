@@ -13,7 +13,16 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [],
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "`vw_schools_rpt_final_null_op`"
+					},
+					{
+						"name": "Destination",
+						"value": "giraffe/parque/p_schoolsupdate_s.parquet"
+					}
+				],
 				"typeProperties": {
 					"source": {
 						"type": "MySqlSource"
