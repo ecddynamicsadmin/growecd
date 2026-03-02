@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "SchoolsUpdate_M",
+				"name": "Schools Update from Maria",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -617,11 +617,11 @@
 				]
 			},
 			{
-				"name": "SchoolsUpdate_Q",
+				"name": "Schools Update query Transformation",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
-						"activity": "SchoolsUpdate_M",
+						"activity": "Schools Update from Maria",
 						"dependencyConditions": [
 							"Completed"
 						]
