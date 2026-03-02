@@ -1,0 +1,20 @@
+{
+	"name": "powerquery1",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "parquet_schoolsupdate_source",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  parquet_schoolsupdate_source",
+					"dataset": {
+						"referenceName": "parquet_schoolsupdate_source",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared parquet_schoolsupdate_source = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/schoolsupdatesource.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"parquet_schoolsupdate_source\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
