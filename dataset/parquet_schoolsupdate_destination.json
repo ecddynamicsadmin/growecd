@@ -17,7 +17,7 @@
 				"folderPath": "parque",
 				"fileSystem": "giraffe"
 			},
-			"compressionCodec": "none"
+			"compressionCodec": "snappy"
 		},
 		"schema": [
 			{
