@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "parquet_schoolsupdate_source",
+						"referenceName": "parquet_schoolsupdate_destination",
 						"type": "DatasetReference"
 					},
 					"name": "schoolupdateparquet"
