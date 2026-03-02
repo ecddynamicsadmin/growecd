@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"Dataverse1_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
+		},
 		"mysql_crm_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mysql_crm'"
@@ -22,6 +26,10 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://growecdstorage.dfs.core.windows.net/"
+		},
+		"Dataverse1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
 		"mysql_crm_properties_typeProperties_server": {
 			"type": "string",
@@ -1392,7 +1400,7 @@
 						]
 					},
 					{
-						"name": "Schools Update query Transformation",
+						"name": "Schools Update Query",
 						"type": "ExecuteWranglingDataflow",
 						"dependsOn": [
 							{
@@ -1435,11 +1443,48 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_Address as string,\n\t\ttcbgrow_PaymentType as string,\n\t\ttcbgrow_BreakEven as integer,\n\t\ttcbgrow_Capacity as integer,\n\t\ttcbgrow_ImportCityId as long,\n\t\ttcbgrow_AppAccountCreationDate as timestamp,\n\t\t{tcbgrow_Country.tcbgrow_AppID} as integer,\n\t\ttcbgrow_ImportECDCode as string,\n\t\ttcbgrow_AppID as long,\n\t\ttcbgrow_SchoolImport as boolean,\n\t\ttcbgrow_SchoolImportDone as boolean,\n\t\ttcbgrow_MonthlySalaries as decimal(38,9),\n\t\ttcbgrow_Name as string,\n\t\ttcbgrow_NumberofClassrooms as string,\n\t\t{tcbgrow_ECDOwner.tcbgrow_AppId} as long,\n\t\ttcbgrow_ImportProvinceId as long,\n\t\ttcbgrow_CentreStartDate as timestamp,\n\t\ttcbgrow_GrowID as string,\n\t\ttcbgrow_SchoolStatus as string,\n\t\ttcbgrow_tcbgrow_importsegment as string,\n\t\ttcbgrow_ContractDate as timestamp,\n\t\ttcbgrow_ImportCountryId as integer,\n\t\ttcbgrow_ImportSchoolOwnerID as long,\n\t\ttcbgrow_CommencementDate as timestamp\n\t),\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoolsupdated"
+											"script": "sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_Address as string,\n\t\ttcbgrow_PaymentType as string,\n\t\ttcbgrow_BreakEven as integer,\n\t\ttcbgrow_Capacity as integer,\n\t\ttcbgrow_ImportCityId as long,\n\t\ttcbgrow_AppAccountCreationDate as timestamp,\n\t\t{tcbgrow_Country.tcbgrow_AppID} as integer,\n\t\ttcbgrow_ImportECDCode as string,\n\t\ttcbgrow_AppID as long,\n\t\ttcbgrow_SchoolImport as boolean,\n\t\ttcbgrow_SchoolImportDone as boolean,\n\t\ttcbgrow_MonthlySalaries as decimal(38,9),\n\t\ttcbgrow_Name as string,\n\t\ttcbgrow_NumberofClassrooms as string,\n\t\t{tcbgrow_ECDOwner.tcbgrow_AppId} as long,\n\t\ttcbgrow_ImportProvinceId as long,\n\t\ttcbgrow_CentreStartDate as timestamp,\n\t\ttcbgrow_GrowID as string,\n\t\ttcbgrow_SchoolStatus as string,\n\t\ttcbgrow_tcbgrow_importsegment as string,\n\t\ttcbgrow_ContractDate as timestamp,\n\t\ttcbgrow_ImportCountryId as integer,\n\t\ttcbgrow_ImportSchoolOwnerID as long,\n\t\ttcbgrow_CommencementDate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 										}
 									]
 								}
 							]
+						}
+					},
+					{
+						"name": "Dataverse Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Schools Update Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Schools Update",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
 						}
 					}
 				],
@@ -1452,7 +1497,28 @@
 				"[concat(variables('factoryId'), '/datasets/maria_SchoolsUpdate')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]",
 				"[concat(variables('factoryId'), '/dataflows/SchoolsUpdate')]",
+				"[concat(variables('factoryId'), '/dataflows/Schools Update')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_d')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchool')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_school"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
 			]
 		},
 		{
@@ -1732,7 +1798,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolsupdate_s.parquet",
+						"fileName": "p_schoolsupdate_d.parquet",
 						"folderPath": "parque",
 						"fileSystem": "giraffe"
 					},
@@ -2475,6 +2541,27 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Dataverse1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CommonDataServiceForApps",
+				"typeProperties": {
+					"deploymentType": "Online",
+					"serviceUri": "https://growecddev.crm4.dynamics.com/",
+					"authenticationType": "AADServicePrincipal",
+					"servicePrincipalId": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredential": {
+						"type": "SecureString",
+						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
+					},
+					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/mysql_crm')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -2549,6 +2636,142 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Giraffe Files')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Schools Update')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoolsupdate_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchool",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "select1"
+						},
+						{
+							"name": "alterRow1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_Address as string,",
+						"          tcbgrow_PaymentType as string,",
+						"          tcbgrow_BreakEven as integer,",
+						"          tcbgrow_Capacity as integer,",
+						"          tcbgrow_ImportCityId as long,",
+						"          tcbgrow_AppAccountCreationDate as timestamp,",
+						"          {tcbgrow_Country.tcbgrow_AppID} as integer,",
+						"          tcbgrow_ImportECDCode as string,",
+						"          tcbgrow_AppID as long,",
+						"          tcbgrow_SchoolImport as boolean,",
+						"          tcbgrow_SchoolImportDone as boolean,",
+						"          tcbgrow_MonthlySalaries as decimal(38,9),",
+						"          tcbgrow_Name as string,",
+						"          tcbgrow_NumberofClassrooms as string,",
+						"          {tcbgrow_ECDOwner.tcbgrow_AppId} as long,",
+						"          tcbgrow_ImportProvinceId as long,",
+						"          tcbgrow_CentreStartDate as timestamp,",
+						"          tcbgrow_GrowID as string,",
+						"          tcbgrow_SchoolStatus as string,",
+						"          tcbgrow_tcbgrow_importsegment as string,",
+						"          tcbgrow_ContractDate as timestamp,",
+						"          tcbgrow_ImportCountryId as integer,",
+						"          tcbgrow_ImportSchoolOwnerID as long,",
+						"          tcbgrow_CommencementDate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"parquetsource select(mapColumn(",
+						"          tcbgrow_Address,",
+						"          tcbgrow_PaymentType,",
+						"          tcbgrow_BreakEven,",
+						"          tcbgrow_Capacity,",
+						"          tcbgrow_ImportCityId,",
+						"          tcbgrow_AppAccountCreationDate,",
+						"          {tcbgrow_Country.tcbgrow_AppID},",
+						"          tcbgrow_ImportECDCode,",
+						"          tcbgrow_import_key = tcbgrow_AppID,",
+						"          tcbgrow_SchoolImport,",
+						"          tcbgrow_SchoolImportDone,",
+						"          tcbgrow_MonthlySalaries,",
+						"          tcbgrow_Name,",
+						"          tcbgrow_NumberofClassrooms,",
+						"          {tcbgrow_ECDOwner.tcbgrow_AppId},",
+						"          tcbgrow_ImportProvinceId,",
+						"          tcbgrow_CentreStartDate,",
+						"          tcbgrow_GrowID,",
+						"          tcbgrow_SchoolStatus,",
+						"          tcbgrow_tcbgrow_importsegment,",
+						"          tcbgrow_ContractDate,",
+						"          tcbgrow_ImportCountryId,",
+						"          tcbgrow_ImportSchoolOwnerID,",
+						"          tcbgrow_CommencementDate",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 alterRow(upsertIf(!isNull(tcbgrow_import_key))) ~> alterRow1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_import_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          tcbgrow_Address,",
+						"          tcbgrow_PaymentType,",
+						"          tcbgrow_BreakEven,",
+						"          tcbgrow_Capacity,",
+						"          tcbgrow_ImportCityId,",
+						"          tcbgrow_AppAccountCreationDate,",
+						"          tcbgrow_AppID = {tcbgrow_Country.tcbgrow_AppID},",
+						"          tcbgrow_ImportECDCode,",
+						"          tcbgrow_import_key,",
+						"          tcbgrow_SchoolImport,",
+						"          tcbgrow_SchoolImportDone,",
+						"          tcbgrow_MonthlySalaries,",
+						"          tcbgrow_Name,",
+						"          tcbgrow_NumberofClassrooms,",
+						"          tcbgrow_AppId = {tcbgrow_ECDOwner.tcbgrow_AppId},",
+						"          tcbgrow_ImportProvinceId,",
+						"          tcbgrow_CentreStartDate,",
+						"          tcbgrow_GrowID,",
+						"          tcbgrow_SchoolStatus,",
+						"          tcbgrow_tcbgrow_importsegment,",
+						"          tcbgrow_ContractDate,",
+						"          tcbgrow_ImportCountryId,",
+						"          tcbgrow_ImportSchoolOwnerID,",
+						"          tcbgrow_CommencementDate",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_d')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]"
 			]
 		},
 		{

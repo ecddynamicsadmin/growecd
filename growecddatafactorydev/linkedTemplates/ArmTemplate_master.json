@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"Dataverse1_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
+		},
 		"mysql_crm_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mysql_crm'"
@@ -22,6 +26,10 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://growecdstorage.dfs.core.windows.net/"
+		},
+		"Dataverse1_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
 		"mysql_crm_properties_typeProperties_server": {
 			"type": "string",
@@ -77,6 +85,9 @@
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
+					"Dataverse1_servicePrincipalCredential": {
+						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
+					},
 					"mysql_crm_password": {
 						"value": "[parameters('mysql_crm_password')]"
 					},
@@ -85,6 +96,9 @@
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"Dataverse1_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]"
 					},
 					"mysql_crm_properties_typeProperties_server": {
 						"value": "[parameters('mysql_crm_properties_typeProperties_server')]"
