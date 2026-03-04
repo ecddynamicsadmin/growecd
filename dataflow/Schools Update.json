@@ -61,7 +61,9 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"select1 derive(tcbgrow_CentreStartDate = tcbgrow_CommencementDate) ~> derivedColumn1",
+				"select1 derive(tcbgrow_appaccountcreationdate = tcbgrow_contractdate,",
+				"          {column1tcbgrow_country.tcbgrow_appid} = tcbgrow_importcountryid,",
+				"          tcbgrow_centrestartdate = tcbgrow_commencementdate) ~> derivedColumn1",
 				"parquetsource select(mapColumn(",
 				"          tcbgrow_address = address,",
 				"          tcbgrow_paymenttype = agreement_type,",
@@ -112,14 +114,14 @@
 				"          tcbgrow_NumberofClassrooms,",
 				"          tcbgrow_AppId = {tcbgrow_ECDOwner.tcbgrow_AppId},",
 				"          tcbgrow_ImportProvinceId,",
-				"          tcbgrow_CentreStartDate,",
+				"          tcbgrow_CentreStartDate = tcbgrow_appaccountcreationdate,",
 				"          tcbgrow_GrowID,",
 				"          tcbgrow_SchoolStatus,",
 				"          tcbgrow_tcbgrow_importsegment,",
 				"          tcbgrow_ContractDate,",
 				"          tcbgrow_ImportCountryId,",
 				"          tcbgrow_ImportSchoolOwnerID,",
-				"          tcbgrow_CommencementDate = tcbgrow_CentreStartDate",
+				"          tcbgrow_CommencementDate = tcbgrow_appaccountcreationdate",
 				"     )) ~> sink1"
 			]
 		}
