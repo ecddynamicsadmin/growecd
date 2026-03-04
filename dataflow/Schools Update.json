@@ -27,11 +27,7 @@
 				}
 			],
 			"scriptLines": [
-				"source(output(",
-				"          tcbgrow_tcbgrow_importsegment as string,",
-				"          tcbgrow_ContractDate as timestamp",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
