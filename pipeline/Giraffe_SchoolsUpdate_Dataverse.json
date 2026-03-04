@@ -5,6 +5,8 @@
 			{
 				"name": "Schools Update from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -619,6 +621,8 @@
 			{
 				"name": "Schools Update Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Update from Maria",
@@ -654,7 +658,7 @@
 										"referenceName": "p_schoolsupdate_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_Address as string,\n\t\ttcbgrow_PaymentType as string,\n\t\ttcbgrow_BreakEven as integer,\n\t\ttcbgrow_Capacity as integer,\n\t\ttcbgrow_ImportCityId as long,\n\t\ttcbgrow_AppAccountCreationDate as timestamp,\n\t\t{tcbgrow_Country.tcbgrow_AppID} as integer,\n\t\ttcbgrow_ImportECDCode as string,\n\t\ttcbgrow_AppID as long,\n\t\ttcbgrow_SchoolImport as boolean,\n\t\ttcbgrow_SchoolImportDone as boolean,\n\t\ttcbgrow_MonthlySalaries as decimal(38,9),\n\t\ttcbgrow_Name as string,\n\t\ttcbgrow_NumberofClassrooms as string,\n\t\t{tcbgrow_ECDOwner.tcbgrow_AppId} as long,\n\t\ttcbgrow_ImportProvinceId as long,\n\t\ttcbgrow_CentreStartDate as timestamp,\n\t\ttcbgrow_GrowID as string,\n\t\ttcbgrow_SchoolStatus as string,\n\t\ttcbgrow_tcbgrow_importsegment as string,\n\t\ttcbgrow_ContractDate as timestamp,\n\t\ttcbgrow_ImportCountryId as integer,\n\t\ttcbgrow_ImportSchoolOwnerID as long,\n\t\ttcbgrow_CommencementDate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+									"script": "sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_tcbgrow_importsegment as string,\n\t\ttcbgrow_ContractDate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 								}
 							]
 						}
