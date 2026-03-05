@@ -109,12 +109,12 @@
 				"          tcbgrow_address,",
 				"          tcbgrow_numberofclassrooms,",
 				"          tcbgrow_name,",
-				"          {cog_city@odata.bind},",
 				"          tcbgrow_growid,",
 				"          tcbgrow_appid,",
 				"          tcbgrow_capacity,",
 				"          tcbgrow_appaccountcreationdate,",
-				"          tcbgrow_centrestartdate",
+				"          tcbgrow_centrestartdate,",
+				"          {cog_city@odata.bind} = cog_city",
 				"     )) ~> sink1"
 			]
 		}
