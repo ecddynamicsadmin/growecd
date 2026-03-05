@@ -90,7 +90,7 @@
 				"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
 				"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
 				"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
-				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'ATLEHANG PRESCHOOL')) ~> filter1",
+				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
