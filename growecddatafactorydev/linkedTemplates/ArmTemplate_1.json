@@ -1166,8 +1166,12 @@
 						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
 						"    toInteger(null())  \r",
 						"),",
-						"          cog_cityBIND = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\")) ~> derivedColumn1",
-						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
+						"          {cog_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\"),",
+						"          {tcbgrow_Country@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\"),",
+						"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
+						"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
+						"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
+						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'ATLEHANG PRESCHOOL')) ~> filter1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1195,7 +1199,11 @@
 						"          tcbgrow_capacity,",
 						"          tcbgrow_appaccountcreationdate,",
 						"          tcbgrow_centrestartdate,",
-						"          {cog_city@odata.bind} = cog_cityBIND",
+						"          {cog_City@odata.bind},",
+						"          {tcbgrow_Country@odata.bind},",
+						"          {tcbgrow_ECDOwner@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          {tcbgrow_SchoolSegment@odata.bind}",
 						"     )) ~> sink1"
 					]
 				}
@@ -1234,6 +1242,8 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1850,6 +1860,8 @@
 					{
 						"name": "Schools Update Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update from Maria",
