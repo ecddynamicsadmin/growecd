@@ -79,11 +79,11 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "tcbgrow_city",
+				"name": "cog_city",
 				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_region",
+				"name": "cog_region",
 				"type": "INT64"
 			},
 			{
