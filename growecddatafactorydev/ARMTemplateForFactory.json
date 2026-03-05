@@ -778,7 +778,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Giraffe_SchoolsUpdate_Dataverse')]",
+			"name": "[concat(parameters('factoryName'), '/Schools Update')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -786,6 +786,8 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1402,6 +1404,8 @@
 					{
 						"name": "Schools Update Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update from Maria",
@@ -1443,7 +1447,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: false,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_Address as string,\n\t\ttcbgrow_PaymentType as string,\n\t\ttcbgrow_BreakEven as integer,\n\t\ttcbgrow_Capacity as integer,\n\t\ttcbgrow_ImportCityId as long,\n\t\ttcbgrow_AppAccountCreationDate as timestamp,\n\t\t{tcbgrow_Country.tcbgrow_AppID} as integer,\n\t\ttcbgrow_ImportECDCode as string,\n\t\ttcbgrow_AppID as long,\n\t\ttcbgrow_SchoolImport as boolean,\n\t\ttcbgrow_SchoolImportDone as boolean,\n\t\ttcbgrow_MonthlySalaries as decimal(38,9),\n\t\ttcbgrow_Name as string,\n\t\ttcbgrow_NumberofClassrooms as string,\n\t\t{tcbgrow_ECDOwner.tcbgrow_AppId} as long,\n\t\ttcbgrow_ImportProvinceId as long,\n\t\ttcbgrow_CentreStartDate as timestamp,\n\t\ttcbgrow_GrowID as string,\n\t\ttcbgrow_SchoolStatus as string,\n\t\ttcbgrow_tcbgrow_importsegment as string,\n\t\ttcbgrow_ContractDate as timestamp,\n\t\ttcbgrow_ImportCountryId as integer,\n\t\ttcbgrow_ImportSchoolOwnerID as long,\n\t\ttcbgrow_CommencementDate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tschool_id as string,\n\t\tfranchisee_id as long,\n\t\tregion_id as long,\n\t\tcity_id as long,\n\t\tprovince_id as long,\n\t\tgrow_id as string,\n\t\tname as string,\n\t\tlearner_capacity as string,\n\t\tnumber_of_classrooms as string,\n\t\tlogo as string,\n\t\taddress as string,\n\t\tschool_commencement_date as timestamp,\n\t\tbreak_even_fee as integer,\n\t\tcapacity as integer,\n\t\tform_11 as string,\n\t\thr_email as string,\n\t\thr_staff_code as string,\n\t\tecd_start_date as timestamp,\n\t\tecd_code as string,\n\t\tcontract as string,\n\t\tcontract_start_date as timestamp,\n\t\tcontract_end_date as timestamp,\n\t\tbusiness_mentor_id as decimal(38,9),\n\t\teducation_mentor_id as decimal(38,9),\n\t\tbusiness_mentor_name as string,\n\t\tbusiness_mentor_phone_number as string,\n\t\tbusiness_mentor_email as string,\n\t\teducation_mentor_name as string,\n\t\teducation_mentor_phone_number as string,\n\t\teducation_mentor_email as string,\n\t\thourly_late_or_early_fee as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tschool_status as string,\n\t\tinventory_group_id as decimal(38,9),\n\t\tmonthly_salaries as decimal(38,9),\n\t\tis_learner_payment as boolean,\n\t\tis_learner_attendance as boolean,\n\t\tis_learner_assessment as boolean,\n\t\tis_caregiver_access as boolean,\n\t\tsegment as string,\n\t\tagreement_type as string,\n\t\tprogram_status as string,\n\t\towner_id as long,\n\t\tImportschool as boolean,\n\t\tImportschooldone as boolean,\n\t\tcountryid as integer,\n\t\ttriggerupdate as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 										}
 									]
 								}
@@ -1453,8 +1457,6 @@
 					{
 						"name": "Dataverse Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update Query",
@@ -1808,102 +1810,216 @@
 				},
 				"schema": [
 					{
-						"name": "tcbgrow_Address",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_PaymentType",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_BreakEven",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_Capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_ImportCityId",
+						"name": "id",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_AppAccountCreationDate",
+						"name": "school_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "franchisee_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "grow_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "learner_capacity",
+						"type": "UTF8"
+					},
+					{
+						"name": "number_of_classrooms",
+						"type": "UTF8"
+					},
+					{
+						"name": "logo",
+						"type": "UTF8"
+					},
+					{
+						"name": "address",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_commencement_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_Country.tcbgrow_AppID",
+						"name": "break_even_fee",
 						"type": "INT32"
 					},
 					{
-						"name": "tcbgrow_ImportECDCode",
+						"name": "capacity",
+						"type": "INT32"
+					},
+					{
+						"name": "form_11",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_AppID",
-						"type": "INT64"
+						"name": "hr_email",
+						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_SchoolImport",
-						"type": "BOOLEAN"
+						"name": "hr_staff_code",
+						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_SchoolImportDone",
-						"type": "BOOLEAN"
+						"name": "ecd_start_date",
+						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_MonthlySalaries",
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "contract_end_date",
+						"type": "INT96"
+					},
+					{
+						"name": "business_mentor_id",
 						"type": "DECIMAL",
 						"precision": 38,
 						"scale": 9
 					},
 					{
-						"name": "tcbgrow_Name",
+						"name": "education_mentor_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "business_mentor_name",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_NumberofClassrooms",
+						"name": "business_mentor_phone_number",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_ECDOwner.tcbgrow_AppId",
+						"name": "business_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_phone_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "hourly_late_or_early_fee",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_ImportProvinceId",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_CentreStartDate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_GrowID",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_SchoolStatus",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_tcbgrow_importsegment",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_ContractDate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_ImportCountryId",
+						"name": "created_by",
 						"type": "INT32"
 					},
 					{
-						"name": "tcbgrow_ImportSchoolOwnerID",
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "school_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "inventory_group_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "monthly_salaries",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "is_learner_payment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_attendance",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_assessment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_caregiver_access",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "segment",
+						"type": "UTF8"
+					},
+					{
+						"name": "agreement_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "program_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "owner_id",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_CommencementDate",
-						"type": "INT96"
+						"name": "Importschool",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "Importschooldone",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "countryid",
+						"type": "INT32"
+					},
+					{
+						"name": "triggerupdate",
+						"type": "UTF8"
 					}
 				]
 			},
@@ -2668,41 +2784,95 @@
 					"transformations": [
 						{
 							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
 						}
 					],
 					"scriptLines": [
 						"source(output(",
-						"          tcbgrow_Address as string,",
-						"          tcbgrow_PaymentType as string,",
-						"          tcbgrow_BreakEven as integer,",
-						"          tcbgrow_Capacity as integer,",
-						"          tcbgrow_ImportCityId as long,",
-						"          tcbgrow_AppAccountCreationDate as timestamp,",
-						"          {tcbgrow_Country.tcbgrow_AppID} as integer,",
-						"          tcbgrow_ImportECDCode as string,",
-						"          tcbgrow_AppID as long,",
-						"          tcbgrow_SchoolImport as boolean,",
-						"          tcbgrow_SchoolImportDone as boolean,",
-						"          tcbgrow_MonthlySalaries as decimal(38,9),",
-						"          tcbgrow_Name as string,",
-						"          tcbgrow_NumberofClassrooms as string,",
-						"          {tcbgrow_ECDOwner.tcbgrow_AppId} as long,",
-						"          tcbgrow_ImportProvinceId as long,",
-						"          tcbgrow_CentreStartDate as timestamp,",
-						"          tcbgrow_GrowID as string,",
-						"          tcbgrow_SchoolStatus as string,",
-						"          tcbgrow_tcbgrow_importsegment as string,",
-						"          tcbgrow_ContractDate as timestamp,",
-						"          tcbgrow_ImportCountryId as integer,",
-						"          tcbgrow_ImportSchoolOwnerID as long,",
-						"          tcbgrow_CommencementDate as timestamp",
+						"          address as string,",
+						"          agreement_type as string,",
+						"          break_even_fee as integer,",
+						"          capacity as integer,",
+						"          city_id as long,",
+						"          contract_start_date as timestamp,",
+						"          countryid as integer,",
+						"          ecd_code as string,",
+						"          id as long,",
+						"          Importschool as boolean,",
+						"          Importschooldone as boolean,",
+						"          monthly_salaries as decimal(38,9),",
+						"          name as string,",
+						"          number_of_classrooms as string,",
+						"          owner_id as long,",
+						"          region_id as long,",
+						"          school_commencement_date as timestamp,",
+						"          school_id as string,",
+						"          school_status as string,",
+						"          segment as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     inferDriftedColumnTypes: true,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
-						"parquetsource alterRow(upsertIf(true())) ~> alterRow1",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"select1 derive(tcbgrow_appaccountcreationdate = tcbgrow_contractdate,",
+						"          {column1tcbgrow_country.tcbgrow_appid} = tcbgrow_importcountryid,",
+						"          tcbgrow_centrestartdate = tcbgrow_commencementdate,",
+						"          tcbgrow_paymenttype = case(  \r",
+						"    trim(agreement_type) == 'Loan Only', 301220005,  \r",
+						"    trim(agreement_type) == 'Cash Only', 301220000,  \r",
+						"    trim(agreement_type) == 'Grant Only', 301220011,  \r",
+						"    trim(agreement_type) == 'Partner Funded', 301220006,  \r",
+						"    trim(agreement_type) == 'Loan/Cash', 301220002,  \r",
+						"    trim(agreement_type) == 'Grant/Cash', 301220001,  \r",
+						"    trim(agreement_type) == 'Grant/Loan', 301220004,  \r",
+						"    trim(agreement_type) == 'Loan/Grant/Cash', 301220003,  \r",
+						"    trim(agreement_type) == 'Grant/Partner Funded', 301220007,  \r",
+						"    trim(agreement_type) == 'Loan/Grant/Partner Funded', 301220008,  \r",
+						"    trim(agreement_type) == 'Cash/Grant/Partner Funded', 301220009,  \r",
+						"    trim(agreement_type) == 'Cash/Loan/Grant/Partner Funded', 301220010,  \r",
+						"    trim(agreement_type) == 'Loan/Partner Funded', 301220012,  \r",
+						"    trim(agreement_type) == 'Cash/Partner Funded', 523930001,  \r",
+						"    trim(agreement_type) == 'None', 301220013,  \r",
+						"    trim(agreement_type) == 'Former Partner Centre', 301220014,  \r",
+						"    toInteger(null())  \r",
+						"),",
+						"          tcbgrow_customersegment = case(  \r",
+						"    trim(segment) == 'Platform', 1,  \r",
+						"    trim(segment) == 'Programme', 2,  \r",
+						"    trim(segment) == 'Non-Programme', 5,  \r",
+						"    toInteger(null())  \r",
+						")) ~> derivedColumn1",
+						"parquetsource select(mapColumn(",
+						"          tcbgrow_address = address,",
+						"          agreement_type,",
+						"          tcbgrow_breakeven = break_even_fee,",
+						"          tcbgrow_capacity = capacity,",
+						"          tcbgrow_importcityid = city_id,",
+						"          tcbgrow_contractdate = contract_start_date,",
+						"          tcbgrow_importcountryid = countryid,",
+						"          tcbgrow_importecdcode = ecd_code,",
+						"          tcbgrow_appid = id,",
+						"          tcbgrow_schoolimport = Importschool,",
+						"          tcbgrow_schoolimportdone = Importschooldone,",
+						"          tcbgrow_monthlysalaries = monthly_salaries,",
+						"          tcbgrow_name = name,",
+						"          tcbgrow_numberofclassrooms = number_of_classrooms,",
+						"          {tcbgrow_ecdowner.tcbgrow_appid} = owner_id,",
+						"          tcbgrow_importprovinceid = region_id,",
+						"          tcbgrow_commencementdate = school_commencement_date,",
+						"          tcbgrow_growid = school_id,",
+						"          tcbgrow_schoolstatus = school_status,",
+						"          segment",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -2713,30 +2883,30 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     mapColumn(",
-						"          tcbgrow_Address,",
-						"          tcbgrow_PaymentType,",
-						"          tcbgrow_BreakEven,",
-						"          tcbgrow_Capacity,",
-						"          tcbgrow_ImportCityId,",
-						"          tcbgrow_AppAccountCreationDate,",
-						"          tcbgrow_AppID = {tcbgrow_Country.tcbgrow_AppID},",
-						"          tcbgrow_ImportECDCode,",
-						"          tcbgrow_appid = tcbgrow_AppID,",
-						"          tcbgrow_SchoolImport,",
-						"          tcbgrow_SchoolImportDone,",
-						"          tcbgrow_MonthlySalaries,",
-						"          tcbgrow_Name,",
-						"          tcbgrow_NumberofClassrooms,",
-						"          tcbgrow_AppId = {tcbgrow_ECDOwner.tcbgrow_AppId},",
-						"          tcbgrow_ImportProvinceId,",
-						"          tcbgrow_CentreStartDate,",
-						"          tcbgrow_GrowID,",
-						"          tcbgrow_SchoolStatus,",
-						"          tcbgrow_tcbgrow_importsegment,",
-						"          tcbgrow_ContractDate,",
-						"          tcbgrow_ImportCountryId,",
-						"          tcbgrow_ImportSchoolOwnerID,",
-						"          tcbgrow_CommencementDate",
+						"          tcbgrow_address,",
+						"          tcbgrow_paymenttype,",
+						"          tcbgrow_breakeven,",
+						"          tcbgrow_capacity,",
+						"          tcbgrow_importcityid,",
+						"          tcbgrow_contractdate,",
+						"          tcbgrow_importcountryid,",
+						"          tcbgrow_importecdcode,",
+						"          tcbgrow_appid,",
+						"          tcbgrow_schoolimport,",
+						"          tcbgrow_schoolimportdone,",
+						"          tcbgrow_monthlysalaries,",
+						"          tcbgrow_name,",
+						"          tcbgrow_numberofclassrooms,",
+						"          tcbgrow_appid = {tcbgrow_ecdowner.tcbgrow_appid},",
+						"          tcbgrow_importprovinceid,",
+						"          tcbgrow_commencementdate,",
+						"          tcbgrow_growid,",
+						"          tcbgrow_schoolstatus,",
+						"          tcbgrow_tcbgrow_importsegment = segment,",
+						"          tcbgrow_appaccountcreationdate,",
+						"          tcbgrow_appid = {column1tcbgrow_country.tcbgrow_appid},",
+						"          tcbgrow_centrestartdate,",
+						"          tcbgrow_customersegment",
 						"     )) ~> sink1"
 					]
 				}
@@ -2763,7 +2933,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\n    Replace_Status_Active = Table.ReplaceValue(Source, \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_ECDStartDate = Table.ReplaceValue(Replace_BreakEvenFee, null, \"\", Replacer.ReplaceValue, {\"ecd_start_date\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_ECDStartDate, null, \"0\", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Null = Table.ReplaceValue(Replace_NumClassrooms, null, \"\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_AgreementType_Null, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Replace_LearnerCapacity = Table.ReplaceValue(Replace_AgreementType_Empty, null, \"0\", Replacer.ReplaceValue, {\"learner_capacity\"}),\n    Add_Importschool = Table.AddColumn(Replace_LearnerCapacity, \"Importschool\", each true, type logical),\n    Add_ImportschoolDone = Table.AddColumn(Add_Importschool, \"Importschooldone\", each false, type logical),\n    Add_CountryId = Table.AddColumn(Add_ImportschoolDone, \"countryid\", each 710),\n    Add_TriggerUpdate = Table.AddColumn(Add_CountryId, \"triggerupdate\", each \"update\", type text),\n    Select_Columns = Table.SelectColumns(Add_TriggerUpdate, {\"address\",\"agreement_type\",\"break_even_fee\",\"capacity\",\"city_id\",\"contract_start_date\",\"countryid\",\"ecd_code\",\"id\",\"Importschool\",\"Importschooldone\",\"monthly_salaries\",\"name\",\"number_of_classrooms\",\"owner_id\",\"region_id\",\"school_commencement_date\",\"school_id\",\"school_status\",\"segment\"}),\n    Rename_1 = Table.RenameColumns(Select_Columns, {{\"address\", \"tcbgrow_address\"},{\"agreement_type\", \"tcbgrow_paymenttype\"},{\"break_even_fee\", \"tcbgrow_breakeven\"},{\"capacity\", \"tcbgrow_capacity\"},{\"city_id\", \"tcbgrow_importcityid\"},{\"contract_start_date\", \"tcbgrow_appaccountcreationdate\"}}),\n    Dup_ContractDate = Table.DuplicateColumn(Rename_1, \"tcbgrow_appaccountcreationdate\", \"tcbgrow_ContractDate\"),\n    Rename_2 = Table.RenameColumns(Dup_ContractDate, {{\"countryid\", \"tcbgrow_country.tcbgrow_appid\"}}),\n    Dup_CountryId = Table.DuplicateColumn(Rename_2, \"tcbgrow_country.tcbgrow_appid\", \"tcbgrow_importiountryid\"),\n    Rename_3 = Table.RenameColumns(Dup_CountryId, {{\"ecd_code\", \"tcbgrow_importecdcode\"},{\"id\",\"tcbgrow_appid\"},{\"Importschool\",\"tcbgrow_schoolimport\"},{\"Importschooldone\",\"tcbgrow_schoolimportdone\"},{\"monthly_salaries\",\"tcbgrow_monthlysalaries\"},{\"name\",\"tcbgrow_name\"},{\"number_of_classrooms\",\"tcbgrow_numberofclassrooms\"},{\"owner_id\",\"tcbgrow_ecdowner.tcbgrow_appid\"}}),\n    Dup_SchoolOwnerId = Table.DuplicateColumn(Rename_3, \"tcbgrow_ecdowner.tcbgrow_appid\", \"tcbgrow_importschoolownerid\"),\n    Rename_4 = Table.RenameColumns(Dup_SchoolOwnerId, {{\"region_id\",\"tcbgrow_importprovinceid\"},{\"school_commencement_date\",\"tcbgrow_centrestartdate\"}}),\n    Dup_Commencement = Table.DuplicateColumn(Rename_4, \"tcbgrow_centrestartdate\", \"tcbgrow_commencementdate\"),\n    Rename_Final = Table.RenameColumns(Dup_Commencement, {{\"school_id\",\"tcbgrow_growid\"},{\"school_status\",\"tcbgrow_schoolstatus\"},{\"segment\",\"tcbgrow_tcbgrow_importsegment\"}})\nin\n    Rename_Final;\r\n",
+					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"tcbgrow_city\"}, {\"region_id\", \"tcbgrow_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"cbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"grow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\")\nin\n    #\"Duplicated column 1\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},

@@ -449,102 +449,216 @@
 				},
 				"schema": [
 					{
-						"name": "tcbgrow_Address",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_PaymentType",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_BreakEven",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_Capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_ImportCityId",
+						"name": "id",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_AppAccountCreationDate",
+						"name": "school_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "franchisee_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "grow_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "learner_capacity",
+						"type": "UTF8"
+					},
+					{
+						"name": "number_of_classrooms",
+						"type": "UTF8"
+					},
+					{
+						"name": "logo",
+						"type": "UTF8"
+					},
+					{
+						"name": "address",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_commencement_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_Country.tcbgrow_AppID",
+						"name": "break_even_fee",
 						"type": "INT32"
 					},
 					{
-						"name": "tcbgrow_ImportECDCode",
+						"name": "capacity",
+						"type": "INT32"
+					},
+					{
+						"name": "form_11",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_AppID",
-						"type": "INT64"
+						"name": "hr_email",
+						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_SchoolImport",
-						"type": "BOOLEAN"
+						"name": "hr_staff_code",
+						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_SchoolImportDone",
-						"type": "BOOLEAN"
+						"name": "ecd_start_date",
+						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_MonthlySalaries",
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "contract_end_date",
+						"type": "INT96"
+					},
+					{
+						"name": "business_mentor_id",
 						"type": "DECIMAL",
 						"precision": 38,
 						"scale": 9
 					},
 					{
-						"name": "tcbgrow_Name",
+						"name": "education_mentor_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "business_mentor_name",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_NumberofClassrooms",
+						"name": "business_mentor_phone_number",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_ECDOwner.tcbgrow_AppId",
+						"name": "business_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_phone_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "hourly_late_or_early_fee",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_ImportProvinceId",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_CentreStartDate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_GrowID",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_SchoolStatus",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_tcbgrow_importsegment",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_ContractDate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_ImportCountryId",
+						"name": "created_by",
 						"type": "INT32"
 					},
 					{
-						"name": "tcbgrow_ImportSchoolOwnerID",
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "school_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "inventory_group_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "monthly_salaries",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "is_learner_payment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_attendance",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_assessment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_caregiver_access",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "segment",
+						"type": "UTF8"
+					},
+					{
+						"name": "agreement_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "program_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "owner_id",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_CommencementDate",
-						"type": "INT96"
+						"name": "Importschool",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "Importschooldone",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "countryid",
+						"type": "INT32"
+					},
+					{
+						"name": "triggerupdate",
+						"type": "UTF8"
 					}
 				]
 			},
