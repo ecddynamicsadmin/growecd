@@ -97,6 +97,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
+				"     assertFailure_folderPath: 'errors',",
 				"     mapColumn(",
 				"          tcbgrow_breakeven,",
 				"          tcbgrow_ecdowner,",
