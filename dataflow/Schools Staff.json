@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DataverseSchool",
+						"referenceName": "DataverseSchoolStaff",
 						"type": "DatasetReference"
 					},
 					"name": "sink1",
