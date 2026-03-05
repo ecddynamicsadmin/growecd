@@ -18,7 +18,11 @@
 						"referenceName": "DataverseSchool",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
@@ -91,6 +95,8 @@
 				"     alternateKeyName: 'tcbgrow_import_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'giraffe',",
 				"     mapColumn(",
 				"          tcbgrow_breakeven,",
 				"          tcbgrow_ecdowner,",
