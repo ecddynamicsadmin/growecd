@@ -89,7 +89,7 @@
 				"          {tcbgrow_Country@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\"),",
 				"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
 				"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regions(tcbgrow_appid=\", toString(cog_region), \")\"),",
-				"          {tcbgrow_SchoolSegement@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
+				"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
 				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -122,7 +122,7 @@
 				"          {tcbgrow_Country@odata.bind},",
 				"          {tcbgrow_ECDOwner@odata.bind},",
 				"          {cog_Region@odata.bind},",
-				"          {tcbgrow_SchoolSegement@odata.bind}",
+				"          {tcbgrow_SchoolSegement@odata.bind} = {tcbgrow_SchoolSegment@odata.bind}",
 				"     )) ~> sink1"
 			]
 		}
