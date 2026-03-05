@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -59,7 +62,7 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
-				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"filter1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
 				"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
 				"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
@@ -84,6 +87,7 @@
 				"          {tcbgrow_ecdowner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid='\", toString(tcbgrow_ecdowner), \"')\"),",
 				"          {tcbgrow_region@odata.bind} = concat(\"/tcbgrow_regions(tcbgrow_appid='\", toString(tcbgrow_region), \"')\"),",
 				"          {tcbgrow_customersegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid='\", toString(tcbgrow_schoolsegment), \"')\")) ~> derivedColumn1",
+				"derivedColumn1 filter(tcbgrow_name=='GROW Educare Centre') ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
