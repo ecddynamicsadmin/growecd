@@ -668,8 +668,6 @@
 			{
 				"name": "Dataverse Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Update Query",
