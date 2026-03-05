@@ -109,7 +109,6 @@
 				"          tcbgrow_growid,",
 				"          tcbgrow_appid,",
 				"          tcbgrow_capacity,",
-				"          tcbgrow_country,",
 				"          tcbgrow_appaccountcreationdate,",
 				"          tcbgrow_centrestartdate",
 				"     )) ~> sink1"
