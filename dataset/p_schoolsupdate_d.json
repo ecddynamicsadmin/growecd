@@ -25,7 +25,7 @@
 				"type": "INT32"
 			},
 			{
-				"name": "cbgrow_ecdowner",
+				"name": "tcbgrow_ecdowner",
 				"type": "INT64"
 			},
 			{
@@ -33,7 +33,7 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "grow_schoolsegment",
+				"name": "tcbgrow_schoolsegment",
 				"type": "UTF8"
 			},
 			{
