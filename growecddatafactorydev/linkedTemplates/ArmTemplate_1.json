@@ -1171,7 +1171,7 @@
 						"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
 						"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
 						"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
-						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'ATLEHANG PRESCHOOL')) ~> filter1",
+						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1202,8 +1202,8 @@
 						"          {cog_City@odata.bind},",
 						"          {tcbgrow_Country@odata.bind},",
 						"          {tcbgrow_ECDOwner@odata.bind},",
-						"          {cog_Region@odata.bind},",
-						"          {tcbgrow_SchoolSegment@odata.bind}",
+						"          {tcbgrow_SchoolSegment@odata.bind},",
+						"          {cog_Region@odata.bind}",
 						"     )) ~> sink1"
 					]
 				}
@@ -1227,7 +1227,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\")\nin\n    #\"Duplicated column 1\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", Int64.Type}})\nin\n    #\"Changed column type\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -1242,8 +1242,6 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1860,8 +1858,6 @@
 					{
 						"name": "Schools Update Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update from Maria",
