@@ -85,7 +85,7 @@
 				"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
 				"    toInteger(null())  \r",
 				"),",
-				"          cog_cityBIND = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(toInteger(cog_city)),\")\")) ~> derivedColumn1",
+				"          cog_cityBIND = ERROR_FUNCTION('concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city)),\")\")')) ~> derivedColumn1",
 				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
