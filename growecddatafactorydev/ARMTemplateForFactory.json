@@ -2723,7 +2723,7 @@
 						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
 						"    toInteger(null())  \r",
 						"),",
-						"          {cog_city@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(toInteger(cog_city)),\")\")) ~> derivedColumn1",
+						"          cog_cityBIND = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\")) ~> derivedColumn1",
 						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -2747,12 +2747,12 @@
 						"          tcbgrow_address,",
 						"          tcbgrow_numberofclassrooms,",
 						"          tcbgrow_name,",
-						"          cog_city = {cog_city@odata.bind},",
 						"          tcbgrow_growid,",
 						"          tcbgrow_appid,",
 						"          tcbgrow_capacity,",
 						"          tcbgrow_appaccountcreationdate,",
-						"          tcbgrow_centrestartdate",
+						"          tcbgrow_centrestartdate,",
+						"          {cog_city@odata.bind} = cog_cityBIND",
 						"     )) ~> sink1"
 					]
 				}
