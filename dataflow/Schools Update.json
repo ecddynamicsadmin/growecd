@@ -34,6 +34,9 @@
 				},
 				{
 					"name": "filter1"
+				},
+				{
+					"name": "cast1"
 				}
 			],
 			"scriptLines": [
@@ -67,7 +70,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"filter1 alterRow(upsertIf(true())) ~> alterRow1",
-				"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
+				"cast1 derive(tcbgrow_paymenttypechoice = case(  \r",
 				"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
 				"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
 				"    trim(tcbgrow_paymenttype) == 'Grant Only', 301220011,  \r",
@@ -91,6 +94,10 @@
 				"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
 				"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
 				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
+				"parquetsource cast(output(",
+				"          tcbgrow_monthlysalaries as integer '##0'",
+				"     ),",
+				"     errors: true) ~> cast1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
