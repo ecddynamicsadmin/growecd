@@ -1202,8 +1202,7 @@
 						"          {cog_City@odata.bind},",
 						"          {tcbgrow_Country@odata.bind},",
 						"          {tcbgrow_ECDOwner@odata.bind},",
-						"          {tcbgrow_SchoolSegment@odata.bind},",
-						"          {cog_Region@odata.bind}",
+						"          {tcbgrow_SchoolSegment@odata.bind}",
 						"     )) ~> sink1"
 					]
 				}
@@ -1242,6 +1241,8 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1858,6 +1859,8 @@
 					{
 						"name": "Schools Update Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update from Maria",
