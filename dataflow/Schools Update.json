@@ -121,7 +121,7 @@
 				"          {cog_City@odata.bind},",
 				"          {tcbgrow_Country@odata.bind},",
 				"          {tcbgrow_ECDOwner@odata.bind},",
-				"          {tcbgrow_Region@odata.bind} = {cog_Region@odata.bind},",
+				"          {cog_Region@odata.bind},",
 				"          {tcbgrow_SchoolSegement@odata.bind}",
 				"     )) ~> sink1"
 			]
