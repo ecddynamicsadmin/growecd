@@ -1,0 +1,115 @@
+{
+	"name": "p_schoolowners_d",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Parque"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "p_schoolsupdate_d.parquet",
+				"folderPath": "parque",
+				"fileSystem": "giraffe"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "tcbgrow_breakeven",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_ecdowner",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_paymenttype",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_schoolsegment",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_monthlysalaries",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 9
+			},
+			{
+				"name": "tcbgrow_schoolstatus",
+				"type": "UTF8"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			},
+			{
+				"name": "created_at",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_contractdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_ecdcode",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_commencementdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_address",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_numberofclassrooms",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_city",
+				"type": "INT64"
+			},
+			{
+				"name": "cog_region",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_growid",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_appid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_capacity",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_country",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_appaccountcreationdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_centrestartdate",
+				"type": "INT96"
+			}
+		]
+	}
+}
