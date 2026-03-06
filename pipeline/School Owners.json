@@ -285,6 +285,8 @@
 			{
 				"name": "Schools Owners Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Owners from Maria",
@@ -320,7 +322,7 @@
 										"referenceName": "p_schoolowners_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolowners_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownersd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_alternativenumber as string,\n\t\ttcbgrow_city as long,\n\t\tupdated_at as timestamp,\n\t\tcreated_at as timestamp,\n\t\ttcbgrow_contactnumber as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_emailaddress as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_name as string,\n\t\ttcbgrow_preferredname as string,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_region as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolowners_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownersd"
 								}
 							]
 						}
@@ -330,8 +332,6 @@
 			{
 				"name": "Dataverse Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Owners Query",
