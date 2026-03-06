@@ -1,0 +1,9 @@
+{
+	"name": "School Staff",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": []
+		}
+	}
+}
