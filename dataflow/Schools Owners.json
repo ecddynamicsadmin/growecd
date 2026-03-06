@@ -31,9 +31,6 @@
 				},
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -42,9 +39,8 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
-				"filter1 alterRow(upsertIf(true())) ~> alterRow1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive() ~> derivedColumn1",
-				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
