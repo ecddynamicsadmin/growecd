@@ -76,7 +76,6 @@
 				"     mapColumn(",
 				"          tcbgrow_appid,",
 				"          {cog_City@odata.bind},",
-				"          {tcbgrow_CountryofBirth@odata.bind},",
 				"          {cog_Region@odata.bind},",
 				"          tcbgrow_address,",
 				"          tcbgrow_alternativenumber,",
