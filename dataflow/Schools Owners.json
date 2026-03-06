@@ -56,28 +56,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
-				"     assertFailure_folderPath: 'errors',",
-				"     mapColumn(",
-				"          tcbgrow_breakeven,",
-				"          tcbgrow_paymenttype = tcbgrow_paymenttypechoice,",
-				"          tcbgrow_monthlysalaries,",
-				"          tcbgrow_schoolstatus,",
-				"          tcbgrow_contractdate,",
-				"          tcbgrow_commencementdate,",
-				"          tcbgrow_address,",
-				"          tcbgrow_numberofclassrooms,",
-				"          tcbgrow_name,",
-				"          tcbgrow_growid,",
-				"          tcbgrow_appid,",
-				"          tcbgrow_capacity,",
-				"          tcbgrow_appaccountcreationdate,",
-				"          tcbgrow_centrestartdate,",
-				"          {cog_City@odata.bind},",
-				"          {tcbgrow_Country@odata.bind},",
-				"          {tcbgrow_ECDOwner@odata.bind},",
-				"          {tcbgrow_SchoolSegment@odata.bind},",
-				"          {cog_Region@odata.bind}",
-				"     )) ~> sink1"
+				"     assertFailure_folderPath: 'errors') ~> sink1"
 			]
 		}
 	}
