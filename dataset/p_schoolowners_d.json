@@ -37,7 +37,7 @@
 				"type": "INT64"
 			},
 			{
-				"name": "updated_at",
+				"name": "tcbgrow_lastappdate",
 				"type": "INT96"
 			},
 			{
@@ -81,7 +81,7 @@
 				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_region",
+				"name": "cog_region",
 				"type": "INT64"
 			}
 		]
