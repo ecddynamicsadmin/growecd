@@ -40,7 +40,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"parquetsource derive() ~> derivedColumn1",
+				"parquetsource derive(a = true()) ~> derivedColumn1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
