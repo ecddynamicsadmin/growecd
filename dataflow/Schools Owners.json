@@ -78,7 +78,6 @@
 				"          tcbgrow_address,",
 				"          tcbgrow_alternativenumber,",
 				"          tcbgrow_lastappdate,",
-				"          created_at,",
 				"          tcbgrow_contactnumber,",
 				"          tcbgrow_dateofbirth,",
 				"          tcbgrow_emailaddress,",
