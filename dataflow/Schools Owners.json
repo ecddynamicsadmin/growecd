@@ -57,7 +57,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"parquetsource derive({cog_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(tcbgrow_city),\")\"),",
+				"parquetsource derive({tcbgrow_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(tcbgrow_city),\")\"),",
 				"          {tcbgrow_CountryofBirth@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\"),",
 				"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\")) ~> derivedColumn1",
 				"alterRow1 sink(allowSchemaDrift: true,",
@@ -85,7 +85,7 @@
 				"          tcbgrow_name,",
 				"          tcbgrow_preferredname,",
 				"          tcbgrow_race,",
-				"          {cog_City@odata.bind},",
+				"          {cog_City@odata.bind} = {tcbgrow_City@odata.bind},",
 				"          {tcbgrow_CountryofBirth@odata.bind},",
 				"          {cog_Region@odata.bind}",
 				"     )) ~> sink1"
