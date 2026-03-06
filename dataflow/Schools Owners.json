@@ -72,7 +72,22 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
-				"     assertFailure_folderPath: 'errors') ~> sink1"
+				"     assertFailure_folderPath: 'errors',",
+				"     mapColumn(",
+				"          tcbgrow_appid,",
+				"          tcbgrow_address,",
+				"          tcbgrow_alternativenumber,",
+				"          tcbgrow_lastappdate,",
+				"          created_at,",
+				"          tcbgrow_contactnumber,",
+				"          tcbgrow_dateofbirth,",
+				"          tcbgrow_emailaddress,",
+				"          tcbgrow_firstname,",
+				"          tcbgrow_lastname,",
+				"          tcbgrow_name,",
+				"          tcbgrow_preferredname,",
+				"          tcbgrow_race",
+				"     )) ~> sink1"
 			]
 		}
 	}
