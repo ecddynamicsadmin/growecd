@@ -67,7 +67,7 @@
 				"     insertable:false,",
 				"     updateable:false,",
 				"     upsertable:true,",
-				"     alternateKeyName: 'tcbgrow_import_key',",
+				"     alternateKeyName: 'tcbgrow_import_ecdownerappid',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
