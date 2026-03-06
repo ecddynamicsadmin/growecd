@@ -19,6 +19,71 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_appid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_address",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_alternativenumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_city",
+				"type": "INT64"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			},
+			{
+				"name": "created_at",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_contactnumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_countryofbirth",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_dateofbirth",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_emailaddress",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_firstname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_lastname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_preferredname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_race",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_region",
+				"type": "INT64"
+			}
+		]
 	}
 }
