@@ -3122,7 +3122,84 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "preferred_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "email",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_of_birth",
+						"type": "INT96"
+					},
+					{
+						"name": "gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "alternative_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "address",
+						"type": "UTF8"
+					},
+					{
+						"name": "country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "other_country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "race_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "zip_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
@@ -4488,7 +4565,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", Int64.Type}})\nin\n    #\"Changed column type\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolowners_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\n  #\"Replaced value\" = Table.ReplaceValue(Source, \"Male\", \"1\", Replacer.ReplaceText, {\"gender\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"Female\", \"2\", Replacer.ReplaceText, {\"gender\"}),\n  #\"Added custom 2\" = Table.TransformColumnTypes(Table.AddColumn(#\"Replaced value 1\", \"DateUpdated\", each DateTime.Date(DateTime.LocalNow())), {{\"DateUpdated\", type date}}),\r\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Added custom 2\", null, \"3\", Replacer.ReplaceValue, {\"gender\"}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Replaced value 6\", \"address\", \"address - Copy\"),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Duplicated column\", \"\\\\x00\", \"\", Replacer.ReplaceText, {\"address - Copy\"})\n\n,\n  #\"Added custom 3\" = Table.TransformColumnTypes(Table.AddColumn(#\"Replaced value 3\", \"FullName\", each [first_name] & \" \" & [last_name]), {{\"FullName\", type text}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Added custom 3\", {{\"contact_no\", type text}}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Changed column type 1\", \":\", \"\", Replacer.ReplaceText, {\"address\"}),\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"\"\"\", \"\", Replacer.ReplaceText, {\"address\"})\n\n\nin\n  #\"Replaced value 5\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
