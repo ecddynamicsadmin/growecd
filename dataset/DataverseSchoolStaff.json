@@ -12,7 +12,7 @@
 		"type": "CommonDataServiceForAppsEntity",
 		"schema": [],
 		"typeProperties": {
-			"entityName": "tcbgrow_school"
+			"entityName": "contact"
 		}
 	}
 }
