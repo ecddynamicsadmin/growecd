@@ -40,7 +40,6 @@
 				"          tcbgrow_alternativenumber as string,",
 				"          tcbgrow_city as long,",
 				"          tcbgrow_lastappdate as timestamp,",
-				"          created_at as timestamp,",
 				"          tcbgrow_contactnumber as string,",
 				"          tcbgrow_countryofbirth as long,",
 				"          tcbgrow_dateofbirth as timestamp,",
@@ -85,7 +84,10 @@
 				"          tcbgrow_lastname,",
 				"          tcbgrow_name,",
 				"          tcbgrow_preferredname,",
-				"          tcbgrow_race",
+				"          tcbgrow_race,",
+				"          {cog_City@odata.bind},",
+				"          {tcbgrow_CountryofBirth@odata.bind},",
+				"          {cog_Region@odata.bind}",
 				"     )) ~> sink1"
 			]
 		}
