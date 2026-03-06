@@ -39,7 +39,7 @@
 				"          tcbgrow_address as string,",
 				"          tcbgrow_alternativenumber as string,",
 				"          tcbgrow_city as long,",
-				"          updated_at as timestamp,",
+				"          tcbgrow_lastappdate as timestamp,",
 				"          created_at as timestamp,",
 				"          tcbgrow_contactnumber as string,",
 				"          tcbgrow_countryofbirth as long,",
@@ -80,10 +80,7 @@
 				"          {cog_Region@odata.bind},",
 				"          tcbgrow_address,",
 				"          tcbgrow_alternativenumber,",
-				"          updated_at,",
-				"          created_at,",
 				"          tcbgrow_contactnumber,",
-				"          tcbgrow_countryofbirth,",
 				"          tcbgrow_dateofbirth,",
 				"          tcbgrow_emailaddress,",
 				"          tcbgrow_firstname,",
@@ -91,7 +88,7 @@
 				"          tcbgrow_name,",
 				"          tcbgrow_preferredname,",
 				"          tcbgrow_race,",
-				"          bind = {cog_City@odata.bind}",
+				"          tcbgrow_lastappdate",
 				"     )) ~> sink1"
 			]
 		}
