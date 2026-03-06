@@ -173,11 +173,14 @@
 					"referenceName": "Dataverse1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Dataverse"
+				},
 				"annotations": [],
 				"type": "CommonDataServiceForAppsEntity",
 				"schema": [],
 				"typeProperties": {
-					"entityName": "tcbgrow_school"
+					"entityName": "tcbgrow_ecdowner"
 				}
 			},
 			"dependsOn": [
@@ -192,6 +195,9 @@
 				"linkedServiceName": {
 					"referenceName": "Dataverse1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
 				},
 				"annotations": [],
 				"type": "CommonDataServiceForAppsEntity",

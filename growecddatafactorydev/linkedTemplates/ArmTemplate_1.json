@@ -37,33 +37,23 @@
 				},
 				"schema": [
 					{
-						"name": "tcbgrow_breakeven",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_ecdowner",
+						"name": "tcbgrow_appid",
 						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_paymenttype",
+						"name": "tcbgrow_address",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_schoolsegment",
+						"name": "tcbgrow_alternativenumber",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_monthlysalaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 9
+						"name": "tcbgrow_city",
+						"type": "INT64"
 					},
 					{
-						"name": "tcbgrow_schoolstatus",
-						"type": "UTF8"
-					},
-					{
-						"name": "updated_at",
+						"name": "tcbgrow_lastappdate",
 						"type": "INT96"
 					},
 					{
@@ -71,23 +61,27 @@
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_contractdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_ecdcode",
+						"name": "tcbgrow_contactnumber",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_commencementdate",
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_dateofbirth",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_address",
+						"name": "tcbgrow_emailaddress",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_numberofclassrooms",
+						"name": "tcbgrow_firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_lastname",
 						"type": "UTF8"
 					},
 					{
@@ -95,36 +89,16 @@
 						"type": "UTF8"
 					},
 					{
-						"name": "cog_city",
+						"name": "tcbgrow_preferredname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_race",
 						"type": "INT64"
 					},
 					{
 						"name": "cog_region",
 						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_growid",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_appid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_country",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_appaccountcreationdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_centrestartdate",
-						"type": "INT96"
 					}
 				]
 			},
