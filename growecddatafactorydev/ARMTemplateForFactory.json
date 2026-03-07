@@ -1814,10 +1814,10 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "SchoolStaff",
+								"referenceName": "School Staff",
 								"type": "DataFlowReference",
 								"datasetParameters": {
-									"p_schoolsupdate_s": {},
+									"p_schoolstaff_s": {},
 									"UserQuerypschoolstaffd": {}
 								}
 							},
@@ -1866,15 +1866,6 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Schools Staff",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"parquetsource": {},
-									"sink1": {}
-								}
-							},
 							"staging": {},
 							"compute": {
 								"coreCount": 8,
@@ -1892,8 +1883,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolStaff_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
-				"[concat(variables('factoryId'), '/dataflows/SchoolStaff')]",
-				"[concat(variables('factoryId'), '/dataflows/Schools Staff')]",
+				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]"
 			]
 		},
@@ -2670,6 +2660,9 @@
 					"referenceName": "Dataverse1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Dataverse"
+				},
 				"annotations": [],
 				"type": "CommonDataServiceForAppsEntity",
 				"schema": [],
@@ -2720,7 +2713,7 @@
 				"type": "CommonDataServiceForAppsEntity",
 				"schema": [],
 				"typeProperties": {
-					"entityName": "tcbgrow_school"
+					"entityName": "contact"
 				}
 			},
 			"dependsOn": [
@@ -2735,6 +2728,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2756,6 +2752,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2775,6 +2774,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2796,6 +2798,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2815,6 +2820,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2836,6 +2844,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2855,6 +2866,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_growecd",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2876,6 +2890,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2895,6 +2912,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2916,6 +2936,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2935,6 +2958,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -2956,6 +2982,9 @@
 					"referenceName": "mysql_growecd",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -2975,6 +3004,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -3239,7 +3271,198 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "user_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "middle_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "photo_url",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_active",
+						"type": "INT32"
+					},
+					{
+						"name": "is_temporary",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_of_birth",
+						"type": "INT96"
+					},
+					{
+						"name": "start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "id_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "position_id",
+						"type": "INT64"
+					},
+					{
+						"name": "employee_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "contracted_salary",
+						"type": "INT32"
+					},
+					{
+						"name": "email",
+						"type": "UTF8"
+					},
+					{
+						"name": "qualification_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "kin_relationship_id",
+						"type": "INT64"
+					},
+					{
+						"name": "kin_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "kin_contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "kin_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "street_address",
+						"type": "UTF8"
+					},
+					{
+						"name": "country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "other_country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "race_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "zipcode",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "police_clearance_status",
+						"type": "INT32"
+					},
+					{
+						"name": "signed_contract_status",
+						"type": "INT32"
+					},
+					{
+						"name": "goverment_document_id",
+						"type": "INT32"
+					},
+					{
+						"name": "police_clearance_document",
+						"type": "UTF8"
+					},
+					{
+						"name": "signed_contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "alternative_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "form_11",
+						"type": "UTF8"
+					},
+					{
+						"name": "qualification_document",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_0_2_responsible",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "training_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "mentoring_status",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
@@ -4095,6 +4318,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Staff')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolstaff_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolstaff_s",
+							"dataset": {
+								"referenceName": "p_schoolstaff_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    #\"Added schoolStaff\" =  \n        Table.AddColumn(Source, \"schoolStaff\", each Number.From(301220000)),  \n  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added schoolStaff\",  \n            {{\"schoolStaff\", Int64.Type}}  \n        ),  \n  \n    #\"Duplicated contact_no\" =  \n        Table.DuplicateColumn(#\"Changed Type\", \"contact_no\", \"contact_no_telephone\"),  \n  \n    #\"Duplicated id_number\" =  \n        Table.DuplicateColumn(#\"Duplicated contact_no\", \"id_number\", \"id_number_employee\"),  \n  \n    #\"Duplicated start_date\" =  \n        Table.DuplicateColumn(#\"Duplicated id_number\", \"start_date\", \"start_date_import\"),  \n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Duplicated start_date\",  \n            {  \n                \"alternative_number\",  \n                \"city_id\",  \n                \"contact_no\",  \n                \"contact_no_telephone\",  \n                \"country_of_birth_id\",  \n                \"date_of_birth\",  \n                \"email\",  \n                \"employee_type_id\",  \n                \"first_name\",  \n                \"gender\",  \n                \"id\",  \n                \"id_number\",  \n                \"id_number_employee\",  \n                \"is_active\",  \n                \"kin_contact_no\",  \n                \"kin_email\",  \n                \"kin_name\",  \n                \"kin_relationship_id\",  \n                \"last_name\",  \n                \"middle_name\",  \n                \"position_id\",  \n                \"province_id\",  \n                \"qualification_type_id\",  \n                \"race_type_id\",  \n                \"school_id\",  \n                \"schoolStaff\",  \n                \"start_date\",  \n                \"start_date_import\",  \n                \"street_address\"  \n            }  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"tcbgrow_importcityid\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_importcountryid\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"id_number_employee\", \"employeeid\"},  \n                {\"is_active\", \"tcbgrow_staffactive\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"province_id\", \"tcbgrow_province\"},  \n                {\"qualification_type_id\", \"cr64f_qualificationimportid\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        )  \n  \nin  \n    #\"Renamed Columns\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SchoolOwners')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -4205,9 +4453,21 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(tcbgrow_city),\")\"),",
-						"          {tcbgrow_CountryofBirth@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\"),",
-						"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\")) ~> derivedColumn1",
+						"parquetsource derive({tcbgrow_City@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_city),\r",
+						"    toString(null()),\r",
+						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
+						"),",
+						"          {tcbgrow_CountryofBirth@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_countryofbirth),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")\r",
+						")) ~> derivedColumn1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -4233,8 +4493,9 @@
 						"          tcbgrow_name,",
 						"          tcbgrow_preferredname,",
 						"          tcbgrow_race,",
-						"          {tcbgrow_CountryofBirth@odata.bind},",
-						"          {cog_Region@odata.bind}",
+						"          {cog_Region@odata.bind},",
+						"          {tcbgrow_City@odata.bind},",
+						"          {tcbgrow_CountryofBirth@odata.bind}",
 						"     )) ~> sink1"
 					]
 				}
@@ -4242,143 +4503,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schoolowners_d')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolOwners')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Schools Staff')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoolsupdate_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchoolStaff",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						},
-						{
-							"name": "filter1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_breakeven as integer,",
-						"          tcbgrow_ecdowner as long,",
-						"          tcbgrow_paymenttype as string,",
-						"          tcbgrow_schoolsegment as string,",
-						"          tcbgrow_monthlysalaries as decimal(38,9),",
-						"          tcbgrow_schoolstatus as string,",
-						"          updated_at as timestamp,",
-						"          created_at as timestamp,",
-						"          tcbgrow_contractdate as timestamp,",
-						"          tcbgrow_ecdcode as string,",
-						"          tcbgrow_commencementdate as timestamp,",
-						"          tcbgrow_address as string,",
-						"          tcbgrow_numberofclassrooms as string,",
-						"          tcbgrow_name as string,",
-						"          cog_city as long,",
-						"          cog_region as long,",
-						"          tcbgrow_growid as string,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_capacity as integer,",
-						"          tcbgrow_country as integer,",
-						"          tcbgrow_appaccountcreationdate as timestamp,",
-						"          tcbgrow_centrestartdate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"filter1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant Only', 301220011,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Partner Funded', 301220006,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Cash', 301220002,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant/Cash', 301220001,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Cash', 301220003,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant/Partner Funded', 301220007,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Partner Funded', 301220008,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Grant/Partner Funded', 301220009,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Loan/Grant/Partner Funded', 301220010,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Partner Funded', 301220012,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Partner Funded', 523930001,  \r",
-						"    trim(tcbgrow_paymenttype) == 'None', 301220013,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
-						"    toInteger(null())  \r",
-						"),",
-						"          {cog_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\"),",
-						"          {tcbgrow_Country@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\"),",
-						"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
-						"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
-						"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
-						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_breakeven,",
-						"          tcbgrow_paymenttype = tcbgrow_paymenttypechoice,",
-						"          tcbgrow_monthlysalaries,",
-						"          tcbgrow_schoolstatus,",
-						"          tcbgrow_contractdate,",
-						"          tcbgrow_commencementdate,",
-						"          tcbgrow_address,",
-						"          tcbgrow_numberofclassrooms,",
-						"          tcbgrow_name,",
-						"          tcbgrow_growid,",
-						"          tcbgrow_appid,",
-						"          tcbgrow_capacity,",
-						"          tcbgrow_appaccountcreationdate,",
-						"          tcbgrow_centrestartdate,",
-						"          {cog_City@odata.bind},",
-						"          {tcbgrow_Country@odata.bind},",
-						"          {tcbgrow_ECDOwner@odata.bind},",
-						"          {tcbgrow_SchoolSegment@odata.bind},",
-						"          {cog_Region@odata.bind}",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_d')]",
-				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
@@ -4471,11 +4595,31 @@
 						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
 						"    toInteger(null())  \r",
 						"),",
-						"          {cog_City@odata.bind} = concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\"),",
-						"          {tcbgrow_Country@odata.bind} = concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\"),",
-						"          {tcbgrow_ECDOwner@odata.bind} = concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\"),",
-						"          {cog_Region@odata.bind} = concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\"),",
-						"          {tcbgrow_SchoolSegment@odata.bind} = concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")) ~> derivedColumn1",
+						"          {cog_City@odata.bind} = iif(\r",
+						"    isNull(cog_city),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\")\r",
+						"),",
+						"          {tcbgrow_Country@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_country),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
+						"),",
+						"          {tcbgrow_ECDOwner@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_ecdowner),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\")\r",
+						"),",
+						"          {tcbgrow_SchoolSegment@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_schoolsegment),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
+						")) ~> derivedColumn1",
 						"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",

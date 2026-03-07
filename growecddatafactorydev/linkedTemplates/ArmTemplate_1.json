@@ -258,7 +258,198 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "user_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "middle_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "photo_url",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_active",
+						"type": "INT32"
+					},
+					{
+						"name": "is_temporary",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_of_birth",
+						"type": "INT96"
+					},
+					{
+						"name": "start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "id_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "position_id",
+						"type": "INT64"
+					},
+					{
+						"name": "employee_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "contracted_salary",
+						"type": "INT32"
+					},
+					{
+						"name": "email",
+						"type": "UTF8"
+					},
+					{
+						"name": "qualification_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "kin_relationship_id",
+						"type": "INT64"
+					},
+					{
+						"name": "kin_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "kin_contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "kin_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "street_address",
+						"type": "UTF8"
+					},
+					{
+						"name": "country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "other_country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "race_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "zipcode",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "police_clearance_status",
+						"type": "INT32"
+					},
+					{
+						"name": "signed_contract_status",
+						"type": "INT32"
+					},
+					{
+						"name": "goverment_document_id",
+						"type": "INT32"
+					},
+					{
+						"name": "police_clearance_document",
+						"type": "UTF8"
+					},
+					{
+						"name": "signed_contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "alternative_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "form_11",
+						"type": "UTF8"
+					},
+					{
+						"name": "qualification_document",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_0_2_responsible",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "training_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "mentoring_status",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": []
 		},

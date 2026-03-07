@@ -153,6 +153,9 @@
 					"referenceName": "Dataverse1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Dataverse"
+				},
 				"annotations": [],
 				"type": "CommonDataServiceForAppsEntity",
 				"schema": [],
@@ -203,7 +206,7 @@
 				"type": "CommonDataServiceForAppsEntity",
 				"schema": [],
 				"typeProperties": {
-					"entityName": "tcbgrow_school"
+					"entityName": "contact"
 				}
 			},
 			"dependsOn": [
@@ -218,6 +221,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -239,6 +245,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -258,6 +267,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -279,6 +291,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -298,6 +313,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -319,6 +337,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -338,6 +359,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_growecd",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -359,6 +383,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -378,6 +405,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -399,6 +429,9 @@
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -418,6 +451,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
@@ -439,6 +475,9 @@
 					"referenceName": "mysql_growecd",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Maria Db"
+				},
 				"annotations": [],
 				"type": "MySqlTable",
 				"schema": [],
@@ -458,6 +497,9 @@
 				"linkedServiceName": {
 					"referenceName": "mysql_crm",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
 				},
 				"annotations": [],
 				"type": "MySqlTable",
