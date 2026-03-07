@@ -13,7 +13,7 @@
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaff_s\",\n  #\"Added custom 2\" = Table.TransformColumnTypes(Table.AddColumn(Source, \"schoolStaff\", each 301220000), {{\"schoolStaff\", Text.Type}}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Added custom 2\", \"NULL\", \"0\", Replacer.ReplaceText, {\"position_id\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"NULL\", \"0\", Replacer.ReplaceText, {\"contracted_salary\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"NULL\", \"0\", Replacer.ReplaceText, {\"employee_type_id\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"NULL\", \"\", Replacer.ReplaceText, {\"qualification_type_id\"}),\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"12\", \"10\", Replacer.ReplaceText, {\"kin_relationship_id\"})\nin\n  #\"Replaced value 5\";\r\n",
+			"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaff_s\",\n  #\"Added custom 2\" = Table.TransformColumnTypes(Table.AddColumn(Source, \"schoolStaff\", each 301220000), {{\"schoolStaff\", Int64.Type}})\n\nin\n  #\"Added custom 2\";\r\n",
 			"documentLocale": "en-us"
 		}
 	}
