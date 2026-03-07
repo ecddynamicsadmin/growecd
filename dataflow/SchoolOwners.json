@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"name": "p_schoolowners_s",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolowners_s",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolowners_s",
 					"dataset": {
 						"referenceName": "p_schoolowners_s",
 						"type": "DatasetReference"
