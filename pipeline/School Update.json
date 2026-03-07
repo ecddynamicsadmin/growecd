@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MySqlSource"
+						"type": "MariaDBSource"
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -641,7 +641,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "maria_SchoolsUpdate",
+						"referenceName": "MariaDBSchoolUpdate",
 						"type": "DatasetReference"
 					}
 				],
