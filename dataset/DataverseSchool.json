@@ -5,6 +5,9 @@
 			"referenceName": "Dataverse1",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Dataverse"
+		},
 		"annotations": [],
 		"type": "CommonDataServiceForAppsEntity",
 		"schema": [],

@@ -5,6 +5,9 @@
 			"referenceName": "mysql_crm",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Maria Db"
+		},
 		"annotations": [],
 		"type": "MySqlTable",
 		"schema": [],
