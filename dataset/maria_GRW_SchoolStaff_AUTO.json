@@ -10,9 +10,6 @@
 		},
 		"annotations": [],
 		"type": "MySqlTable",
-		"schema": [],
-		"typeProperties": {
-			"tableName": "`vw_schoolstaff_export_all`"
-		}
+		"schema": []
 	}
 }

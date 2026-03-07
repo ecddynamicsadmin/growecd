@@ -605,7 +605,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Maria_School_Staff",
+						"referenceName": "MariaSchoolStaff",
 						"type": "DatasetReference"
 					}
 				],
