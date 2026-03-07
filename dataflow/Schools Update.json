@@ -110,7 +110,7 @@
 				"    toString(null()),\r",
 				"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
 				")) ~> derivedColumn1",
-				"derivedColumn1 filter(!isNull(tcbgrow_name) && startsWith(lower(tcbgrow_name), 'a')) ~> filter1",
+				"derivedColumn1 filter(tcbgrow_name=='Abantwana Day Care Centre') ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
