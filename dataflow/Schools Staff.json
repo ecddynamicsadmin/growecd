@@ -90,7 +90,7 @@
 				"     insertable:false,",
 				"     updateable:false,",
 				"     upsertable:true,",
-				"     alternateKeyName: 'tcbgrow_import_ecdownerappid',",
+				"     alternateKeyName: 'tcbgrow_school_staff_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
