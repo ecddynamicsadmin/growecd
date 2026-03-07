@@ -19,6 +19,123 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_alternativenumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_city",
+				"type": "INT64"
+			},
+			{
+				"name": "mobilephone",
+				"type": "UTF8"
+			},
+			{
+				"name": "telephone1",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_countryofbirth",
+				"type": "INT64"
+			},
+			{
+				"name": "birthdate",
+				"type": "INT96"
+			},
+			{
+				"name": "emailaddress1",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_employeetype",
+				"type": "INT64"
+			},
+			{
+				"name": "firstname",
+				"type": "UTF8"
+			},
+			{
+				"name": "gendercode",
+				"type": "UTF8"
+			},
+			{
+				"name": "new_staff_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_idnumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "employeeid",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_staffactive",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_nextofkincontactnumber",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_nextofkinemail",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_nextofkinname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_nextofkinrelationship",
+				"type": "INT64"
+			},
+			{
+				"name": "lastname",
+				"type": "UTF8"
+			},
+			{
+				"name": "middlename",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_staffrole",
+				"type": "INT64"
+			},
+			{
+				"name": "cog_region",
+				"type": "INT64"
+			},
+			{
+				"name": "cr64f_qualificationimportid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_race",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_schoolappid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_schoolstaff",
+				"type": "UTF8"
+			},
+			{
+				"name": "new_start_date",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_startdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_address1",
+				"type": "UTF8"
+			}
+		]
 	}
 }
