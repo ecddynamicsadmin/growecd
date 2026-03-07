@@ -1,0 +1,15 @@
+{
+	"name": "MariaDBSchoolUpdate",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MariaDBGrowECD",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MariaDBTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "vw_schools_rpt_final_null_op"
+		}
+	}
+}
