@@ -85,7 +85,6 @@
 				"          tcbgrow_name,",
 				"          tcbgrow_preferredname,",
 				"          tcbgrow_race,",
-				"          {tcbgrow_CountryofBirth@odata.bind},",
 				"          {cog_Region@odata.bind}",
 				"     )) ~> sink1"
 			]
