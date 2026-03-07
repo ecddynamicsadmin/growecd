@@ -655,6 +655,8 @@
 			{
 				"name": "Schools Update Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Update from Maria",
@@ -700,6 +702,8 @@
 			{
 				"name": "Dataverse Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Update Query",
