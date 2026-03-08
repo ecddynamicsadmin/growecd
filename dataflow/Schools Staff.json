@@ -85,7 +85,7 @@
 				"),",
 				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(new_staff_id),    toString(null()),    concat(\"/contacts(cog_appid=\", toString(new_staff_id), \")\")),",
-				"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(cog_appid=\", toString(tcbgrow_qualification), \")\")),",
+				"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
 				"          birthdate = toString(birthdate, 'yyyy-MM-dd') ,",
 				"          gendercode = case(\r",
 				"    trim(gendercode) == 'Male', 1,\r",
