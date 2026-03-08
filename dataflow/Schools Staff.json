@@ -130,7 +130,6 @@
 				"          new_start_date,",
 				"          tcbgrow_startdate,",
 				"          tcbgrow_address1,",
-				"          {tcbgrow_School@odata.bind},",
 				"          {cog_Region@odata.bind},",
 				"          {cog_City@odata.bind},",
 				"          {tcbgrow_Qualification@odata.bind},",
