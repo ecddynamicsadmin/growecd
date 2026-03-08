@@ -706,7 +706,7 @@
 		"variables": {
 			"updated_at": {
 				"type": "String",
-				"defaultValue": "2026-03-01"
+				"defaultValue": "2026-02-01"
 			}
 		},
 		"annotations": []
