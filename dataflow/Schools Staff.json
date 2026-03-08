@@ -37,6 +37,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     Updated_at as string (\"2026-03-08\")",
+				"}",
 				"source(output(",
 				"          tcbgrow_alternativenumber as string,",
 				"          cog_city as long,",
