@@ -78,7 +78,7 @@
 				"    toString(null()),\r",
 				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
 				"),",
-				"          {tcbgrow_CountryofBirth@odata.bind} = iif(\r",
+				"          {tcbgrow_CountryOfBirth@odata.bind} = iif(\r",
 				"    isNull(tcbgrow_countryofbirth),\r",
 				"    toString(null()),\r",
 				"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
@@ -133,7 +133,6 @@
 				"          {tcbgrow_School@odata.bind},",
 				"          {cog_Region@odata.bind},",
 				"          {cog_City@odata.bind},",
-				"          {tcbgrow_CountryofBirth@odata.bind},",
 				"          {tcbgrow_Qualification@odata.bind}",
 				"     )) ~> sink1"
 			]
