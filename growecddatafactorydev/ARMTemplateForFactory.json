@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
 		},
+		"MariaDBCRM_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MariaDBCRM'"
+		},
+		"MariaDBGrowECD_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MariaDBGrowECD'"
+		},
 		"mysql_crm_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mysql_crm'"
@@ -30,6 +38,30 @@
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+		},
+		"MariaDBCRM_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"MariaDBCRM_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "crm"
+		},
+		"MariaDBCRM_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
+		},
+		"MariaDBGrowECD_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"MariaDBGrowECD_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "growecd_growecd"
+		},
+		"MariaDBGrowECD_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
 		},
 		"mysql_crm_properties_typeProperties_server": {
 			"type": "string",
@@ -288,7 +320,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -313,7 +345,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_SchoolStaff_AUTO",
+								"referenceName": "MariaSchoolStaff",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -652,7 +684,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -678,7 +710,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_SchoolOwners_AUTO",
+								"referenceName": "MariaSchoolOwners",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -705,7 +737,15 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -730,7 +770,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_SchoolOwners_AUTO",
+								"referenceName": "p_schoolsupdate_s",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -758,7 +798,7 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwnerTraining_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolsSalaries_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsSalaries_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolStaff_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolStaff')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolStaff_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolAgeGroups_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolAgeGroups_AUTO')]",
@@ -772,8 +812,9 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolTeacherTraining_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_StaffStatsImport_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolOwners')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
 			]
 		},
@@ -799,7 +840,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -1052,7 +1093,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_SchoolOwners_AUTO",
+								"referenceName": "MariaSchoolOwners",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -1139,7 +1180,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "Schools Owners",
+								"referenceName": "School Owners",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -1162,729 +1203,11 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolOwners_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolOwners')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolowners_s')]",
 				"[concat(variables('factoryId'), '/dataflows/SchoolOwners')]",
-				"[concat(variables('factoryId'), '/dataflows/Schools Owners')]",
+				"[concat(variables('factoryId'), '/dataflows/School Owners')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolowners_d')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Staff')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "School Staff from Maria",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MySqlSource"
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "user_id",
-											"type": "UInt64",
-											"physicalType": "UInt64"
-										},
-										"sink": {
-											"name": "user_id",
-											"type": "UInt64",
-											"physicalType": "DECIMAL"
-										}
-									},
-									{
-										"source": {
-											"name": "school_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "school_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "first_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "first_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "last_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "last_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "gender",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "gender",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "middle_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "middle_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "photo_url",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "photo_url",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "is_active",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "is_active",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "is_temporary",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_temporary",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "is_confirmed",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "is_confirmed",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "contact_no",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "contact_no",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "date_of_birth",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "date_of_birth",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "start_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "start_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "id_number",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "id_number",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "position_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "position_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "employee_type_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "employee_type_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "contracted_salary",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "contracted_salary",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "email",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "email",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "qualification_type_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "qualification_type_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "kin_relationship_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "kin_relationship_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "kin_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "kin_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "kin_contact_no",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "kin_contact_no",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "kin_email",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "kin_email",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "street_address",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "street_address",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "country_of_birth_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "country_of_birth_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "other_country_of_birth_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "other_country_of_birth_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "race_type_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "race_type_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "city_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "city_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "region_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "region_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "province_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "province_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "zipcode",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "zipcode",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "created_by",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "created_by",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_by",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "updated_by",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "created_at",
-											"type": "DateTime",
-											"physicalType": "Timestamp"
-										},
-										"sink": {
-											"name": "created_at",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "DateTime",
-											"physicalType": "Timestamp"
-										},
-										"sink": {
-											"name": "updated_at",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "police_clearance_status",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "police_clearance_status",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "signed_contract_status",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "signed_contract_status",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "goverment_document_id",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "goverment_document_id",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "police_clearance_document",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "police_clearance_document",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "signed_contract",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "signed_contract",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "alternative_number",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "alternative_number",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "form_11",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "form_11",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "qualification_document",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "qualification_document",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "is_0_2_responsible",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_0_2_responsible",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "training_status",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "training_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "mentoring_status",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "mentoring_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "maria_GRW_SchoolStaff_AUTO",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "p_schoolstaff_s",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "School Staff Query",
-						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "School Staff from Maria",
-								"dependencyConditions": [
-									"Completed"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "School Staff",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"p_schoolstaff_s": {},
-									"UserQuerypschoolstaffd": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"queries": [
-								{
-									"queryName": "UserQuery",
-									"dataflowSinks": [
-										{
-											"name": "UserQuerypschoolstaffd",
-											"dataset": {
-												"referenceName": "p_schoolstaff_d",
-												"type": "DatasetReference",
-												"parameters": {}
-											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoolstaffd"
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"name": "Dataverse Update",
-						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "School Staff Query",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolStaff_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
-				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]"
 			]
 		},
 		{
@@ -1907,7 +1230,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -2532,7 +1855,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_SchoolsUpdate",
+								"referenceName": "MariaDBSchoolUpdate",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -2644,11 +1967,737 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/maria_SchoolsUpdate')]",
+				"[concat(variables('factoryId'), '/datasets/MariaDBSchoolUpdate')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]",
 				"[concat(variables('factoryId'), '/dataflows/SchoolsUpdate')]",
 				"[concat(variables('factoryId'), '/dataflows/Schools Update')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_d')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Schools Staff')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Staff from Maria",
+						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "id",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "user_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "user_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "school_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "school_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "middle_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "middle_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "photo_url",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "photo_url",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "is_active",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "is_active",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "is_temporary",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_temporary",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_confirmed",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "is_confirmed",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "contact_no",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "contact_no",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "date_of_birth",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "start_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "start_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "id_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "id_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "position_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "position_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "employee_type_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "employee_type_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "contracted_salary",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "contracted_salary",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "qualification_type_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "qualification_type_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "kin_relationship_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "kin_relationship_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "kin_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "kin_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "kin_contact_no",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "kin_contact_no",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "kin_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "kin_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "street_address",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "street_address",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "other_country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "other_country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "race_type_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "race_type_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "zipcode",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "zipcode",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "police_clearance_status",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "police_clearance_status",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "signed_contract_status",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "signed_contract_status",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "goverment_document_id",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "goverment_document_id",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "police_clearance_document",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "police_clearance_document",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "signed_contract",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "signed_contract",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "alternative_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "alternative_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "qualification_document",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "qualification_document",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "is_0_2_responsible",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_0_2_responsible",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "training_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "training_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "mentoring_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "mentoring_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolStaff",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolstaff_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Staff Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Staff from Maria",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Staff",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolstaff_s": {},
+									"UserQuerypschoolstaffd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolstaffd",
+											"dataset": {
+												"referenceName": "p_schoolstaff_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_alternativenumber as string,\n\t\tcog_city as long,\n\t\tmobilephone as string,\n\t\ttelephone1 as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\tbirthdate as timestamp,\n\t\temailaddress1 as string,\n\t\ttcbgrow_employeetype as long,\n\t\tfirstname as string,\n\t\tgendercode as string,\n\t\tnew_staff_id as string,\n\t\ttcbgrow_idnumber as string,\n\t\tstatecode as integer,\n\t\ttcbgrow_nextofkincontactnumber as string,\n\t\ttcbgrow_nextofkinemail as string,\n\t\ttcbgrow_nextofkinname as string,\n\t\ttcbgrow_nextofkinrelationship as long,\n\t\tlastname as string,\n\t\tmiddlename as string,\n\t\ttcbgrow_staffrole as long,\n\t\tcog_region as long,\n\t\ttcbgrow_qualification as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_schoolappid as long,\n\t\ttcbgrow_schoolstaff as string,\n\t\tnew_start_date as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_address1 as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolstaff_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolstaffd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Staff Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Schools Staff",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolStaff')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
+				"[concat(variables('factoryId'), '/dataflows/Schools Staff')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]"
 			]
 		},
 		{
@@ -2718,6 +2767,75 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaDBSchoolUpdate')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schools_rpt_final_null_op"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwners')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBGrowECD",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "persons"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBGrowECD')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolStaff')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolstaff_export_all"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
 			]
 		},
 		{
@@ -2859,52 +2977,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolOwners_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_growecd",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`persons`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_growecd')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolStaff_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolstaff_export_all`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolTeacherTraining_AUTO')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2994,29 +3066,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/mysql_growecd')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_SchoolsUpdate')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schools_rpt_final_null_op`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
 			]
 		},
 		{
@@ -3242,7 +3291,120 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "tcbgrow_alternativenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "mobilephone",
+						"type": "UTF8"
+					},
+					{
+						"name": "telephone1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "birthdate",
+						"type": "INT96"
+					},
+					{
+						"name": "emailaddress1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_employeetype",
+						"type": "INT64"
+					},
+					{
+						"name": "firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "gendercode",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_staff_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_idnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "statecode",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_nextofkincontactnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinrelationship",
+						"type": "INT64"
+					},
+					{
+						"name": "lastname",
+						"type": "UTF8"
+					},
+					{
+						"name": "middlename",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_staffrole",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_qualification",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolappid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolstaff",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address1",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
@@ -3626,6 +3788,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3653,6 +3818,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3682,6 +3850,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3709,6 +3880,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3738,6 +3912,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3765,6 +3942,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3794,6 +3974,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3821,6 +4004,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3850,6 +4036,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3877,6 +4066,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3906,6 +4098,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
@@ -3929,6 +4124,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -3958,6 +4156,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -3985,6 +4186,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -4039,6 +4243,50 @@
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
 					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaDBCRM')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MariaDB",
+				"typeProperties": {
+					"server": "[parameters('MariaDBCRM_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('MariaDBCRM_properties_typeProperties_database')]",
+					"username": "[parameters('MariaDBCRM_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MariaDBCRM_password')]"
+					},
+					"driverVersion": "v2",
+					"sslMode": 0
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaDBGrowECD')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MariaDB",
+				"typeProperties": {
+					"server": "[parameters('MariaDBGrowECD_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('MariaDBGrowECD_properties_typeProperties_database')]",
+					"username": "[parameters('MariaDBGrowECD_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MariaDBGrowECD_password')]"
+					},
+					"driverVersion": "v2",
+					"sslMode": 0
 				}
 			},
 			"dependsOn": []
@@ -4121,82 +4369,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/School Staff')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolstaff_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolstaff_s",
-							"dataset": {
-								"referenceName": "p_schoolstaff_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    #\"Added schoolStaff\" =  \n        Table.AddColumn(Source, \"schoolStaff\", each Number.From(301220000)),  \n  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added schoolStaff\",  \n            {{\"schoolStaff\", Int64.Type}}  \n        ),  \n  \n    #\"Duplicated contact_no\" =  \n        Table.DuplicateColumn(#\"Changed Type\", \"contact_no\", \"contact_no_telephone\"),  \n  \n    #\"Duplicated id_number\" =  \n        Table.DuplicateColumn(#\"Duplicated contact_no\", \"id_number\", \"id_number_employee\"),  \n  \n    #\"Duplicated start_date\" =  \n        Table.DuplicateColumn(#\"Duplicated id_number\", \"start_date\", \"start_date_import\"),  \n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Duplicated start_date\",  \n            {  \n                \"alternative_number\",  \n                \"city_id\",  \n                \"contact_no\",  \n                \"contact_no_telephone\",  \n                \"country_of_birth_id\",  \n                \"date_of_birth\",  \n                \"email\",  \n                \"employee_type_id\",  \n                \"first_name\",  \n                \"gender\",  \n                \"id\",  \n                \"id_number\",  \n                \"id_number_employee\",  \n                \"is_active\",  \n                \"kin_contact_no\",  \n                \"kin_email\",  \n                \"kin_name\",  \n                \"kin_relationship_id\",  \n                \"last_name\",  \n                \"middle_name\",  \n                \"position_id\",  \n                \"province_id\",  \n                \"qualification_type_id\",  \n                \"race_type_id\",  \n                \"school_id\",  \n                \"schoolStaff\",  \n                \"start_date\",  \n                \"start_date_import\",  \n                \"street_address\"  \n            }  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"tcbgrow_importcityid\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_importcountryid\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"id_number_employee\", \"employeeid\"},  \n                {\"is_active\", \"tcbgrow_staffactive\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"province_id\", \"tcbgrow_province\"},  \n                {\"qualification_type_id\", \"cr64f_qualificationimportid\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        )  \n  \nin  \n    #\"Renamed Columns\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SchoolOwners')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolowners_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolowners_s",
-							"dataset": {
-								"referenceName": "p_schoolowners_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolowners_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolowners_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolowners_s\",  \n  \n    #\"Added custom\" = Table.TransformColumnTypes(  \n        Table.AddColumn(Source, \"personimport\", each true),  \n        {{\"personimport\", type logical}}  \n    ),  \n  \n    #\"Added custom 1\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Added custom\", \"personimportdone\", each false),  \n        {{\"personimportdone\", type logical}}  \n    ),  \n  \n    #\"Replaced value\" = Table.ReplaceValue(#\"Added custom 1\", \"Male\", \"1\", Replacer.ReplaceText, {\"gender\"}),  \n    #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"Female\", \"2\", Replacer.ReplaceText, {\"gender\"}),  \n    #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"NULL\", \"3\", Replacer.ReplaceText, {\"gender\"}),  \n  \n    #\"Added custom 2\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Replaced value 2\", \"DateUpdated\", each DateTime.Date(DateTime.LocalNow())),  \n        {{\"DateUpdated\", type date}}  \n    ),  \n  \n    #\"Added custom 3\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Added custom 2\", \"FullName\", each [first_name] & \" \" & [last_name]),  \n        {{\"FullName\", type text}}  \n    ),  \n  \n// ✅ CLEAN ADDRESS COLUMN (Spark Runtime Compatible)  \nCleanText = (txt as nullable text) =>  \n    if txt = null then null else  \n    Text.Remove(  \n        txt,  \n        List.Transform({0..31}, each Character.FromNumber(_))  \n    ),  \n  \n#\"Cleaned address\" = Table.TransformColumns(  \n    #\"Added custom 3\",  \n    {{\"address\", CleanText, type text}}  \n),    \n  \n    #\"Replaced value 4\" = Table.ReplaceValue(#\"Cleaned address\", \":\", \"\", Replacer.ReplaceText, {\"address\"}),  \n    #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"\"\"\", \"\", Replacer.ReplaceText, {\"address\"}),  \n  \n    #\"Changed column type\" = Table.TransformColumnTypes(#\"Replaced value 5\", {{\"gender\", Int64.Type}}),  \n  \n    #\"Removed other columns\" = Table.SelectColumns(  \n        #\"Changed column type\",  \n        {\"id\", \"address\", \"alternative_number\", \"city_id\", \"updated_at\", \"contact_no\", \"country_of_birth_id\", \"date_of_birth\", \"email\", \"first_name\", \"last_name\", \"FullName\", \"preferred_name\", \"race_type_id\", \"region_id\"}  \n    ),  \n  \n    #\"Renamed columns\" = Table.RenameColumns(  \n        #\"Removed other columns\",  \n        {  \n            {\"address\", \"tcbgrow_address\"},  \n            {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"city_id\", \"tcbgrow_city\"},  \n            {\"contact_no\", \"tcbgrow_contactnumber\"},  \n            {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n            {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n            {\"email\", \"tcbgrow_emailaddress\"},  \n            {\"first_name\", \"tcbgrow_firstname\"},  \n            {\"last_name\", \"tcbgrow_lastname\"},  \n            {\"FullName\", \"tcbgrow_name\"},  \n            {\"preferred_name\", \"tcbgrow_preferredname\"},  \n            {\"race_type_id\", \"tcbgrow_race\"},  \n            {\"region_id\", \"cog_region\"},  \n            {\"updated_at\", \"tcbgrow_lastappdate\"}  \n        }  \n    )  \n  \nin  \n    #\"Renamed columns\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolowners_s')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SchoolStaff')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolsupdate_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolsupdate_s",
-							"dataset": {
-								"referenceName": "p_schoolsupdate_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", Int64.Type}})\nin\n    #\"Changed column type\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Schools Owners')]",
+			"name": "[concat(parameters('factoryName'), '/School Owners')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -4306,6 +4479,223 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schoolowners_d')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolOwners')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Staff')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolstaff_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolstaff_s",
+							"dataset": {
+								"referenceName": "p_schoolstaff_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    FixKinRelationship =  \n        Table.ReplaceValue(Source, 12, 10, Replacer.ReplaceValue, {\"kin_relationship_id\"}),  \n  \n    AddSchoolStaff =  \n        Table.TransformColumnTypes(Table.AddColumn(FixKinRelationship, \"schoolStaff\", each \"301220000\"), {{\"schoolStaff\", type text}}),  \n  \n    DuplicateContact =  \n        Table.DuplicateColumn(AddSchoolStaff, \"contact_no\", \"contact_no_telephone\"),  \n  \n    DuplicateStartDate =  \n        Table.DuplicateColumn(DuplicateContact, \"start_date\", \"start_date_import\"),  \n  \n    SelectColumns =  \n        Table.SelectColumns(  \n            DuplicateStartDate,  \n            {  \n                \"alternative_number\",\"city_id\",\"contact_no\",\"contact_no_telephone\",  \n                \"country_of_birth_id\",\"date_of_birth\",\"email\",\"employee_type_id\",  \n                \"first_name\",\"gender\",\"id\",\"id_number\",  \n                \"is_active\",\"kin_contact_no\",\"kin_email\",\"kin_name\",  \n                \"kin_relationship_id\",\"last_name\",\"middle_name\",\"position_id\",\"region_id\",\"qualification_type_id\",\"race_type_id\",\"school_id\",  \n                \"schoolStaff\",\"start_date\",\"start_date_import\",\"street_address\"  \n            }  \n        ),  \n  \n    RenameColumns =  \n        Table.RenameColumns(  \n            SelectColumns,  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"cog_city\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"is_active\", \"statecode\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"region_id\", \"cog_region\"},  \n                {\"qualification_type_id\", \"tcbgrow_qualification\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        ),\n  #\"Replaced value\" = Table.ReplaceValue(RenameColumns, null, \"\", Replacer.ReplaceValue, {\"tcbgrow_alternativenumber\", \"mobilephone\", \"telephone1\", \"emailaddress1\", \"firstname\", \"gendercode\", \"new_staff_id\", \"tcbgrow_idnumber\", \"tcbgrow_nextofkincontactnumber\", \"tcbgrow_nextofkinemail\", \"tcbgrow_nextofkinname\", \"lastname\", \"middlename\", \"tcbgrow_schoolstaff\", \"tcbgrow_address1\"}),\n#\"Calculated date\" =  \n    Table.TransformColumns(  \n        #\"Replaced value\",  \n        {  \n            {\"tcbgrow_startdate\", each Date.From(_), type nullable date},  \n            {\"new_start_date\", each Date.From(_), type nullable date},  \n            {\"birthdate\", each Date.From(_), type nullable date}  \n        }  \n    )    \n  \nin  \n    #\"Calculated date\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SchoolOwners')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolowners_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolowners_s",
+							"dataset": {
+								"referenceName": "p_schoolowners_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolowners_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolowners_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolowners_s\",  \n  \n    #\"Added custom\" = Table.TransformColumnTypes(  \n        Table.AddColumn(Source, \"personimport\", each true),  \n        {{\"personimport\", type logical}}  \n    ),  \n  \n    #\"Added custom 1\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Added custom\", \"personimportdone\", each false),  \n        {{\"personimportdone\", type logical}}  \n    ),  \n  \n    #\"Replaced value\" = Table.ReplaceValue(#\"Added custom 1\", \"Male\", \"1\", Replacer.ReplaceText, {\"gender\"}),  \n    #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"Female\", \"2\", Replacer.ReplaceText, {\"gender\"}),  \n    #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"NULL\", \"3\", Replacer.ReplaceText, {\"gender\"}),  \n  \n    #\"Added custom 2\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Replaced value 2\", \"DateUpdated\", each DateTime.Date(DateTime.LocalNow())),  \n        {{\"DateUpdated\", type date}}  \n    ),  \n  \n    #\"Added custom 3\" = Table.TransformColumnTypes(  \n        Table.AddColumn(#\"Added custom 2\", \"FullName\", each [first_name] & \" \" & [last_name]),  \n        {{\"FullName\", type text}}  \n    ),  \n  \n// ✅ CLEAN ADDRESS COLUMN (Spark Runtime Compatible)  \nCleanText = (txt as nullable text) =>  \n    if txt = null then null else  \n    Text.Remove(  \n        txt,  \n        List.Transform({0..31}, each Character.FromNumber(_))  \n    ),  \n  \n#\"Cleaned address\" = Table.TransformColumns(  \n    #\"Added custom 3\",  \n    {{\"address\", CleanText, type text}}  \n),    \n  \n    #\"Replaced value 4\" = Table.ReplaceValue(#\"Cleaned address\", \":\", \"\", Replacer.ReplaceText, {\"address\"}),  \n    #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"\"\"\", \"\", Replacer.ReplaceText, {\"address\"}),  \n  \n    #\"Changed column type\" = Table.TransformColumnTypes(#\"Replaced value 5\", {{\"gender\", Int64.Type}}),  \n  \n    #\"Removed other columns\" = Table.SelectColumns(  \n        #\"Changed column type\",  \n        {\"id\", \"address\", \"alternative_number\", \"city_id\", \"updated_at\", \"contact_no\", \"country_of_birth_id\", \"date_of_birth\", \"email\", \"first_name\", \"last_name\", \"FullName\", \"preferred_name\", \"race_type_id\", \"region_id\"}  \n    ),  \n  \n    #\"Renamed columns\" = Table.RenameColumns(  \n        #\"Removed other columns\",  \n        {  \n            {\"address\", \"tcbgrow_address\"},  \n            {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"city_id\", \"tcbgrow_city\"},  \n            {\"contact_no\", \"tcbgrow_contactnumber\"},  \n            {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n            {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n            {\"email\", \"tcbgrow_emailaddress\"},  \n            {\"first_name\", \"tcbgrow_firstname\"},  \n            {\"last_name\", \"tcbgrow_lastname\"},  \n            {\"FullName\", \"tcbgrow_name\"},  \n            {\"preferred_name\", \"tcbgrow_preferredname\"},  \n            {\"race_type_id\", \"tcbgrow_race\"},  \n            {\"region_id\", \"cog_region\"},  \n            {\"updated_at\", \"tcbgrow_lastappdate\"}  \n        }  \n    )  \n  \nin  \n    #\"Renamed columns\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolowners_s')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SchoolStaff')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolsupdate_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolsupdate_s",
+							"dataset": {
+								"referenceName": "p_schoolsupdate_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolsupdate_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolsupdate_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolsupdate_s\",\r\n  #\"Removed other columns\" = Table.SelectColumns(Source, {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n    Replace_Status_Active = Table.ReplaceValue(#\"Removed other columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n    Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n    Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n    Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, \" \", Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n    Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\r\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n    Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\r\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", Int64.Type}})\nin\n    #\"Changed column type\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Schools Staff')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolStaff",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"filter1 derive({cog_City@odata.bind} = iif(\r",
+						"    isNull(cog_city),\r",
+						"    toString(null()),\r",
+						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
+						"),",
+						"          {tcbgrow_CountryofBirth@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_countryofbirth),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
+						"          {tcbgrow_School@odata.bind} = iif(    isNull(new_staff_id),    toString(null()),    concat(\"/contacts(cog_appid=\", toString(new_staff_id), \")\")),",
+						"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(cog_appid=\", toString(tcbgrow_qualification), \")\"))) ~> derivedColumn1",
+						"parquetsource filter(tcbgrow_schoolappid==10803) ~> filter1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_school_staff_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_alternativenumber,",
+						"          mobilephone,",
+						"          telephone1,",
+						"          birthdate,",
+						"          emailaddress1,",
+						"          tcbgrow_employeetype,",
+						"          firstname,",
+						"          gendercode,",
+						"          new_staff_id,",
+						"          tcbgrow_idnumber,",
+						"          statecode,",
+						"          tcbgrow_nextofkincontactnumber,",
+						"          tcbgrow_nextofkinemail,",
+						"          tcbgrow_nextofkinname,",
+						"          tcbgrow_nextofkinrelationship,",
+						"          lastname,",
+						"          middlename,",
+						"          tcbgrow_staffrole = {tcbgrow_Qualification@odata.bind},",
+						"          tcbgrow_race,",
+						"          tcbgrow_schoolappid,",
+						"          tcbgrow_schoolstaff,",
+						"          new_start_date,",
+						"          tcbgrow_startdate,",
+						"          tcbgrow_address1,",
+						"          {tcbgrow_School@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          {tcbgrow_City@odata.bind} = {cog_City@odata.bind},",
+						"          {tcbgrow_CountryofBirth@odata.bind}",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},

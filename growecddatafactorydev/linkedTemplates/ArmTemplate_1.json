@@ -13,6 +13,48 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/maria_GRW_StaffStatsImport_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mysql_crm",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`vw_staff_attendance_stats_3months`"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/maria_SchoolCompliance_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "mysql_growecd",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "`school_government_compliences`"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolowners_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -231,7 +273,120 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "tcbgrow_alternativenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "mobilephone",
+						"type": "UTF8"
+					},
+					{
+						"name": "telephone1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "birthdate",
+						"type": "INT96"
+					},
+					{
+						"name": "emailaddress1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_employeetype",
+						"type": "INT64"
+					},
+					{
+						"name": "firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "gendercode",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_staff_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_idnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "statecode",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_nextofkincontactnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinrelationship",
+						"type": "INT64"
+					},
+					{
+						"name": "lastname",
+						"type": "UTF8"
+					},
+					{
+						"name": "middlename",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_staffrole",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_qualification",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolappid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolstaff",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address1",
+						"type": "UTF8"
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -607,6 +762,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -632,6 +790,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -659,6 +820,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -684,6 +848,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -711,6 +878,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -736,6 +906,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -763,6 +936,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -788,6 +964,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -815,6 +994,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -840,6 +1022,9 @@
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -867,6 +1052,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "Json",
 				"typeProperties": {
@@ -889,6 +1077,9 @@
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Storage"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -896,58 +1087,6 @@
 						"type": "AzureBlobFSLocation",
 						"fileName": "vw_schools_rpt_final_null_op.csv",
 						"fileSystem": "giraffe"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/storage_GRW_StaffStatsImport_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "vw_staff_attendance_stats_3months.csv",
-						"folderPath": "giraffe"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/storage_SchoolCompliance_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "school_government_compliences.csv",
-						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
 					"escapeChar": "\\",

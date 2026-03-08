@@ -11,6 +11,12 @@
 		"Dataverse1_servicePrincipalCredential": {
 			"value": ""
 		},
+		"MariaDBCRM_password": {
+			"value": ""
+		},
+		"MariaDBGrowECD_password": {
+			"value": ""
+		},
 		"mysql_crm_password": {
 			"value": ""
 		},
@@ -22,6 +28,24 @@
 		},
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"value": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+		},
+		"MariaDBCRM_properties_typeProperties_server": {
+			"value": "102.130.112.164"
+		},
+		"MariaDBCRM_properties_typeProperties_database": {
+			"value": "crm"
+		},
+		"MariaDBCRM_properties_typeProperties_username": {
+			"value": "cognate"
+		},
+		"MariaDBGrowECD_properties_typeProperties_server": {
+			"value": "102.130.112.164"
+		},
+		"MariaDBGrowECD_properties_typeProperties_database": {
+			"value": "growecd_growecd"
+		},
+		"MariaDBGrowECD_properties_typeProperties_username": {
+			"value": "cognate"
 		},
 		"mysql_crm_properties_typeProperties_server": {
 			"value": "102.130.112.164"

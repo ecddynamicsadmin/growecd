@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
 		},
+		"MariaDBCRM_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MariaDBCRM'"
+		},
+		"MariaDBGrowECD_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'MariaDBGrowECD'"
+		},
 		"mysql_crm_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'mysql_crm'"
@@ -30,6 +38,30 @@
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+		},
+		"MariaDBCRM_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"MariaDBCRM_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "crm"
+		},
+		"MariaDBCRM_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
+		},
+		"MariaDBGrowECD_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"MariaDBGrowECD_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "growecd_growecd"
+		},
+		"MariaDBGrowECD_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
 		},
 		"mysql_crm_properties_typeProperties_server": {
 			"type": "string",
@@ -88,6 +120,12 @@
 					"Dataverse1_servicePrincipalCredential": {
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
+					"MariaDBCRM_password": {
+						"value": "[parameters('MariaDBCRM_password')]"
+					},
+					"MariaDBGrowECD_password": {
+						"value": "[parameters('MariaDBGrowECD_password')]"
+					},
 					"mysql_crm_password": {
 						"value": "[parameters('mysql_crm_password')]"
 					},
@@ -99,6 +137,24 @@
 					},
 					"Dataverse1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"MariaDBCRM_properties_typeProperties_server": {
+						"value": "[parameters('MariaDBCRM_properties_typeProperties_server')]"
+					},
+					"MariaDBCRM_properties_typeProperties_database": {
+						"value": "[parameters('MariaDBCRM_properties_typeProperties_database')]"
+					},
+					"MariaDBCRM_properties_typeProperties_username": {
+						"value": "[parameters('MariaDBCRM_properties_typeProperties_username')]"
+					},
+					"MariaDBGrowECD_properties_typeProperties_server": {
+						"value": "[parameters('MariaDBGrowECD_properties_typeProperties_server')]"
+					},
+					"MariaDBGrowECD_properties_typeProperties_database": {
+						"value": "[parameters('MariaDBGrowECD_properties_typeProperties_database')]"
+					},
+					"MariaDBGrowECD_properties_typeProperties_username": {
+						"value": "[parameters('MariaDBGrowECD_properties_typeProperties_username')]"
 					},
 					"mysql_crm_properties_typeProperties_server": {
 						"value": "[parameters('mysql_crm_properties_typeProperties_server')]"
