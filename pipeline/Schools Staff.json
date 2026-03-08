@@ -621,8 +621,6 @@
 			{
 				"name": "School Staff Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff from Maria",
@@ -668,6 +666,8 @@
 			{
 				"name": "Dataverse Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff Query",
@@ -698,7 +698,7 @@
 			}
 		],
 		"variables": {
-			"LastModified": {
+			"Updated_at": {
 				"type": "String",
 				"defaultValue": "2026-03-01"
 			}
