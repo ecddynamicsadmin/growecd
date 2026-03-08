@@ -133,7 +133,8 @@
 				"          {tcbgrow_School@odata.bind},",
 				"          {cog_Region@odata.bind},",
 				"          {cog_City@odata.bind},",
-				"          {tcbgrow_Qualification@odata.bind}",
+				"          {tcbgrow_Qualification@odata.bind},",
+				"          {tcbgrow_CountryOfBirth@odata.bind}",
 				"     )) ~> sink1"
 			]
 		}
