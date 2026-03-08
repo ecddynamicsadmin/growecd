@@ -124,7 +124,6 @@
 				"          tcbgrow_nextofkinrelationship,",
 				"          lastname,",
 				"          middlename,",
-				"          tcbgrow_staffrole = {tcbgrow_Qualification@odata.bind},",
 				"          tcbgrow_race,",
 				"          tcbgrow_schoolappid,",
 				"          tcbgrow_schoolstaff,",
@@ -134,7 +133,8 @@
 				"          {tcbgrow_School@odata.bind},",
 				"          {cog_Region@odata.bind},",
 				"          {tcbgrow_City@odata.bind} = {cog_City@odata.bind},",
-				"          {tcbgrow_CountryofBirth@odata.bind}",
+				"          {tcbgrow_CountryofBirth@odata.bind},",
+				"          {tcbgrow_Qualification@odata.bind}",
 				"     )) ~> sink1"
 			]
 		}
