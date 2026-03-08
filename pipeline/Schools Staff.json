@@ -621,8 +621,6 @@
 			{
 				"name": "School Staff Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff from Maria",
