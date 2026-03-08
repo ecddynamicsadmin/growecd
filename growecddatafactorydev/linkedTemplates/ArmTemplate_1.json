@@ -323,6 +323,10 @@
 						"type": "UTF8"
 					},
 					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
 						"name": "statecode",
 						"type": "INT32"
 					},

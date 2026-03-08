@@ -1983,6 +1983,8 @@
 					{
 						"name": "School Staff from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2640,7 +2642,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_alternativenumber as string,\n\t\tcog_city as long,\n\t\tmobilephone as string,\n\t\ttelephone1 as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\tbirthdate as timestamp,\n\t\temailaddress1 as string,\n\t\ttcbgrow_employeetype as long,\n\t\tfirstname as string,\n\t\tgendercode as string,\n\t\tnew_staff_id as string,\n\t\ttcbgrow_idnumber as string,\n\t\tstatecode as integer,\n\t\ttcbgrow_nextofkincontactnumber as string,\n\t\ttcbgrow_nextofkinemail as string,\n\t\ttcbgrow_nextofkinname as string,\n\t\ttcbgrow_nextofkinrelationship as long,\n\t\tlastname as string,\n\t\tmiddlename as string,\n\t\ttcbgrow_staffrole as long,\n\t\tcog_region as long,\n\t\ttcbgrow_qualification as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_schoolappid as long,\n\t\ttcbgrow_schoolstaff as string,\n\t\tnew_start_date as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_address1 as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolstaff_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolstaffd"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_alternativenumber as string,\n\t\tcog_city as long,\n\t\tmobilephone as string,\n\t\ttelephone1 as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\tbirthdate as timestamp,\n\t\temailaddress1 as string,\n\t\ttcbgrow_employeetype as long,\n\t\tfirstname as string,\n\t\tgendercode as string,\n\t\tnew_staff_id as string,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\tstatecode as integer,\n\t\ttcbgrow_nextofkincontactnumber as string,\n\t\ttcbgrow_nextofkinemail as string,\n\t\ttcbgrow_nextofkinname as string,\n\t\ttcbgrow_nextofkinrelationship as long,\n\t\tlastname as string,\n\t\tmiddlename as string,\n\t\ttcbgrow_staffrole as long,\n\t\tcog_region as long,\n\t\ttcbgrow_qualification as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_schoolappid as long,\n\t\ttcbgrow_schoolstaff as string,\n\t\tnew_start_date as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_address1 as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolstaff_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolstaffd"
 										}
 									]
 								}
@@ -2650,6 +2652,8 @@
 					{
 						"name": "Dataverse Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
@@ -2670,11 +2674,17 @@
 							"dataflow": {
 								"referenceName": "Schools Staff",
 								"type": "DataFlowReference",
-								"parameters": {},
+								"parameters": {
+									"updated_at": {
+										"value": "'@{variables('updated_at')}'",
+										"type": "Expression"
+									}
+								},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
 							"compute": {
@@ -2687,6 +2697,12 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"updated_at": {
+						"type": "String",
+						"defaultValue": "2026-02-01"
+					}
 				},
 				"annotations": []
 			},
@@ -3337,6 +3353,10 @@
 					{
 						"name": "tcbgrow_idnumber",
 						"type": "UTF8"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
 					},
 					{
 						"name": "statecode",
@@ -4497,7 +4517,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    FixKinRelationship =  \n        Table.ReplaceValue(Source, 12, 10, Replacer.ReplaceValue, {\"kin_relationship_id\"}),  \n  \n    AddSchoolStaff =  \n        Table.TransformColumnTypes(Table.AddColumn(FixKinRelationship, \"schoolStaff\", each \"301220000\"), {{\"schoolStaff\", type text}}),  \n  \n    DuplicateContact =  \n        Table.DuplicateColumn(AddSchoolStaff, \"contact_no\", \"contact_no_telephone\"),  \n  \n    DuplicateStartDate =  \n        Table.DuplicateColumn(DuplicateContact, \"start_date\", \"start_date_import\"),  \n  \n    SelectColumns =  \n        Table.SelectColumns(  \n            DuplicateStartDate,  \n            {  \n                \"alternative_number\",\"city_id\",\"contact_no\",\"contact_no_telephone\",  \n                \"country_of_birth_id\",\"date_of_birth\",\"email\",\"employee_type_id\",  \n                \"first_name\",\"gender\",\"id\",\"id_number\",  \n                \"is_active\",\"kin_contact_no\",\"kin_email\",\"kin_name\",  \n                \"kin_relationship_id\",\"last_name\",\"middle_name\",\"position_id\",\"region_id\",\"qualification_type_id\",\"race_type_id\",\"school_id\",  \n                \"schoolStaff\",\"start_date\",\"start_date_import\",\"street_address\"  \n            }  \n        ),  \n  \n    RenameColumns =  \n        Table.RenameColumns(  \n            SelectColumns,  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"cog_city\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"is_active\", \"statecode\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"region_id\", \"cog_region\"},  \n                {\"qualification_type_id\", \"tcbgrow_qualification\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        ),\n  #\"Replaced value\" = Table.ReplaceValue(RenameColumns, null, \"\", Replacer.ReplaceValue, {\"tcbgrow_alternativenumber\", \"mobilephone\", \"telephone1\", \"emailaddress1\", \"firstname\", \"gendercode\", \"new_staff_id\", \"tcbgrow_idnumber\", \"tcbgrow_nextofkincontactnumber\", \"tcbgrow_nextofkinemail\", \"tcbgrow_nextofkinname\", \"lastname\", \"middlename\", \"tcbgrow_schoolstaff\", \"tcbgrow_address1\"}),\n#\"Calculated date\" =  \n    Table.TransformColumns(  \n        #\"Replaced value\",  \n        {  \n            {\"tcbgrow_startdate\", each Date.From(_), type nullable date},  \n            {\"new_start_date\", each Date.From(_), type nullable date},  \n            {\"birthdate\", each Date.From(_), type nullable date}  \n        }  \n    )    \n  \nin  \n    #\"Calculated date\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    FixKinRelationship =  \n        Table.ReplaceValue(Source, 12, 10, Replacer.ReplaceValue, {\"kin_relationship_id\"}),  \n  \n    AddSchoolStaff =  \n        Table.TransformColumnTypes(Table.AddColumn(FixKinRelationship, \"schoolStaff\", each \"301220000\"), {{\"schoolStaff\", type text}}),  \n  \n    DuplicateContact =  \n        Table.DuplicateColumn(AddSchoolStaff, \"contact_no\", \"contact_no_telephone\"),  \n  \n    DuplicateStartDate =  \n        Table.DuplicateColumn(DuplicateContact, \"start_date\", \"start_date_import\"),  \n  \n    SelectColumns =  \n        Table.SelectColumns(  \n            DuplicateStartDate,  \n            {  \n                \"alternative_number\",\"city_id\",\"contact_no\",\"contact_no_telephone\",  \n                \"country_of_birth_id\",\"date_of_birth\",\"email\",\"employee_type_id\",  \n                \"first_name\",\"gender\",\"id\",\"id_number\", \"updated_at\", \n                \"is_active\",\"kin_contact_no\",\"kin_email\",\"kin_name\",  \n                \"kin_relationship_id\",\"last_name\",\"middle_name\",\"position_id\",\"region_id\",\"qualification_type_id\",\"race_type_id\",\"school_id\",  \n                \"schoolStaff\",\"start_date\",\"start_date_import\",\"street_address\"  \n            }  \n        ),  \n  \n    RenameColumns =  \n        Table.RenameColumns(  \n            SelectColumns,  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"cog_city\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"is_active\", \"statecode\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"region_id\", \"cog_region\"},  \n                {\"qualification_type_id\", \"tcbgrow_qualification\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        ),\n  #\"Replaced value\" = Table.ReplaceValue(RenameColumns, null, \"\", Replacer.ReplaceValue, {\"tcbgrow_alternativenumber\", \"mobilephone\", \"telephone1\", \"emailaddress1\", \"firstname\", \"gendercode\", \"new_staff_id\", \"tcbgrow_idnumber\", \"tcbgrow_nextofkincontactnumber\", \"tcbgrow_nextofkinemail\", \"tcbgrow_nextofkinname\", \"lastname\", \"middlename\", \"tcbgrow_schoolstaff\", \"tcbgrow_address1\"}),\n#\"Calculated date\" =  \n    Table.TransformColumns(  \n        #\"Replaced value\",  \n        {  \n            {\"tcbgrow_startdate\", each Date.From(_), type nullable date},  \n            {\"new_start_date\", each Date.From(_), type nullable date},  \n            {\"birthdate\", each Date.From(_), type nullable date}  \n        }  \n    )    \n  \nin  \n    #\"Calculated date\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -4596,6 +4616,9 @@
 						}
 					],
 					"scriptLines": [
+						"parameters{",
+						"     updated_at as string (\"2026-02-01\")",
+						"}",
 						"source(output(",
 						"          tcbgrow_alternativenumber as string,",
 						"          cog_city as long,",
@@ -4609,6 +4632,7 @@
 						"          gendercode as string,",
 						"          new_staff_id as string,",
 						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
 						"          statecode as integer,",
 						"          tcbgrow_nextofkincontactnumber as string,",
 						"          tcbgrow_nextofkinemail as string,",
@@ -4637,15 +4661,22 @@
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
 						"),",
-						"          {tcbgrow_CountryofBirth@odata.bind} = iif(\r",
+						"          {tcbgrow_CountryOfBirth@odata.bind} = iif(\r",
 						"    isNull(tcbgrow_countryofbirth),\r",
 						"    toString(null()),\r",
 						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
 						"),",
 						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
-						"          {tcbgrow_School@odata.bind} = iif(    isNull(new_staff_id),    toString(null()),    concat(\"/contacts(cog_appid=\", toString(new_staff_id), \")\")),",
-						"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(cog_appid=\", toString(tcbgrow_qualification), \")\"))) ~> derivedColumn1",
-						"parquetsource filter(tcbgrow_schoolappid==10803) ~> filter1",
+						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolappid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolappid), \")\")),",
+						"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
+						"          birthdate = toString(birthdate, 'yyyy-MM-dd') ,",
+						"          gendercode = case(\r",
+						"    trim(gendercode) == 'Male', 1,\r",
+						"    trim(gendercode) == 'Female', 2,\r",
+						"    trim(gendercode) == 'TBC', 3,\r",
+						"    toInteger(null())\r",
+						"    )) ~> derivedColumn1",
+						"parquetsource filter(toDate(toString(updated_at, 'yyyy-MM-dd'))>=toDate($updated_at)) ~> filter1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -4676,17 +4707,17 @@
 						"          tcbgrow_nextofkinrelationship,",
 						"          lastname,",
 						"          middlename,",
-						"          tcbgrow_staffrole = {tcbgrow_Qualification@odata.bind},",
 						"          tcbgrow_race,",
 						"          tcbgrow_schoolappid,",
 						"          tcbgrow_schoolstaff,",
 						"          new_start_date,",
 						"          tcbgrow_startdate,",
 						"          tcbgrow_address1,",
-						"          {tcbgrow_School@odata.bind},",
 						"          {cog_Region@odata.bind},",
-						"          {tcbgrow_City@odata.bind} = {cog_City@odata.bind},",
-						"          {tcbgrow_CountryofBirth@odata.bind}",
+						"          {cog_City@odata.bind},",
+						"          {tcbgrow_Qualification@odata.bind},",
+						"          {tcbgrow_CountryOfBirth@odata.bind},",
+						"          {tcbgrow_School@odata.bind}",
 						"     )) ~> sink1"
 					]
 				}
