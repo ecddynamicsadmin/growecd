@@ -132,7 +132,7 @@
 				"          tcbgrow_address1,",
 				"          {tcbgrow_School@odata.bind},",
 				"          {cog_Region@odata.bind},",
-				"          {tcbgrow_City@odata.bind} = {cog_City@odata.bind},",
+				"          {cog_City@odata.bind},",
 				"          {tcbgrow_CountryofBirth@odata.bind},",
 				"          {tcbgrow_Qualification@odata.bind}",
 				"     )) ~> sink1"
