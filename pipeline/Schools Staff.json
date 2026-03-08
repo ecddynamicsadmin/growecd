@@ -5,8 +5,6 @@
 			{
 				"name": "School Staff from Maria",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -666,8 +664,6 @@
 			{
 				"name": "Dataverse Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff Query",
@@ -706,7 +702,7 @@
 		"variables": {
 			"updated_at": {
 				"type": "String",
-				"defaultValue": "2026-02-01"
+				"defaultValue": "2000-02-01"
 			}
 		},
 		"annotations": []
