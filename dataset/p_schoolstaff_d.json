@@ -69,11 +69,7 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "employeeid",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_staffactive",
+				"name": "statecode",
 				"type": "INT32"
 			},
 			{
@@ -109,7 +105,7 @@
 				"type": "INT64"
 			},
 			{
-				"name": "cr64f_qualificationimportid",
+				"name": "tcbgrow_qualification",
 				"type": "INT64"
 			},
 			{

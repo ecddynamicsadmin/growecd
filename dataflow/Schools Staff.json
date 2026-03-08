@@ -31,6 +31,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -47,8 +50,7 @@
 				"          gendercode as string,",
 				"          new_staff_id as string,",
 				"          tcbgrow_idnumber as string,",
-				"          employeeid as string,",
-				"          tcbgrow_staffactive as integer,",
+				"          statecode as integer,",
 				"          tcbgrow_nextofkincontactnumber as string,",
 				"          tcbgrow_nextofkinemail as string,",
 				"          tcbgrow_nextofkinname as string,",
@@ -57,7 +59,7 @@
 				"          middlename as string,",
 				"          tcbgrow_staffrole as long,",
 				"          cog_region as long,",
-				"          cr64f_qualificationimportid as long,",
+				"          tcbgrow_qualification as long,",
 				"          tcbgrow_race as long,",
 				"          tcbgrow_schoolappid as long,",
 				"          tcbgrow_schoolstaff as string,",
@@ -71,7 +73,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"parquetsource derive({cog_City@odata.bind} = iif(\r",
+				"filter1 derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(cog_city),\r",
 				"    toString(null()),\r",
 				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
@@ -84,6 +86,7 @@
 				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(new_staff_id),    toString(null()),    concat(\"/contacts(cog_appid=\", toString(new_staff_id), \")\")),",
 				"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(cog_appid=\", toString(tcbgrow_qualification), \")\"))) ~> derivedColumn1",
+				"parquetsource filter(tcbgrow_schoolappid==10803) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -107,8 +110,7 @@
 				"          gendercode,",
 				"          new_staff_id,",
 				"          tcbgrow_idnumber,",
-				"          employeeid,",
-				"          tcbgrow_staffactive,",
+				"          statecode,",
 				"          tcbgrow_nextofkincontactnumber,",
 				"          tcbgrow_nextofkinemail,",
 				"          tcbgrow_nextofkinname,",
@@ -116,7 +118,6 @@
 				"          lastname,",
 				"          middlename,",
 				"          tcbgrow_staffrole = {tcbgrow_Qualification@odata.bind},",
-				"          cr64f_qualificationimportid,",
 				"          tcbgrow_race,",
 				"          tcbgrow_schoolappid,",
 				"          tcbgrow_schoolstaff,",
