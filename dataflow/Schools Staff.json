@@ -38,7 +38,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     updated_at as string (\"2026-02-01\")",
+				"     updated_at as string (\"2000-02-01\")",
 				"}",
 				"source(output(",
 				"          tcbgrow_alternativenumber as string,",
