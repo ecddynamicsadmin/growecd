@@ -827,8 +827,6 @@
 					{
 						"name": "Schools Owners from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1109,8 +1107,6 @@
 					{
 						"name": "Schools Owners Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Owners from Maria",
@@ -1219,6 +1215,8 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1519,42 +1517,6 @@
 											"name": "contract_end_date",
 											"type": "DateTime",
 											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "operating_days",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "operating_days"
-										}
-									},
-									{
-										"source": {
-											"name": "opening_hours_monday_to_friday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "opening_hours_monday_to_friday"
-										}
-									},
-									{
-										"source": {
-											"name": "closing_hours_monday_to_thursday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "closing_hours_monday_to_thursday"
-										}
-									},
-									{
-										"source": {
-											"name": "closing_hours_friday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "closing_hours_friday"
 										}
 									},
 									{
@@ -1914,7 +1876,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\tcreated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 										}
 									]
 								}
@@ -1924,8 +1886,6 @@
 					{
 						"name": "Dataverse Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update Query",
@@ -3704,10 +3664,6 @@
 						"type": "INT96"
 					},
 					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
 						"name": "tcbgrow_contractdate",
 						"type": "INT96"
 					},
@@ -3792,7 +3748,204 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "school_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "franchisee_id",
+						"type": "INT64"
+					},
+					{
+						"name": "region_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "grow_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "learner_capacity",
+						"type": "UTF8"
+					},
+					{
+						"name": "number_of_classrooms",
+						"type": "UTF8"
+					},
+					{
+						"name": "logo",
+						"type": "UTF8"
+					},
+					{
+						"name": "address",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_commencement_date",
+						"type": "INT96"
+					},
+					{
+						"name": "break_even_fee",
+						"type": "INT32"
+					},
+					{
+						"name": "capacity",
+						"type": "INT32"
+					},
+					{
+						"name": "form_11",
+						"type": "UTF8"
+					},
+					{
+						"name": "hr_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "hr_staff_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "ecd_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract",
+						"type": "UTF8"
+					},
+					{
+						"name": "contract_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "contract_end_date",
+						"type": "INT96"
+					},
+					{
+						"name": "business_mentor_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "education_mentor_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "business_mentor_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "business_mentor_phone_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "business_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_phone_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "education_mentor_email",
+						"type": "UTF8"
+					},
+					{
+						"name": "hourly_late_or_early_fee",
+						"type": "INT64"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "school_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "inventory_group_id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "monthly_salaries",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "is_learner_payment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_attendance",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_learner_assessment",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_caregiver_access",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "segment",
+						"type": "UTF8"
+					},
+					{
+						"name": "agreement_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "program_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "owner_id",
+						"type": "INT64"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
@@ -4744,6 +4897,7 @@
 						"     alternateKeyName: 'tcbgrow_school_staff_key',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
 						"     outputAssertFailedRows: true,",
 						"     assertFailure_fileSystem: 'giraffe',",
 						"     assertFailure_folderPath: 'errors',",
@@ -4785,6 +4939,7 @@
 						"     upsertable:false,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 2,",
 						"     mapColumn(",
 						"          {tcbgrow_SchoolPrinciple@odata.bind},",
 						"          tcbgrow_schoolid",
@@ -4848,7 +5003,6 @@
 						"          tcbgrow_monthlysalaries as decimal(38,9),",
 						"          tcbgrow_schoolstatus as string,",
 						"          updated_at as timestamp,",
-						"          created_at as timestamp,",
 						"          tcbgrow_contractdate as timestamp,",
 						"          tcbgrow_ecdcode as string,",
 						"          tcbgrow_commencementdate as timestamp,",

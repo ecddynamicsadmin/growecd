@@ -1119,6 +1119,7 @@
 						"     alternateKeyName: 'tcbgrow_school_staff_key',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
 						"     outputAssertFailedRows: true,",
 						"     assertFailure_fileSystem: 'giraffe',",
 						"     assertFailure_folderPath: 'errors',",
@@ -1160,6 +1161,7 @@
 						"     upsertable:false,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 2,",
 						"     mapColumn(",
 						"          {tcbgrow_SchoolPrinciple@odata.bind},",
 						"          tcbgrow_schoolid",
@@ -1218,7 +1220,6 @@
 						"          tcbgrow_monthlysalaries as decimal(38,9),",
 						"          tcbgrow_schoolstatus as string,",
 						"          updated_at as timestamp,",
-						"          created_at as timestamp,",
 						"          tcbgrow_contractdate as timestamp,",
 						"          tcbgrow_ecdcode as string,",
 						"          tcbgrow_commencementdate as timestamp,",
@@ -1354,8 +1355,6 @@
 					{
 						"name": "Schools Owners from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1636,8 +1635,6 @@
 					{
 						"name": "Schools Owners Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Owners from Maria",
@@ -1743,6 +1740,8 @@
 					{
 						"name": "Schools Update from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2043,42 +2042,6 @@
 											"name": "contract_end_date",
 											"type": "DateTime",
 											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "operating_days",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "operating_days"
-										}
-									},
-									{
-										"source": {
-											"name": "opening_hours_monday_to_friday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "opening_hours_monday_to_friday"
-										}
-									},
-									{
-										"source": {
-											"name": "closing_hours_monday_to_thursday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "closing_hours_monday_to_thursday"
-										}
-									},
-									{
-										"source": {
-											"name": "closing_hours_friday",
-											"physicalType": "Null"
-										},
-										"sink": {
-											"name": "closing_hours_friday"
 										}
 									},
 									{
@@ -2438,7 +2401,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\tcreated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 										}
 									]
 								}
@@ -2448,8 +2411,6 @@
 					{
 						"name": "Dataverse Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools Update Query",
