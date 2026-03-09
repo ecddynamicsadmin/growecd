@@ -19,6 +19,163 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id",
+				"type": "UTF8"
+			},
+			{
+				"name": "first_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "last_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "middle_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "date_of_birth",
+				"type": "INT96"
+			},
+			{
+				"name": "start_date",
+				"type": "INT96"
+			},
+			{
+				"name": "enroll_date",
+				"type": "INT96"
+			},
+			{
+				"name": "gender",
+				"type": "UTF8"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "is_temporary",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "is_active",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "is_special",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "is_graduated",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "is_confirmed",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "age_group_id",
+				"type": "INT64"
+			},
+			{
+				"name": "class_id",
+				"type": "UTF8"
+			},
+			{
+				"name": "fee",
+				"type": "INT64"
+			},
+			{
+				"name": "is_standard_fee_applied",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "address",
+				"type": "UTF8"
+			},
+			{
+				"name": "province_id",
+				"type": "INT64"
+			},
+			{
+				"name": "city_id",
+				"type": "INT64"
+			},
+			{
+				"name": "zip_code",
+				"type": "INT32"
+			},
+			{
+				"name": "country_of_birth_id",
+				"type": "INT64"
+			},
+			{
+				"name": "other_country_of_birth_id",
+				"type": "INT64"
+			},
+			{
+				"name": "race_type_id",
+				"type": "INT64"
+			},
+			{
+				"name": "doctors_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "doctors_contact_no",
+				"type": "UTF8"
+			},
+			{
+				"name": "known_allergies",
+				"type": "UTF8"
+			},
+			{
+				"name": "created_by",
+				"type": "INT32"
+			},
+			{
+				"name": "updated_by",
+				"type": "INT32"
+			},
+			{
+				"name": "parent_id",
+				"type": "INT32"
+			},
+			{
+				"name": "is_dormant",
+				"type": "INT_8"
+			},
+			{
+				"name": "profile_completed",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "id_number",
+				"type": "UTF8"
+			},
+			{
+				"name": "created_at",
+				"type": "INT96"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			},
+			{
+				"name": "special_need_description",
+				"type": "UTF8"
+			},
+			{
+				"name": "sassa_status",
+				"type": "INT32"
+			},
+			{
+				"name": "school_age_group_id",
+				"type": "INT64"
+			}
+		]
 	}
 }
