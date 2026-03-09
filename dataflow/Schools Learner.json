@@ -1,0 +1,141 @@
+{
+	"name": "Schools Learner",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "p_schoollearner_d",
+						"type": "DatasetReference"
+					},
+					"name": "parquetsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataverseSchoolLearner",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "dateandroleisprinciple"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     updated_at as string (\"2000-02-01\")",
+				"}",
+				"source(output(",
+				"          tcbgrow_appid as string,",
+				"          tcbgrow_firstname as string,",
+				"          tcbgrow_lastname as string,",
+				"          tcbgrow_middlename as string,",
+				"          tcbgrow_dateofbirth as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_enrolldate as timestamp,",
+				"          tcbgrow_gender as string,",
+				"          tcbgrow_school as long,",
+				"          tcbgrow_temporary as boolean,",
+				"          tcbgrow_leaneractive as boolean,",
+				"          tcbgrow_leanerspecial as boolean,",
+				"          tcbgrow_learnergraduated as boolean,",
+				"          tcbgrow_schoolagegroup as long,",
+				"          address as string,",
+				"          tcbgrow_region as long,",
+				"          tcbgrow_city as long,",
+				"          tcbgrow_country as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_idnumber as string,",
+				"          updated_at as timestamp,",
+				"          tcbgrow_leanerage as long,",
+				"          tcbgrow_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> parquetsource",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
+				"    isNull(tcbgrow_city),\r",
+				"    toString(null()),\r",
+				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
+				"),",
+				"          {tcbgrow_Country@odata.bind} = iif(\r",
+				"    isNull(tcbgrow_country),\r",
+				"    toString(null()),\r",
+				"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
+				"),",
+				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
+				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
+				"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
+				"          birthdate = toString(birthdate, 'yyyy-MM-dd'),",
+				"          gendercode = case(\r",
+				"    trim(gendercode) == 'Male', 1,\r",
+				"    trim(gendercode) == 'Female', 2,\r",
+				"    trim(gendercode) == 'TBC', 3,\r",
+				"    toInteger(null())\r",
+				"    )) ~> derivedColumn1",
+				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_school_staff_key',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'giraffe',",
+				"     assertFailure_folderPath: 'errors',",
+				"     mapColumn(",
+				"          tcbgrow_alternativenumber,",
+				"          mobilephone,",
+				"          telephone1,",
+				"          birthdate,",
+				"          emailaddress1,",
+				"          tcbgrow_employeetype,",
+				"          firstname,",
+				"          gendercode,",
+				"          new_staff_id,",
+				"          tcbgrow_idnumber,",
+				"          statecode,",
+				"          tcbgrow_nextofkincontactnumber,",
+				"          tcbgrow_nextofkinemail,",
+				"          tcbgrow_nextofkinname,",
+				"          tcbgrow_nextofkinrelationship,",
+				"          lastname,",
+				"          middlename,",
+				"          tcbgrow_race,",
+				"          tcbgrow_schoolappid,",
+				"          tcbgrow_schoolstaff,",
+				"          new_start_date,",
+				"          tcbgrow_startdate,",
+				"          tcbgrow_address1,",
+				"          {cog_Region@odata.bind},",
+				"          {cog_City@odata.bind},",
+				"          {tcbgrow_Qualification@odata.bind},",
+				"          {tcbgrow_CountryOfBirth@odata.bind} = {tcbgrow_Country@odata.bind},",
+				"          {tcbgrow_School@odata.bind}",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
