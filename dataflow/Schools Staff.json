@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "p_schoollearner_d",
+						"referenceName": "p_schoolstaff_d",
 						"type": "DatasetReference"
 					},
 					"name": "parquetsource"
