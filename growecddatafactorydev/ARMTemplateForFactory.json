@@ -112,7 +112,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -137,7 +137,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_LearnersStats_AUTO",
+								"referenceName": "MariaSchoolLearner",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -790,7 +790,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_LearnersStats_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolLearner')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_LearnersStats_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolIncome_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolIncome_AUTO')]",
@@ -816,6 +816,110 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GrowECD Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ECD Owners",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Owners",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"LastRunDate": {
+									"value": "@pipeline().parameters.LastRunDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Schools",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ECD Owners",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Update",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"LastRunDate": {
+									"value": "@pipeline().parameters.LastRunDate",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Staff",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Schools",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools Staff",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"LastRunDate": {
+									"value": "@pipeline().parameters.LastRunDate",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string",
+						"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-1),2),'yyyy-MM-dd HH:mm:ss')"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/School Owners')]",
+				"[concat(variables('factoryId'), '/pipelines/School Update')]",
+				"[concat(variables('factoryId'), '/pipelines/Schools Staff')]"
 			]
 		},
 		{
@@ -1195,6 +1299,11 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string"
+					}
 				},
 				"annotations": []
 			},
@@ -1817,7 +1926,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "MariaDBSchoolUpdate",
+								"referenceName": "MariaSchoolUpdate",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -1882,7 +1991,7 @@
 						}
 					},
 					{
-						"name": "Dataverse Update",
+						"name": "Dataverse School Update",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -1922,14 +2031,198 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/MariaDBSchoolUpdate')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolUpdate')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_s')]",
 				"[concat(variables('factoryId'), '/dataflows/SchoolsUpdate')]",
 				"[concat(variables('factoryId'), '/dataflows/Schools Update')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsupdate_d')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Schools Learner')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Learner from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolLearner",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoollearner_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Learner Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Learner from Maria",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Learner",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoollearner_s": {},
+									"UserQuerypschoollearnerd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoollearnerd",
+											"dataset": {
+												"referenceName": "p_schoollearner_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_alternativenumber as string,\n\t\tcog_city as long,\n\t\tmobilephone as string,\n\t\ttelephone1 as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\tbirthdate as timestamp,\n\t\temailaddress1 as string,\n\t\ttcbgrow_employeetype as long,\n\t\tfirstname as string,\n\t\tgendercode as string,\n\t\tnew_staff_id as string,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\tstatecode as integer,\n\t\ttcbgrow_nextofkincontactnumber as string,\n\t\ttcbgrow_nextofkinemail as string,\n\t\ttcbgrow_nextofkinname as string,\n\t\ttcbgrow_nextofkinrelationship as long,\n\t\tlastname as string,\n\t\tmiddlename as string,\n\t\ttcbgrow_staffrole as long,\n\t\tcog_region as long,\n\t\ttcbgrow_qualification as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_schoolappid as long,\n\t\ttcbgrow_schoolstaff as string,\n\t\tnew_start_date as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_address1 as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Learner Update",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "School Learner Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Schools Staff",
+								"type": "DataFlowReference",
+								"parameters": {
+									"updated_at": {
+										"value": "'@{variables('updated_at')}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"parquetsource": {},
+									"dataverseschools": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string",
+						"defaultValue": "2000-01-01"
+					}
+				},
+				"variables": {
+					"updated_at": {
+						"type": "String",
+						"defaultValue": "2000-02-01"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolLearner')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoollearner_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Learner')]",
+				"[concat(variables('factoryId'), '/dataflows/Schools Staff')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoollearner_d')]"
 			]
 		},
 		{
@@ -2610,7 +2903,7 @@
 						}
 					},
 					{
-						"name": "Dataverse Update",
+						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
@@ -2657,6 +2950,11 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string"
+					}
+				},
 				"variables": {
 					"updated_at": {
 						"type": "String",
@@ -2690,6 +2988,29 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_school"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolLearner')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_learner"
 				}
 			},
 			"dependsOn": [
@@ -2743,7 +3064,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MariaDBSchoolUpdate')]",
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearner')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -2758,7 +3079,7 @@
 				"type": "MariaDBTable",
 				"schema": [],
 				"typeProperties": {
-					"tableName": "vw_schools_rpt_final_null_op"
+					"tableName": "vw_learners_export"
 				}
 			},
 			"dependsOn": [
@@ -2812,26 +3133,26 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_LearnersStats_AUTO')]",
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolUpdate')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "mysql_crm",
+					"referenceName": "MariaDBCRM",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
 					"name": "Maria Db"
 				},
 				"annotations": [],
-				"type": "MySqlTable",
+				"type": "MariaDBTable",
 				"schema": [],
 				"typeProperties": {
-					"tableName": "`vw_learner_attendance_stats_3months`"
+					"tableName": "vw_schools_rpt_final_null_op"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
 			]
 		},
 		{
@@ -3039,6 +3360,338 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/mysql_growecd')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoollearner_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoollearner_d.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_alternativenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "mobilephone",
+						"type": "UTF8"
+					},
+					{
+						"name": "telephone1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "birthdate",
+						"type": "INT96"
+					},
+					{
+						"name": "emailaddress1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_employeetype",
+						"type": "INT64"
+					},
+					{
+						"name": "firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "gendercode",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_staff_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_idnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "statecode",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_nextofkincontactnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinrelationship",
+						"type": "INT64"
+					},
+					{
+						"name": "lastname",
+						"type": "UTF8"
+					},
+					{
+						"name": "middlename",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_staffrole",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_qualification",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolappid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolstaff",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address1",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoollearner_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoollearner_s.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "middle_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_of_birth",
+						"type": "INT96"
+					},
+					{
+						"name": "start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "enroll_date",
+						"type": "INT96"
+					},
+					{
+						"name": "gender",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "is_temporary",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_active",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_special",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_graduated",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "is_confirmed",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "age_group_id",
+						"type": "INT64"
+					},
+					{
+						"name": "class_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "fee",
+						"type": "INT64"
+					},
+					{
+						"name": "is_standard_fee_applied",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "address",
+						"type": "UTF8"
+					},
+					{
+						"name": "province_id",
+						"type": "INT64"
+					},
+					{
+						"name": "city_id",
+						"type": "INT64"
+					},
+					{
+						"name": "zip_code",
+						"type": "INT32"
+					},
+					{
+						"name": "country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "other_country_of_birth_id",
+						"type": "INT64"
+					},
+					{
+						"name": "race_type_id",
+						"type": "INT64"
+					},
+					{
+						"name": "doctors_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "doctors_contact_no",
+						"type": "UTF8"
+					},
+					{
+						"name": "known_allergies",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "parent_id",
+						"type": "INT32"
+					},
+					{
+						"name": "is_dormant",
+						"type": "INT_8"
+					},
+					{
+						"name": "profile_completed",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "id_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "special_need_description",
+						"type": "UTF8"
+					},
+					{
+						"name": "sassa_status",
+						"type": "INT32"
+					},
+					{
+						"name": "school_age_group_id",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
@@ -4539,6 +5192,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Learner')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoollearner_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoollearner_s",
+							"dataset": {
+								"referenceName": "p_schoollearner_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",  \n  \n    // Create Full Name  \n    AddFullName = Table.AddColumn(  \n        Source,  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    )  \n  \nin  \n    AddFullName;\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoollearner_s')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Owners')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -4737,7 +5415,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "p_schoolstaff_d",
+								"referenceName": "p_schoollearner_d",
 								"type": "DatasetReference"
 							},
 							"name": "parquetsource"
@@ -4946,7 +5624,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoollearner_d')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
