@@ -10,12 +10,19 @@
 						"type": "DatasetReference"
 					},
 					"name": "parquetsource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DataverseSchool",
+						"type": "DatasetReference"
+					},
+					"name": "dataverseschools"
 				}
 			],
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DataverseSchoolLearner",
+						"referenceName": "DataverseSchoolStaff",
 						"type": "DatasetReference"
 					},
 					"name": "sink1",
@@ -23,6 +30,13 @@
 						"referenceName": "AzureDataLakeStorage1",
 						"type": "LinkedServiceReference"
 					}
+				},
+				{
+					"dataset": {
+						"referenceName": "DataverseSchool",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -34,6 +48,24 @@
 				},
 				{
 					"name": "dateandroleisprinciple"
+				},
+				{
+					"name": "joinschoolappis"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "alterRow2"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "staffroleprinciple"
 				}
 			],
 			"scriptLines": [
@@ -41,48 +73,63 @@
 				"     updated_at as string (\"2000-02-01\")",
 				"}",
 				"source(output(",
-				"          tcbgrow_appid as string,",
-				"          tcbgrow_firstname as string,",
-				"          tcbgrow_lastname as string,",
-				"          tcbgrow_middlename as string,",
-				"          tcbgrow_dateofbirth as timestamp,",
-				"          tcbgrow_startdate as timestamp,",
-				"          tcbgrow_enrolldate as timestamp,",
-				"          tcbgrow_gender as string,",
-				"          tcbgrow_school as long,",
-				"          tcbgrow_temporary as boolean,",
-				"          tcbgrow_leaneractive as boolean,",
-				"          tcbgrow_leanerspecial as boolean,",
-				"          tcbgrow_learnergraduated as boolean,",
-				"          tcbgrow_schoolagegroup as long,",
-				"          address as string,",
-				"          tcbgrow_region as long,",
-				"          tcbgrow_city as long,",
-				"          tcbgrow_country as long,",
-				"          tcbgrow_race as long,",
+				"          tcbgrow_alternativenumber as string,",
+				"          cog_city as long,",
+				"          mobilephone as string,",
+				"          telephone1 as string,",
+				"          tcbgrow_countryofbirth as long,",
+				"          birthdate as timestamp,",
+				"          emailaddress1 as string,",
+				"          tcbgrow_employeetype as long,",
+				"          firstname as string,",
+				"          gendercode as string,",
+				"          new_staff_id as string,",
 				"          tcbgrow_idnumber as string,",
 				"          updated_at as timestamp,",
-				"          tcbgrow_leanerage as long,",
-				"          tcbgrow_name as string",
+				"          statecode as integer,",
+				"          tcbgrow_nextofkincontactnumber as string,",
+				"          tcbgrow_nextofkinemail as string,",
+				"          tcbgrow_nextofkinname as string,",
+				"          tcbgrow_nextofkinrelationship as long,",
+				"          lastname as string,",
+				"          middlename as string,",
+				"          tcbgrow_staffrole as long,",
+				"          cog_region as long,",
+				"          tcbgrow_qualification as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_schoolappid as long,",
+				"          tcbgrow_schoolstaff as string,",
+				"          new_start_date as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_address1 as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
+				"source(output(",
+				"          {@odata.etag} as string,",
+				"          tcbgrow_appid as string,",
+				"          tcbgrow_name as string,",
+				"          tcbgrow_schoolid as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
-				"    isNull(tcbgrow_city),\r",
+				"    isNull(cog_city),\r",
 				"    toString(null()),\r",
-				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
+				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
 				"),",
-				"          {tcbgrow_Country@odata.bind} = iif(\r",
-				"    isNull(tcbgrow_country),\r",
+				"          {tcbgrow_CountryOfBirth@odata.bind} = iif(\r",
+				"    isNull(tcbgrow_countryofbirth),\r",
 				"    toString(null()),\r",
-				"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
+				"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
 				"),",
 				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
-				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
+				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolappid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolappid), \")\")),",
 				"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
 				"          birthdate = toString(birthdate, 'yyyy-MM-dd'),",
 				"          gendercode = case(\r",
@@ -92,6 +139,22 @@
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
 				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+				"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinschoolappis",
+				"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(isNull(new_staff_id),toString(null()),concat(\"/contacts(new_staff_id='\", trim(new_staff_id), \"')\"))) ~> derivedColumn2",
+				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow2",
+				"joinschoolappis select(mapColumn(",
+				"          tcbgrow_appid,",
+				"          tcbgrow_schoolid,",
+				"          new_staff_id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
+				"dateandroleisprinciple filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -132,9 +195,22 @@
 				"          {cog_Region@odata.bind},",
 				"          {cog_City@odata.bind},",
 				"          {tcbgrow_Qualification@odata.bind},",
-				"          {tcbgrow_CountryOfBirth@odata.bind} = {tcbgrow_Country@odata.bind},",
+				"          {tcbgrow_CountryOfBirth@odata.bind},",
 				"          {tcbgrow_School@odata.bind}",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     mapColumn(",
+				"          {tcbgrow_SchoolPrinciple@odata.bind},",
+				"          tcbgrow_schoolid",
+				"     )) ~> sink2"
 			]
 		}
 	}
