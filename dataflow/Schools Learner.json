@@ -33,7 +33,7 @@
 					"name": "derivedColumn1"
 				},
 				{
-					"name": "dateandroleisprinciple"
+					"name": "date"
 				}
 			],
 			"scriptLines": [
@@ -71,7 +71,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
+				"date derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(tcbgrow_city),\r",
 				"    toString(null()),\r",
 				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
@@ -91,7 +91,7 @@
 				"    trim(gendercode) == 'TBC', 3,\r",
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
-				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> date",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
