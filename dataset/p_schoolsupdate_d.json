@@ -51,10 +51,6 @@
 				"type": "INT96"
 			},
 			{
-				"name": "created_at",
-				"type": "INT96"
-			},
-			{
 				"name": "tcbgrow_contractdate",
 				"type": "INT96"
 			},
