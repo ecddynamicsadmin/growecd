@@ -703,6 +703,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"LastRunDate": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"updated_at": {
 				"type": "String",

@@ -1,0 +1,94 @@
+{
+	"name": "GrowECD Master",
+	"properties": {
+		"activities": [
+			{
+				"name": "ECD Owners",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Owners",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"LastRunDate": {
+							"value": "@pipeline().parameters.LastRunDate",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Schools",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ECD Owners",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Update",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"LastRunDate": {
+							"value": "@pipeline().parameters.LastRunDate",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Staff",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Schools",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Schools Staff",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"LastRunDate": {
+							"value": "@pipeline().parameters.LastRunDate",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"LastRunDate": {
+				"type": "string",
+				"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-1),2),'yyyy-MM-dd HH:mm:ss')"
+			}
+		},
+		"annotations": []
+	}
+}
