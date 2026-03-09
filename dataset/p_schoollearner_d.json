@@ -81,7 +81,7 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "tcbgrow_region",
+				"name": "cog_region",
 				"type": "INT64"
 			},
 			{
