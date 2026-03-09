@@ -45,7 +45,6 @@
 				"          tcbgrow_monthlysalaries as decimal(38,9),",
 				"          tcbgrow_schoolstatus as string,",
 				"          updated_at as timestamp,",
-				"          created_at as timestamp,",
 				"          tcbgrow_contractdate as timestamp,",
 				"          tcbgrow_ecdcode as string,",
 				"          tcbgrow_commencementdate as timestamp,",
