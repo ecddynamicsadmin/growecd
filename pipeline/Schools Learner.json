@@ -90,7 +90,7 @@
 										"referenceName": "p_schoollearner_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_alternativenumber as string,\n\t\tcog_city as long,\n\t\tmobilephone as string,\n\t\ttelephone1 as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\tbirthdate as timestamp,\n\t\temailaddress1 as string,\n\t\ttcbgrow_employeetype as long,\n\t\tfirstname as string,\n\t\tgendercode as string,\n\t\tnew_staff_id as string,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\tstatecode as integer,\n\t\ttcbgrow_nextofkincontactnumber as string,\n\t\ttcbgrow_nextofkinemail as string,\n\t\ttcbgrow_nextofkinname as string,\n\t\ttcbgrow_nextofkinrelationship as long,\n\t\tlastname as string,\n\t\tmiddlename as string,\n\t\ttcbgrow_staffrole as long,\n\t\tcog_region as long,\n\t\ttcbgrow_qualification as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_schoolappid as long,\n\t\ttcbgrow_schoolstaff as string,\n\t\tnew_start_date as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_address1 as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d.parque'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
 								}
 							]
 						}
