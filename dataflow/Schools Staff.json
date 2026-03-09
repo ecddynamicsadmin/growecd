@@ -62,10 +62,7 @@
 					"name": "select1"
 				},
 				{
-					"name": "sort1"
-				},
-				{
-					"name": "sort2"
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -138,8 +135,8 @@
 				"    trim(gendercode) == 'TBC', 3,\r",
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
-				"sort2 filter(toDate(toString(updated_at, 'yyyy-MM-dd'))>=toDate($updated_at) && tcbgrow_staffrole==1) ~> dateandroleisprinciple",
-				"dateandroleisprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+				"parquetsource filter(tcbgrow_schoolappid==9493) ~> dateandroleisprinciple",
+				"dateandroleisprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -152,8 +149,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"dataverseschools sort(asc(tcbgrow_appid, true)) ~> sort1",
-				"parquetsource sort(asc(tcbgrow_schoolappid, true)) ~> sort2",
+				"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
