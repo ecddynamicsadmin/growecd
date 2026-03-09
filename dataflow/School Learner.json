@@ -1,9 +1,0 @@
-{
-	"name": "School Learner",
-	"properties": {
-		"type": "WranglingDataFlow",
-		"typeProperties": {
-			"sources": []
-		}
-	}
-}
