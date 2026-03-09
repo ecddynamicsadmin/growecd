@@ -100,48 +100,80 @@
 				},
 				"schema": [
 					{
-						"name": "tcbgrow_alternativenumber",
+						"name": "tcbgrow_appid",
 						"type": "UTF8"
 					},
 					{
-						"name": "cog_city",
-						"type": "INT64"
-					},
-					{
-						"name": "mobilephone",
+						"name": "tcbgrow_firstname",
 						"type": "UTF8"
 					},
 					{
-						"name": "telephone1",
+						"name": "tcbgrow_lastname",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_countryofbirth",
-						"type": "INT64"
+						"name": "tcbgrow_middlename",
+						"type": "UTF8"
 					},
 					{
-						"name": "birthdate",
+						"name": "tcbgrow_dateofbirth",
 						"type": "INT96"
 					},
 					{
-						"name": "emailaddress1",
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_enrolldate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_gender",
 						"type": "UTF8"
 					},
 					{
-						"name": "tcbgrow_employeetype",
+						"name": "tcbgrow_school",
 						"type": "INT64"
 					},
 					{
-						"name": "firstname",
+						"name": "tcbgrow_temporary",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "tcbgrow_leaneractive",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "tcbgrow_leanerspecial",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "tcbgrow_learnergraduated",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "tcbgrow_schoolagegroup",
+						"type": "INT64"
+					},
+					{
+						"name": "address",
 						"type": "UTF8"
 					},
 					{
-						"name": "gendercode",
-						"type": "UTF8"
+						"name": "cog_region",
+						"type": "INT64"
 					},
 					{
-						"name": "new_staff_id",
-						"type": "UTF8"
+						"name": "tcbgrow_city",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_country",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
 					},
 					{
 						"name": "tcbgrow_idnumber",
@@ -152,67 +184,11 @@
 						"type": "INT96"
 					},
 					{
-						"name": "statecode",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_nextofkincontactnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinemail",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinrelationship",
+						"name": "tcbgrow_leanerage",
 						"type": "INT64"
 					},
 					{
-						"name": "lastname",
-						"type": "UTF8"
-					},
-					{
-						"name": "middlename",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_staffrole",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_qualification",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_race",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolappid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolstaff",
-						"type": "UTF8"
-					},
-					{
-						"name": "new_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_startdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_address1",
+						"name": "tcbgrow_name",
 						"type": "UTF8"
 					}
 				]
