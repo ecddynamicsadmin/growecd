@@ -102,7 +102,7 @@
 				"          {cog_Region@odata.bind} = iif(\r",
 				"    isNull(cog_region),\r",
 				"    toString(null()),\r",
-				"    concat(\"/tcbgrow_regionses(tcbgrow_appid=\", toString(cog_region), \")\")\r",
+				"    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")\r",
 				"),",
 				"          {tcbgrow_SchoolSegment@odata.bind} = iif(\r",
 				"    isNull(tcbgrow_schoolsegment),\r",
