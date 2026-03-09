@@ -51,7 +51,7 @@
 				]
 			},
 			{
-				"name": "School Staff Query",
+				"name": "School Learner Query",
 				"type": "ExecuteWranglingDataflow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
@@ -73,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Staff",
+						"referenceName": "School Learner",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -104,7 +104,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "School Staff Query",
+						"activity": "School Learner Query",
 						"dependencyConditions": [
 							"Succeeded"
 						]

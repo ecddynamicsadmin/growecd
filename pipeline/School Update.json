@@ -607,7 +607,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MariaDBSchoolUpdate",
+						"referenceName": "MariaSchoolUpdate",
 						"type": "DatasetReference"
 					}
 				],
