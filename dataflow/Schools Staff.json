@@ -141,7 +141,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> joinschoolid",
-				"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(    isNull(new_staff_id),    toString(null()),    concat('/contacts(new_staff_id=\"', toString(new_staff_id), '\")'))) ~> derivedColumn2",
+				"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(isNull(new_staff_id),toString(null()),concat(\"/contacts(new_staff_id='\", trim(new_staff_id), \"')\"))) ~> derivedColumn2",
 				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow2",
 				"joinschoolid select(mapColumn(",
 				"          tcbgrow_appid,",
