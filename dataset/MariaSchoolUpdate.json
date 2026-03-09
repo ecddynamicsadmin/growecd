@@ -1,5 +1,5 @@
 {
-	"name": "MariaDBSchoolUpdate",
+	"name": "MariaSchoolUpdate",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MariaDBCRM",
