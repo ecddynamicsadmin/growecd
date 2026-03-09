@@ -31,9 +31,6 @@
 				},
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -65,7 +62,7 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
-				"filter1 alterRow(upsertIf(true())) ~> alterRow1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
 				"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
 				"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
@@ -109,7 +106,6 @@
 				"    toString(null()),\r",
 				"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
 				")) ~> derivedColumn1",
-				"derivedColumn1 filter(tcbgrow_name=='Abantwana Day Care Centre') ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
