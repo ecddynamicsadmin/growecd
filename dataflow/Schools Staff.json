@@ -50,7 +50,7 @@
 					"name": "dateandroleisprinciple"
 				},
 				{
-					"name": "joinschoolid"
+					"name": "joinschoolappis"
 				},
 				{
 					"name": "derivedColumn2"
@@ -63,6 +63,9 @@
 				},
 				{
 					"name": "filter1"
+				},
+				{
+					"name": "staffroleprinciple"
 				}
 			],
 			"scriptLines": [
@@ -135,15 +138,15 @@
 				"    trim(gendercode) == 'TBC', 3,\r",
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
-				"parquetsource filter(tcbgrow_schoolappid==9493) ~> dateandroleisprinciple",
-				"dateandroleisprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+				"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> joinschoolid",
+				"     broadcast: 'auto')~> joinschoolappis",
 				"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(isNull(new_staff_id),toString(null()),concat(\"/contacts(new_staff_id='\", trim(new_staff_id), \"')\"))) ~> derivedColumn2",
 				"derivedColumn2 alterRow(updateIf(true())) ~> alterRow2",
-				"joinschoolid select(mapColumn(",
+				"joinschoolappis select(mapColumn(",
 				"          tcbgrow_appid,",
 				"          tcbgrow_schoolid,",
 				"          new_staff_id",
@@ -151,6 +154,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
+				"dateandroleisprinciple filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
