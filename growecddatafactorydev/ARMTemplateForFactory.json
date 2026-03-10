@@ -2084,7 +2084,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_school_age_group  \nWHERE updated_at >= '@{pipeline().parameters.LastRunDate}' ",
+									"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '2026-03-10 00:35:04.000'",
 									"type": "Expression"
 								}
 							},
@@ -2176,6 +2176,8 @@
 					{
 						"name": "Dataverse Age Group Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Group Query",
@@ -2205,7 +2207,8 @@
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
 							"compute": {
@@ -5554,7 +5557,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolagegroup_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolagegroup_d.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolagegroup_s\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"age_group_id\", type text}}),\n    #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type\", \"0 - 2 years old\", \"1\", Replacer.ReplaceValue, {\"age_group_id\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"2 - 3 years old\", \"2\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"3 - 4 years old\", \"3\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"4 - 5 years old\", \"4\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"5 - 6 years old\", \"5\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"6 - 7 years old\", \"6\", Replacer.ReplaceText, {\"age_group_id\"}),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Replaced value 5\", {\"renewed_effective_fees\", \"renewed_effective_date\", \"created_by\", \"updated_by\", \"created_at\", \"late_early_fee\"}),\r\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Removed columns\", {{\"age_group_id\", \"tcbgrow_agegroup\"}, {\"fees\", \"tcbgrow_fees\"}, {\"id\", \"tcbgrow_appid\"}, {\"school_id\", \"tcbgrow_school\"}})\n\nin\n  #\"Renamed columns 1\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolagegroup_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolagegroup_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolagegroup_s\",  \n  \n    #\"Changed column type\" =  \n        Table.TransformColumnTypes(Source,  \n        {{\"age_group_id\", type text}}),  \n  \n    #\"Mapped Age Group\" =  \n        Table.TransformColumns(#\"Changed column type\",  \n        {{\"age_group_id\", each   \n            if _ = \"0 - 2 years old\" then \"1\"  \n            else if _ = \"2 - 3 years old\" then \"2\"  \n            else if _ = \"3 - 4 years old\" then \"3\"  \n            else if _ = \"4 - 5 years old\" then \"4\"  \n            else if _ = \"5 - 6 years old\" then \"5\"  \n            else if _ = \"6 - 7 years old\" then \"6\"  \n            else _, type text}}),  \n  \n    #\"Removed columns\" =  \n        Table.RemoveColumns(#\"Mapped Age Group\",  \n        {\"renewed_effective_fees\", \"renewed_effective_date\",  \n         \"created_by\", \"updated_by\",  \n         \"created_at\", \"late_early_fee\"}),  \n  \n    #\"Renamed columns 1\" =  \n        Table.RenameColumns(#\"Removed columns\",  \n        {{\"age_group_id\", \"tcbgrow_agegroup\"},  \n         {\"fees\", \"tcbgrow_fees\"},  \n         {\"id\", \"tcbgrow_appid\"},  \n         {\"school_id\", \"tcbgrow_school\"}})  \n  \nin  \n    #\"Renamed columns 1\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
