@@ -1,0 +1,20 @@
+{
+	"name": "School",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "p_schools_s",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schools_s",
+					"dataset": {
+						"referenceName": "p_schools_s",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared p_schools_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schools_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schools_s\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
