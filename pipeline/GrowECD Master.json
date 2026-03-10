@@ -114,8 +114,6 @@
 			{
 				"name": "School Learners",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Groups",
@@ -133,7 +131,13 @@
 						"referenceName": "Schools Learner",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
