@@ -16,7 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": "SELECT *  \nFROM crm.vw_school_age_group\nWHERE updated_at >= '2001-03-10'"
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -73,7 +74,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Learner",
+						"referenceName": "School Age Group",
 						"type": "DataFlowReference"
 					},
 					"compute": {
