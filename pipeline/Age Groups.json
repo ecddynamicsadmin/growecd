@@ -57,6 +57,8 @@
 			{
 				"name": "School Age Group Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Group from Maria",
@@ -102,6 +104,8 @@
 			{
 				"name": "Dataverse Age Group Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Group Query",
@@ -135,12 +139,6 @@
 			"WatermarkDate": {
 				"type": "string",
 				"defaultValue": "'2000-03-07 16:45:28'"
-			}
-		},
-		"variables": {
-			"updated_at": {
-				"type": "String",
-				"defaultValue": "2000-02-01"
 			}
 		},
 		"annotations": []
