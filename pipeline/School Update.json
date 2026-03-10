@@ -16,7 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": "SELECT *  \nFROM your_table  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  "
 					},
 					"sink": {
 						"type": "ParquetSink",

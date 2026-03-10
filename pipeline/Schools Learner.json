@@ -18,7 +18,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
