@@ -1,9 +1,9 @@
 {
-	"name": "School Update",
+	"name": "School",
 	"properties": {
 		"activities": [
 			{
-				"name": "Schools Update from Maria",
+				"name": "Schools from Maria",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -615,17 +615,17 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "p_schoolsupdate_s",
+						"referenceName": "p_schools_s",
 						"type": "DatasetReference"
 					}
 				]
 			},
 			{
-				"name": "Schools Update Query",
+				"name": "Schools Query",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
-						"activity": "Schools Update from Maria",
+						"activity": "Schools from Maria",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -641,7 +641,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "SchoolsUpdate",
+						"referenceName": "Schools",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -655,10 +655,10 @@
 								{
 									"name": "UserQuerypschoolsupdated",
 									"dataset": {
-										"referenceName": "p_schoolsupdate_d",
+										"referenceName": "p_schools_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsupdate_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schools_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 								}
 							]
 						}
@@ -666,11 +666,11 @@
 				}
 			},
 			{
-				"name": "Dataverse School Update",
+				"name": "Dataverse Schools",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Schools Update Query",
+						"activity": "Schools Query",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -686,7 +686,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Schools Update",
+						"referenceName": "Schools",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -699,7 +699,8 @@
 		],
 		"parameters": {
 			"WatermarkDate": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "'2026-03-07 16:45:28'"
 			}
 		},
 		"annotations": []

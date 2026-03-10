@@ -650,7 +650,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "p_schoolsupdate_s",
+						"referenceName": "p_schools_s",
 						"type": "DatasetReference"
 					}
 				],

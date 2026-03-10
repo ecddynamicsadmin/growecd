@@ -1,5 +1,5 @@
 {
-	"name": "p_schoolsupdate_d",
+	"name": "p_schools_d",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
