@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "MariaDBSource",
-						"query": "SELECT *  \nFROM crm.vw_school_age_group\nWHERE updated_at >= '2001-03-10'"
+						"query": {
+							"value": "SELECT *  \nFROM crm.crm.vw_school_age_group  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
