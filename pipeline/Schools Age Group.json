@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.LastRunDate}'",
+							"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '2026-03-10 00:35:04.000'",
 							"type": "Expression"
 						}
 					},
