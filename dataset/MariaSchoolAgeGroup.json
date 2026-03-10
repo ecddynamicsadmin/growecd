@@ -12,7 +12,7 @@
 		"type": "MariaDBTable",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "FLW_GRW_ImportedSchoolAgeWF"
+			"tableName": "vw_school_age_group"
 		}
 	}
 }
