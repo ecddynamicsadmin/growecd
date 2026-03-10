@@ -19,7 +19,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "School Owners",
+						"referenceName": "Owners",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -77,7 +77,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Schools Staff",
+						"referenceName": "Staff",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -106,7 +106,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Schools Age Group",
+						"referenceName": "Age Groups",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -135,7 +135,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Schools Learner",
+						"referenceName": "Learners",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
