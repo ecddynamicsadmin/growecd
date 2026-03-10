@@ -34,7 +34,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
 									"type": "Expression"
 								}
 							},
@@ -425,7 +425,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  ",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
@@ -1152,7 +1152,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *\nFROM crm.vw_school_age_group\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -1320,7 +1320,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
+									"value": "SELECT * FROM crm.vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -1481,7 +1481,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schoolstaff_export_all   WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
+									"value": "SELECT * FROM crm.vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
