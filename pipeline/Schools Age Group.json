@@ -92,7 +92,7 @@
 										"referenceName": "p_schoolagegroup_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['s_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
 								}
 							]
 						}
