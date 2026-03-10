@@ -372,7 +372,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MySqlSource"
+								"type": "MariaDBSource"
 							},
 							"sink": {
 								"type": "DelimitedTextSink",
@@ -397,7 +397,7 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "maria_GRW_SchoolAgeGroups_AUTO",
+								"referenceName": "MariaSchoolAgeGroup",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -800,7 +800,7 @@
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsSalaries_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/MariaSchoolStaff')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolStaff_AUTO')]",
-				"[concat(variables('factoryId'), '/datasets/maria_GRW_SchoolAgeGroups_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolAgeGroup')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolAgeGroups_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/maria_SchoolCompliance_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_SchoolCompliance_AUTO')]",
@@ -911,7 +911,7 @@
 				"parameters": {
 					"LastRunDate": {
 						"type": "string",
-						"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-1),2),'yyyy-MM-dd HH:mm:ss')"
+						"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-3),2),'yyyy-MM-dd HH:mm:ss')"
 					}
 				},
 				"annotations": []
@@ -929,7 +929,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Schools Owners from Maria",
+						"name": "Schools ECD Owners from Maria",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -942,7 +942,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MariaDBSource"
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  \n\n",
+									"type": "Expression"
+								}
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -1209,11 +1213,11 @@
 						]
 					},
 					{
-						"name": "Schools Owners Query",
+						"name": "Schools ECD Owners Query",
 						"type": "ExecuteWranglingDataflow",
 						"dependsOn": [
 							{
-								"activity": "Schools Owners from Maria",
+								"activity": "Schools ECD Owners from Maria",
 								"dependencyConditions": [
 									"Completed"
 								]
@@ -1260,11 +1264,11 @@
 						}
 					},
 					{
-						"name": "Dataverse Update",
+						"name": "Dataverse ECD Owner Update",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "Schools Owners Query",
+								"activity": "Schools ECD Owners Query",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1282,7 +1286,12 @@
 							"dataflow": {
 								"referenceName": "School Owners",
 								"type": "DataFlowReference",
-								"parameters": {},
+								"parameters": {
+									"LastRunDate": {
+										"value": "'@{pipeline().parameters.LastRunDate}'",
+										"type": "Expression"
+									}
+								},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -1335,7 +1344,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MariaDBSource"
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT *  \nFROM your_table  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  ",
+									"type": "Expression"
+								}
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -2011,7 +2024,12 @@
 							"dataflow": {
 								"referenceName": "Schools Update",
 								"type": "DataFlowReference",
-								"parameters": {},
+								"parameters": {
+									"LastRunDate": {
+										"value": "'@{pipeline().parameters.LastRunDate}'",
+										"type": "Expression"
+									}
+								},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -2045,6 +2063,187 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Schools Age Group')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Age Group from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT *  \nFROM crm.vw_school_age_group  \nWHERE updated_at >= '@{pipeline().parameters.LastRunDate}' ",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolAgeGroup",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolagegroup_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Age Group Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Age Group from Maria",
+								"dependencyConditions": [
+									"Completed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Age Group",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolagegroup_s": {},
+									"UserQuerypschoolagegroupd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolagegroupd",
+											"dataset": {
+												"referenceName": "p_schoolagegroup_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['s_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Age Group Update",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "School Age Group Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Schools Age Group",
+								"type": "DataFlowReference",
+								"parameters": {
+									"LastRunDate": {
+										"value": "'@{pipeline().parameters.LastRunDate}'",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"LastRunDate": {
+						"type": "string",
+						"defaultValue": "\"2026-03-03\""
+					}
+				},
+				"variables": {
+					"updated_at": {
+						"type": "String",
+						"defaultValue": "2000-02-01"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolAgeGroup')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolagegroup_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Age Group')]",
+				"[concat(variables('factoryId'), '/dataflows/Schools Age Group')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolagegroup_d')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Schools Learner')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2066,7 +2265,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MariaDBSource"
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"type": "Expression"
+								}
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -2105,6 +2308,8 @@
 					{
 						"name": "School Learner Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learner from Maria",
@@ -2146,7 +2351,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_middlename as string,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_enrolldate as timestamp,\n\t\ttcbgrow_gender as string,\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_temporary as boolean,\n\t\ttcbgrow_leaneractive as boolean,\n\t\ttcbgrow_leanerspecial as boolean,\n\t\ttcbgrow_learnergraduated as boolean,\n\t\ttcbgrow_schoolagegroup as long,\n\t\taddress as string,\n\t\tcog_region as long,\n\t\ttcbgrow_city as long,\n\t\ttcbgrow_country as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_leanerage as long,\n\t\ttcbgrow_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_middlename as string,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_enrolldate as timestamp,\n\t\ttcbgrow_gender as string,\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_temporary as boolean,\n\t\ttcbgrow_leaneractive as boolean,\n\t\ttcbgrow_leanerspecial as boolean,\n\t\ttcbgrow_learnergraduated as boolean,\n\t\ttcbgrow_schoolagegroup as long,\n\t\ttcbgrow_address as string,\n\t\tcog_region as long,\n\t\ttcbgrow_city as long,\n\t\ttcbgrow_country as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_leanerage as long,\n\t\ttcbgrow_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
 										}
 									]
 								}
@@ -2177,8 +2382,8 @@
 								"referenceName": "Schools Learner",
 								"type": "DataFlowReference",
 								"parameters": {
-									"updated_at": {
-										"value": "'@{variables('updated_at')}'",
+									"LastRunDate": {
+										"value": "'@{pipeline().parameters.LastRunDate}'",
 										"type": "Expression"
 									}
 								},
@@ -2241,7 +2446,11 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "MariaDBSource"
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT *  \nFROM crm.vw_schoolstaff_export_all  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"type": "Expression"
+								}
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -2918,8 +3127,8 @@
 								"referenceName": "Schools Staff",
 								"type": "DataFlowReference",
 								"parameters": {
-									"updated_at": {
-										"value": "'@{variables('updated_at')}'",
+									"LastRunDate": {
+										"value": "'@{pipeline().parameters.LastRunDate}'",
 										"type": "Expression"
 									}
 								},
@@ -2980,6 +3189,29 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_school"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolAgeGroup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_schoolagegroup"
 				}
 			},
 			"dependsOn": [
@@ -3053,6 +3285,29 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolAgeGroup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_school_age_group"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
 			]
 		},
 		{
@@ -3145,29 +3400,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolAgeGroups_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_school_age_group`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
 			]
 		},
 		{
@@ -3355,6 +3587,154 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolagegroup_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolagegroup_d.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "age_group_id",
+						"type": "INT64"
+					},
+					{
+						"name": "fees",
+						"type": "INT64"
+					},
+					{
+						"name": "renewed_effective_fees",
+						"type": "INT64"
+					},
+					{
+						"name": "renewed_effective_date",
+						"type": "INT96"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "late_early_fee",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolagegroup_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolagegroup_s.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "age_group_id",
+						"type": "INT64"
+					},
+					{
+						"name": "fees",
+						"type": "INT64"
+					},
+					{
+						"name": "renewed_effective_fees",
+						"type": "INT64"
+					},
+					{
+						"name": "renewed_effective_date",
+						"type": "INT96"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "late_early_fee",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoollearner_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3435,7 +3815,7 @@
 						"type": "INT64"
 					},
 					{
-						"name": "address",
+						"name": "tcbgrow_address",
 						"type": "UTF8"
 					},
 					{
@@ -5160,6 +5540,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Age Group')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolagegroup_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolagegroup_s",
+							"dataset": {
+								"referenceName": "p_schoolagegroup_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolagegroup_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolagegroup_d.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolagegroup_s\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"age_group_id\", type text}}),\n    #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type\", \"0 - 2 years old\", \"1\", Replacer.ReplaceValue, {\"age_group_id\"}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"2 - 3 years old\", \"2\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"3 - 4 years old\", \"3\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"4 - 5 years old\", \"4\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"5 - 6 years old\", \"5\", Replacer.ReplaceText, {\"age_group_id\"}),\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"6 - 7 years old\", \"6\", Replacer.ReplaceText, {\"age_group_id\"}),\r\n  #\"Removed columns\" = Table.RemoveColumns(#\"Replaced value 5\", {\"renewed_effective_fees\", \"renewed_effective_date\", \"created_by\", \"updated_by\", \"created_at\", \"late_early_fee\"}),\r\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Removed columns\", {{\"age_group_id\", \"tcbgrow_agegroup\"}, {\"fees\", \"tcbgrow_fees\"}, {\"id\", \"tcbgrow_appid\"}, {\"school_id\", \"tcbgrow_school\"}})\n\nin\n  #\"Renamed columns 1\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolagegroup_s')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Learner')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -5176,7 +5581,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",  \n  \n    // Create Full Name first  \n    AddFullName = Table.AddColumn(  \n        Source,  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    ),  \n  \n    // Rename columns to Dataverse schema names  \n    RenamedColumns = Table.RenameColumns(AddFullName, { \n        {\"age_group_id\", \"tcbgrow_schoolagegroup\"}, \n        {\"id\", \"tcbgrow_appid\"},  \n        {\"city_id\", \"tcbgrow_city\"},  \n        {\"country_of_birth_id\", \"tcbgrow_country\"},  \n        {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n        {\"enroll_date\", \"tcbgrow_enrolldate\"},  \n        {\"first_name\", \"tcbgrow_firstname\"},  \n        {\"gender\", \"tcbgrow_gender\"},  \n        {\"id_number\", \"tcbgrow_idnumber\"},  \n        {\"import\", \"tcbgrow_import\"},  \n        {\"last_name\", \"tcbgrow_lastname\"},  \n        {\"is_active\", \"tcbgrow_leaneractive\"},  \n        {\"school_age_group_id\", \"tcbgrow_leanerage\"},  \n        {\"is_special\", \"tcbgrow_leanerspecial\"},  \n        {\"is_graduated\", \"tcbgrow_learnergraduated\"},  \n        {\"middle_name\", \"tcbgrow_middlename\"},  \n        {\"FullName\", \"tcbgrow_name\"},  \n        {\"race_type_id\", \"tcbgrow_race\"},  \n        {\"province_id\", \"cog_region\"},  \n        {\"school_id\", \"tcbgrow_school\"},  \n        {\"start_date\", \"tcbgrow_startdate\"},  \n        {\"is_temporary\", \"tcbgrow_temporary\"}  \n    }, MissingField.Ignore),\n  #\"Removed columns\" = Table.RemoveColumns(RenamedColumns, {\"class_id\", \"fee\", \"is_confirmed\", \"is_standard_fee_applied\", \"zip_code\", \"other_country_of_birth_id\", \"doctors_name\", \"doctors_contact_no\", \"known_allergies\", \"created_by\", \"updated_by\", \"parent_id\", \"is_dormant\", \"profile_completed\", \"created_at\", \"special_need_description\", \"sassa_status\"}),\n  #\"Capitalized each word\" = Table.TransformColumns(#\"Removed columns\", {{\"tcbgrow_gender\", each Text.Proper(_), type nullable text}}),\n  #\"Trimmed text\" = Table.TransformColumns(#\"Capitalized each word\", {{\"tcbgrow_gender\", each Text.Trim(_), type nullable text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Trimmed text\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_name\", \"tcbgrow_idnumber\", \"address\", \"tcbgrow_middlename\", \"tcbgrow_lastname\", \"tcbgrow_firstname\"}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Replaced value\", {{\"tcbgrow_temporary\", type text}, {\"tcbgrow_leaneractive\", type text}, {\"tcbgrow_leanerspecial\", type text}, {\"tcbgrow_learnergraduated\", type text}}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Changed column type\", \"true\", \"1\", Replacer.ReplaceText, {\"tcbgrow_temporary\", \"tcbgrow_leaneractive\", \"tcbgrow_leanerspecial\", \"tcbgrow_learnergraduated\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"false\", \"0\", Replacer.ReplaceText, {\"tcbgrow_temporary\", \"tcbgrow_leaneractive\", \"tcbgrow_leanerspecial\", \"tcbgrow_learnergraduated\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Replaced value 2\", {{\"tcbgrow_temporary\", Int64.Type}, {\"tcbgrow_leaneractive\", Int64.Type}, {\"tcbgrow_leanerspecial\", Int64.Type}, {\"tcbgrow_learnergraduated\", Int64.Type}})  \n  \nin  \n    #\"Changed column type 1\";\r\n",
+					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",\n  #\"Removed columns\" = Table.RemoveColumns(Source, {\"class_id\", \"fee\", \"is_confirmed\", \"is_standard_fee_applied\", \"zip_code\", \"other_country_of_birth_id\", \"doctors_name\", \"doctors_contact_no\", \"known_allergies\", \"created_by\", \"updated_by\", \"parent_id\", \"is_dormant\", \"profile_completed\", \"created_at\", \"special_need_description\", \"sassa_status\"}),  \n  \n    // Create Full Name first  \n    AddFullName = Table.AddColumn(  \n        #\"Removed columns\",  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    ),  \n  \n    // Rename columns to Dataverse schema names  \n    RenamedColumns = Table.RenameColumns(AddFullName, {\n        {\"address\", \"tcbgrow_address\"}, \n        {\"age_group_id\", \"tcbgrow_schoolagegroup\"}, \n        {\"id\", \"tcbgrow_appid\"},  \n        {\"city_id\", \"tcbgrow_city\"},  \n        {\"country_of_birth_id\", \"tcbgrow_country\"},  \n        {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n        {\"enroll_date\", \"tcbgrow_enrolldate\"},  \n        {\"first_name\", \"tcbgrow_firstname\"},  \n        {\"gender\", \"tcbgrow_gender\"},  \n        {\"id_number\", \"tcbgrow_idnumber\"},  \n        {\"import\", \"tcbgrow_import\"},  \n        {\"last_name\", \"tcbgrow_lastname\"},  \n        {\"is_active\", \"tcbgrow_leaneractive\"},  \n        {\"school_age_group_id\", \"tcbgrow_leanerage\"},  \n        {\"is_special\", \"tcbgrow_leanerspecial\"},  \n        {\"is_graduated\", \"tcbgrow_learnergraduated\"},  \n        {\"middle_name\", \"tcbgrow_middlename\"},  \n        {\"FullName\", \"tcbgrow_name\"},  \n        {\"race_type_id\", \"tcbgrow_race\"},  \n        {\"province_id\", \"cog_region\"},  \n        {\"school_id\", \"tcbgrow_school\"},  \n        {\"start_date\", \"tcbgrow_startdate\"},  \n        {\"is_temporary\", \"tcbgrow_temporary\"}  \n    }, MissingField.Ignore),\n  #\"Capitalized each word\" = Table.TransformColumns(RenamedColumns, {{\"tcbgrow_gender\", each Text.Proper(_), type nullable text}}),\n  #\"Trimmed text\" = Table.TransformColumns(#\"Capitalized each word\", {{\"tcbgrow_gender\", each Text.Trim(_), type nullable text}}),\n  #\"Replaced value\" = Table.ReplaceValue(#\"Trimmed text\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_name\", \"tcbgrow_idnumber\", \"tcbgrow_address\", \"tcbgrow_middlename\", \"tcbgrow_lastname\", \"tcbgrow_firstname\"})  \n  \nin  \n    #\"Replaced value\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -5222,6 +5627,9 @@
 						}
 					],
 					"scriptLines": [
+						"parameters{",
+						"     LastRunDate as string (\"2001-01-01\")",
+						"}",
 						"source(output(",
 						"          tcbgrow_appid as long,",
 						"          tcbgrow_address as string,",
@@ -5374,6 +5782,89 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Schools Age Group')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoolagegroup_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolAgeGroup",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     LastRunDate as string (\"2026-03-03\")",
+						"}",
+						"source(output(",
+						"          id as long,",
+						"          age_group_id as long,",
+						"          fees as long,",
+						"          renewed_effective_fees as long,",
+						"          renewed_effective_date as timestamp,",
+						"          school_id as long,",
+						"          created_by as integer,",
+						"          updated_by as integer,",
+						"          created_at as timestamp,",
+						"          updated_at as timestamp,",
+						"          late_early_fee as long",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(school_id),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(school_id), \")\"))) ~> derivedColumn1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_import_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolagegroup_d')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseSchoolAgeGroup')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Schools Learner')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -5415,7 +5906,7 @@
 					],
 					"scriptLines": [
 						"parameters{",
-						"     updated_at as string (\"2026-03-08\")",
+						"     LastRunDate as string (\"2026-03-08\")",
 						"}",
 						"source(output(",
 						"          tcbgrow_appid as string,",
@@ -5432,7 +5923,7 @@
 						"          tcbgrow_leanerspecial as boolean,",
 						"          tcbgrow_learnergraduated as boolean,",
 						"          tcbgrow_schoolagegroup as long,",
-						"          address as string,",
+						"          tcbgrow_address as string,",
 						"          cog_region as long,",
 						"          tcbgrow_city as long,",
 						"          tcbgrow_country as long,",
@@ -5466,8 +5957,24 @@
 						"    trim(tcbgrow_gender) == 'Female', 301220001,\r",
 						"    trim(tcbgrow_gender) == 'Not Provided', 301220002,\r",
 						"    toInteger(null())\r",
-						"    )) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> date",
+						"    ),",
+						"          tcbgrow_leaneractive = case(\r",
+						"    trim(toString(tcbgrow_leaneractive)) == 'true', 1,\r",
+						"    trim(toString(tcbgrow_leaneractive)) == 'false', 0,\r",
+						"    toInteger(null())\r",
+						"    ),",
+						"          tcbgrow_leanerspecial = case(\r",
+						"    trim(toString(tcbgrow_leanerspecial)) == 'true', 1,\r",
+						"    trim(toString(tcbgrow_leanerspecial)) == 'false', 0,\r",
+						"    toInteger(null())\r",
+						"    ),",
+						"          tcbgrow_learnergraduated = case(\r",
+						"    trim(toString(tcbgrow_learnergraduated)) == 'true', 1,\r",
+						"    trim(toString(tcbgrow_learnergraduated)) == 'false', 0,\r",
+						"    toInteger(null())\r",
+						"    ),",
+						"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
+						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -5499,11 +6006,11 @@
 						"          tcbgrow_leaneractive,",
 						"          tcbgrow_leanerspecial,",
 						"          tcbgrow_learnergraduated,",
-						"          address,",
 						"          tcbgrow_race,",
 						"          tcbgrow_idnumber,",
 						"          tcbgrow_leanerage,",
-						"          tcbgrow_name",
+						"          tcbgrow_name,",
+						"          tcbgrow_address",
 						"     )) ~> sink1"
 					]
 				}
@@ -5588,7 +6095,7 @@
 					],
 					"scriptLines": [
 						"parameters{",
-						"     updated_at as string (\"2000-02-01\")",
+						"     LastRunDate as string (\"2000-02-01\")",
 						"}",
 						"source(output(",
 						"          tcbgrow_alternativenumber as string,",
@@ -5656,7 +6163,7 @@
 						"    trim(gendercode) == 'TBC', 3,\r",
 						"    toInteger(null())\r",
 						"    )) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> dateandroleisprinciple",
 						"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
@@ -5780,6 +6287,9 @@
 						}
 					],
 					"scriptLines": [
+						"parameters{",
+						"     LastRunDate as string (\"2001-01-01\")",
+						"}",
 						"source(output(",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",
