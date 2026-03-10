@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT *  \nFROM crm.crm.vw_school_age_group  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+							"value": "SELECT *  \nFROM crm.vw_school_age_group  \nWHERE updated_at >= '@{pipeline().parameters.LastRunDate}' ",
 							"type": "Expression"
 						}
 					},
@@ -57,8 +57,6 @@
 			{
 				"name": "School Age Group Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Group from Maria",
@@ -144,7 +142,7 @@
 		"parameters": {
 			"LastRunDate": {
 				"type": "string",
-				"defaultValue": "2000-01-01"
+				"defaultValue": "\"2026-03-03\""
 			}
 		},
 		"variables": {
