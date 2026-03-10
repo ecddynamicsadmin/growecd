@@ -1031,9 +1031,6 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2001-01-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_appid as long,",
 						"          tcbgrow_address as string,",
@@ -1213,21 +1210,12 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2026-03-03\")",
-						"}",
 						"source(output(",
-						"          id as long,",
-						"          age_group_id as long,",
-						"          fees as long,",
-						"          renewed_effective_fees as long,",
-						"          renewed_effective_date as timestamp,",
-						"          school_id as long,",
-						"          created_by as integer,",
-						"          updated_by as integer,",
-						"          created_at as timestamp,",
-						"          updated_at as timestamp,",
-						"          late_early_fee as long",
+						"          tcbgrow_appid as long,",
+						"          tcbgrow_agegroup as string,",
+						"          tcbgrow_fees as long,",
+						"          tcbgrow_school as long,",
+						"          updated_at as timestamp",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -1235,7 +1223,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(school_id),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(school_id), \")\"))) ~> derivedColumn1",
+						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\"))) ~> derivedColumn1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1248,7 +1236,13 @@
 						"     saveOrder: 1,",
 						"     outputAssertFailedRows: true,",
 						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors') ~> sink1"
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_appid,",
+						"          tcbgrow_agegroup,",
+						"          tcbgrow_fees,",
+						"          {tcbgrow_School@odata.bind}",
+						"     )) ~> sink1"
 					]
 				}
 			},
@@ -1289,15 +1283,9 @@
 						},
 						{
 							"name": "derivedColumn1"
-						},
-						{
-							"name": "date"
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2026-03-08\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_appid as string,",
 						"          tcbgrow_firstname as string,",
@@ -1329,7 +1317,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"date derive({tcbgrow_City@odata.bind} = iif(\r",
+						"parquetsource derive({tcbgrow_City@odata.bind} = iif(\r",
 						"    isNull(tcbgrow_city),\r",
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
@@ -1364,7 +1352,6 @@
 						"    toInteger(null())\r",
 						"    ),",
 						"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1458,9 +1445,6 @@
 							"name": "derivedColumn1"
 						},
 						{
-							"name": "dateandroleisprinciple"
-						},
-						{
 							"name": "joinschoolappis"
 						},
 						{
@@ -1473,16 +1457,10 @@
 							"name": "select1"
 						},
 						{
-							"name": "filter1"
-						},
-						{
 							"name": "staffroleprinciple"
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2000-02-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_alternativenumber as string,",
 						"          cog_city as long,",
@@ -1529,7 +1507,7 @@
 						"     validateSchema: false,",
 						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
+						"parquetsource derive({cog_City@odata.bind} = iif(\r",
 						"    isNull(cog_city),\r",
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
@@ -1549,8 +1527,7 @@
 						"    trim(gendercode) == 'TBC', 3,\r",
 						"    toInteger(null())\r",
 						"    )) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> dateandroleisprinciple",
-						"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+						"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
@@ -1564,8 +1541,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
-						"dateandroleisprinciple filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1668,9 +1644,6 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2001-01-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",

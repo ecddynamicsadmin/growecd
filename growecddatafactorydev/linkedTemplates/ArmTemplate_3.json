@@ -34,7 +34,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  \n\n",
+									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
 									"type": "Expression"
 								}
 							},
@@ -376,12 +376,7 @@
 							"dataflow": {
 								"referenceName": "School Owners",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -400,7 +395,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -430,7 +425,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM your_table  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  ",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  ",
 									"type": "Expression"
 								}
 							},
@@ -1108,12 +1103,7 @@
 							"dataflow": {
 								"referenceName": "Schools Update",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -1132,7 +1122,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -1162,7 +1152,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '2026-03-10 00:35:04.000'",
+									"value": "SELECT *\nFROM crm.vw_school_age_group\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -1244,7 +1234,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['s_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_agegroup as string,\n\t\ttcbgrow_fees as long,\n\t\ttcbgrow_school as long,\n\t\tupdated_at as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
 										}
 									]
 								}
@@ -1254,8 +1244,6 @@
 					{
 						"name": "Dataverse Age Group Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Group Query",
@@ -1276,17 +1264,11 @@
 							"dataflow": {
 								"referenceName": "Schools Age Group",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"compute": {
@@ -1301,7 +1283,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string",
 						"defaultValue": "\"2026-03-03\""
 					}
@@ -1325,8 +1307,6 @@
 					{
 						"name": "School Learner from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1340,7 +1320,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
@@ -1381,8 +1361,6 @@
 					{
 						"name": "School Learner Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learner from Maria",
@@ -1454,12 +1432,7 @@
 							"dataflow": {
 								"referenceName": "Schools Learner",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -1478,15 +1451,8 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
-						"type": "string",
-						"defaultValue": "2000-01-01"
-					}
-				},
-				"variables": {
-					"updated_at": {
-						"type": "String",
-						"defaultValue": "2000-02-01"
+					"WatermarkDate": {
+						"type": "string"
 					}
 				},
 				"annotations": []
@@ -1515,7 +1481,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schoolstaff_export_all  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"value": "SELECT * FROM crm.vw_schoolstaff_export_all   WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
@@ -2193,12 +2159,7 @@
 							"dataflow": {
 								"referenceName": "Schools Staff",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"dataverseschools": {},
@@ -2219,7 +2180,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -2283,8 +2244,8 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -2312,8 +2273,8 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -2341,8 +2302,66 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Age Groups",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Staff",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools Age Group",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Learners",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Age Groups",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools Learner",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -2353,9 +2372,15 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"RunDate": {
 						"type": "string",
-						"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-3),2),'yyyy-MM-dd HH:mm:ss')"
+						"defaultValue": "@utcNow()"
+					}
+				},
+				"variables": {
+					"WatermarkDate": {
+						"type": "String",
+						"defaultValue": "@formatDateTime(addDays(pipeline().parameters.RunDate, -3), 'yyyy-MM-dd HH:mm:ss') "
 					}
 				},
 				"annotations": []
@@ -2363,7 +2388,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/School Owners')]",
 				"[concat(variables('factoryId'), '/pipelines/School Update')]",
-				"[concat(variables('factoryId'), '/pipelines/Schools Staff')]"
+				"[concat(variables('factoryId'), '/pipelines/Schools Staff')]",
+				"[concat(variables('factoryId'), '/pipelines/Schools Age Group')]",
+				"[concat(variables('factoryId'), '/pipelines/Schools Learner')]"
 			]
 		}
 	]

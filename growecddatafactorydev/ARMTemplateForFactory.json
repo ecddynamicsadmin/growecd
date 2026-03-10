@@ -839,8 +839,8 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -868,8 +868,8 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -897,8 +897,66 @@
 							},
 							"waitOnCompletion": true,
 							"parameters": {
-								"LastRunDate": {
-									"value": "@pipeline().parameters.LastRunDate",
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Age Groups",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Staff",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools Age Group",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Learners",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Age Groups",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools Learner",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
 									"type": "Expression"
 								}
 							}
@@ -909,9 +967,15 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"RunDate": {
 						"type": "string",
-						"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-3),2),'yyyy-MM-dd HH:mm:ss')"
+						"defaultValue": "@utcNow()"
+					}
+				},
+				"variables": {
+					"WatermarkDate": {
+						"type": "String",
+						"defaultValue": "@formatDateTime(addDays(pipeline().parameters.RunDate, -3), 'yyyy-MM-dd HH:mm:ss') "
 					}
 				},
 				"annotations": []
@@ -919,7 +983,9 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/School Owners')]",
 				"[concat(variables('factoryId'), '/pipelines/School Update')]",
-				"[concat(variables('factoryId'), '/pipelines/Schools Staff')]"
+				"[concat(variables('factoryId'), '/pipelines/Schools Staff')]",
+				"[concat(variables('factoryId'), '/pipelines/Schools Age Group')]",
+				"[concat(variables('factoryId'), '/pipelines/Schools Learner')]"
 			]
 		},
 		{
@@ -944,7 +1010,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  \n\n",
+									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
 									"type": "Expression"
 								}
 							},
@@ -1286,12 +1352,7 @@
 							"dataflow": {
 								"referenceName": "School Owners",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -1310,7 +1371,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -1346,7 +1407,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM your_table  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  ",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  ",
 									"type": "Expression"
 								}
 							},
@@ -2024,12 +2085,7 @@
 							"dataflow": {
 								"referenceName": "Schools Update",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -2048,7 +2104,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -2084,7 +2140,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_school_age_group WHERE updated_at >= '2026-03-10 00:35:04.000'",
+									"value": "SELECT *\nFROM crm.vw_school_age_group\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -2166,7 +2222,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['s_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_agegroup as string,\n\t\ttcbgrow_fees as long,\n\t\ttcbgrow_school as long,\n\t\tupdated_at as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
 										}
 									]
 								}
@@ -2176,8 +2232,6 @@
 					{
 						"name": "Dataverse Age Group Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Group Query",
@@ -2198,17 +2252,11 @@
 							"dataflow": {
 								"referenceName": "Schools Age Group",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"compute": {
@@ -2223,7 +2271,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string",
 						"defaultValue": "\"2026-03-03\""
 					}
@@ -2253,8 +2301,6 @@
 					{
 						"name": "School Learner from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2268,7 +2314,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
@@ -2309,8 +2355,6 @@
 					{
 						"name": "School Learner Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learner from Maria",
@@ -2382,12 +2426,7 @@
 							"dataflow": {
 								"referenceName": "Schools Learner",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"sink1": {}
@@ -2406,15 +2445,8 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
-						"type": "string",
-						"defaultValue": "2000-01-01"
-					}
-				},
-				"variables": {
-					"updated_at": {
-						"type": "String",
-						"defaultValue": "2000-02-01"
+					"WatermarkDate": {
+						"type": "string"
 					}
 				},
 				"annotations": []
@@ -2449,7 +2481,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schoolstaff_export_all  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+									"value": "SELECT * FROM crm.vw_schoolstaff_export_all   WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
@@ -3127,12 +3159,7 @@
 							"dataflow": {
 								"referenceName": "Schools Staff",
 								"type": "DataFlowReference",
-								"parameters": {
-									"LastRunDate": {
-										"value": "'@{pipeline().parameters.LastRunDate}'",
-										"type": "Expression"
-									}
-								},
+								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
 									"dataverseschools": {},
@@ -3153,7 +3180,7 @@
 					"elapsedTimeMetric": {}
 				},
 				"parameters": {
-					"LastRunDate": {
+					"WatermarkDate": {
 						"type": "string"
 					}
 				},
@@ -3612,48 +3639,24 @@
 				},
 				"schema": [
 					{
-						"name": "id",
+						"name": "tcbgrow_appid",
 						"type": "INT64"
 					},
 					{
-						"name": "age_group_id",
+						"name": "tcbgrow_agegroup",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_fees",
 						"type": "INT64"
 					},
 					{
-						"name": "fees",
+						"name": "tcbgrow_school",
 						"type": "INT64"
-					},
-					{
-						"name": "renewed_effective_fees",
-						"type": "INT64"
-					},
-					{
-						"name": "renewed_effective_date",
-						"type": "INT96"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "created_by",
-						"type": "INT32"
-					},
-					{
-						"name": "updated_by",
-						"type": "INT32"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
 					},
 					{
 						"name": "updated_at",
 						"type": "INT96"
-					},
-					{
-						"name": "late_early_fee",
-						"type": "INT64"
 					}
 				]
 			},
@@ -5628,9 +5631,6 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2001-01-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_appid as long,",
 						"          tcbgrow_address as string,",
@@ -5820,21 +5820,12 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2026-03-03\")",
-						"}",
 						"source(output(",
-						"          id as long,",
-						"          age_group_id as long,",
-						"          fees as long,",
-						"          renewed_effective_fees as long,",
-						"          renewed_effective_date as timestamp,",
-						"          school_id as long,",
-						"          created_by as integer,",
-						"          updated_by as integer,",
-						"          created_at as timestamp,",
-						"          updated_at as timestamp,",
-						"          late_early_fee as long",
+						"          tcbgrow_appid as long,",
+						"          tcbgrow_agegroup as string,",
+						"          tcbgrow_fees as long,",
+						"          tcbgrow_school as long,",
+						"          updated_at as timestamp",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -5842,7 +5833,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(school_id),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(school_id), \")\"))) ~> derivedColumn1",
+						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\"))) ~> derivedColumn1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -5855,7 +5846,13 @@
 						"     saveOrder: 1,",
 						"     outputAssertFailedRows: true,",
 						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors') ~> sink1"
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_appid,",
+						"          tcbgrow_agegroup,",
+						"          tcbgrow_fees,",
+						"          {tcbgrow_School@odata.bind}",
+						"     )) ~> sink1"
 					]
 				}
 			},
@@ -5900,15 +5897,9 @@
 						},
 						{
 							"name": "derivedColumn1"
-						},
-						{
-							"name": "date"
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2026-03-08\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_appid as string,",
 						"          tcbgrow_firstname as string,",
@@ -5940,7 +5931,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"date derive({tcbgrow_City@odata.bind} = iif(\r",
+						"parquetsource derive({tcbgrow_City@odata.bind} = iif(\r",
 						"    isNull(tcbgrow_city),\r",
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
@@ -5975,7 +5966,6 @@
 						"    toInteger(null())\r",
 						"    ),",
 						"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -6073,9 +6063,6 @@
 							"name": "derivedColumn1"
 						},
 						{
-							"name": "dateandroleisprinciple"
-						},
-						{
 							"name": "joinschoolappis"
 						},
 						{
@@ -6088,16 +6075,10 @@
 							"name": "select1"
 						},
 						{
-							"name": "filter1"
-						},
-						{
 							"name": "staffroleprinciple"
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2000-02-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_alternativenumber as string,",
 						"          cog_city as long,",
@@ -6144,7 +6125,7 @@
 						"     validateSchema: false,",
 						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
+						"parquetsource derive({cog_City@odata.bind} = iif(\r",
 						"    isNull(cog_city),\r",
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
@@ -6164,8 +6145,7 @@
 						"    trim(gendercode) == 'TBC', 3,\r",
 						"    toInteger(null())\r",
 						"    )) ~> derivedColumn1",
-						"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> dateandroleisprinciple",
-						"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+						"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
@@ -6179,8 +6159,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
-						"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
-						"dateandroleisprinciple filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -6288,9 +6267,6 @@
 						}
 					],
 					"scriptLines": [
-						"parameters{",
-						"     LastRunDate as string (\"2001-01-01\")",
-						"}",
 						"source(output(",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",
