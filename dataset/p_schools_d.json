@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "p_schoolsupdate_d.parquet",
+				"fileName": "p_schools_d.parquet",
 				"folderPath": "parque",
 				"fileSystem": "giraffe"
 			},
