@@ -59,6 +59,8 @@
 			{
 				"name": "School Learner Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Learner from Maria",
