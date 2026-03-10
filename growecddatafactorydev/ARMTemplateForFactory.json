@@ -2156,8 +2156,6 @@
 					{
 						"name": "Dataverse Learner Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learner Query",
@@ -5178,7 +5176,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",  \n  \n    // Create Full Name first  \n    AddFullName = Table.AddColumn(  \n        Source,  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    ),  \n  \n    // Rename columns to Dataverse schema names  \n    RenamedColumns = Table.RenameColumns(AddFullName, { \n        {\"age_group_id\", \"tcbgrow_schoolagegroup\"}, \n        {\"id\", \"tcbgrow_appid\"},  \n        {\"city_id\", \"tcbgrow_city\"},  \n        {\"country_of_birth_id\", \"tcbgrow_country\"},  \n        {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n        {\"enroll_date\", \"tcbgrow_enrolldate\"},  \n        {\"first_name\", \"tcbgrow_firstname\"},  \n        {\"gender\", \"tcbgrow_gender\"},  \n        {\"id_number\", \"tcbgrow_idnumber\"},  \n        {\"import\", \"tcbgrow_import\"},  \n        {\"last_name\", \"tcbgrow_lastname\"},  \n        {\"is_active\", \"tcbgrow_leaneractive\"},  \n        {\"school_age_group_id\", \"tcbgrow_leanerage\"},  \n        {\"is_special\", \"tcbgrow_leanerspecial\"},  \n        {\"is_graduated\", \"tcbgrow_learnergraduated\"},  \n        {\"middle_name\", \"tcbgrow_middlename\"},  \n        {\"FullName\", \"tcbgrow_name\"},  \n        {\"race_type_id\", \"tcbgrow_race\"},  \n        {\"province_id\", \"cog_region\"},  \n        {\"school_id\", \"tcbgrow_school\"},  \n        {\"start_date\", \"tcbgrow_startdate\"},  \n        {\"is_temporary\", \"tcbgrow_temporary\"}  \n    }, MissingField.Ignore),\n  #\"Removed columns\" = Table.RemoveColumns(RenamedColumns, {\"class_id\", \"fee\", \"is_confirmed\", \"is_standard_fee_applied\", \"zip_code\", \"other_country_of_birth_id\", \"doctors_name\", \"doctors_contact_no\", \"known_allergies\", \"created_by\", \"updated_by\", \"parent_id\", \"is_dormant\", \"profile_completed\", \"created_at\", \"special_need_description\", \"sassa_status\"}),\n  #\"Capitalized each word\" = Table.TransformColumns(#\"Removed columns\", {{\"tcbgrow_gender\", each Text.Proper(_), type nullable text}}),\n  #\"Trimmed text\" = Table.TransformColumns(#\"Capitalized each word\", {{\"tcbgrow_gender\", each Text.Trim(_), type nullable text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Trimmed text\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_name\", \"tcbgrow_idnumber\", \"address\", \"tcbgrow_middlename\", \"tcbgrow_lastname\", \"tcbgrow_firstname\"})  \n  \nin  \n    #\"Replaced value\";\r\n",
+					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",  \n  \n    // Create Full Name first  \n    AddFullName = Table.AddColumn(  \n        Source,  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    ),  \n  \n    // Rename columns to Dataverse schema names  \n    RenamedColumns = Table.RenameColumns(AddFullName, { \n        {\"age_group_id\", \"tcbgrow_schoolagegroup\"}, \n        {\"id\", \"tcbgrow_appid\"},  \n        {\"city_id\", \"tcbgrow_city\"},  \n        {\"country_of_birth_id\", \"tcbgrow_country\"},  \n        {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n        {\"enroll_date\", \"tcbgrow_enrolldate\"},  \n        {\"first_name\", \"tcbgrow_firstname\"},  \n        {\"gender\", \"tcbgrow_gender\"},  \n        {\"id_number\", \"tcbgrow_idnumber\"},  \n        {\"import\", \"tcbgrow_import\"},  \n        {\"last_name\", \"tcbgrow_lastname\"},  \n        {\"is_active\", \"tcbgrow_leaneractive\"},  \n        {\"school_age_group_id\", \"tcbgrow_leanerage\"},  \n        {\"is_special\", \"tcbgrow_leanerspecial\"},  \n        {\"is_graduated\", \"tcbgrow_learnergraduated\"},  \n        {\"middle_name\", \"tcbgrow_middlename\"},  \n        {\"FullName\", \"tcbgrow_name\"},  \n        {\"race_type_id\", \"tcbgrow_race\"},  \n        {\"province_id\", \"cog_region\"},  \n        {\"school_id\", \"tcbgrow_school\"},  \n        {\"start_date\", \"tcbgrow_startdate\"},  \n        {\"is_temporary\", \"tcbgrow_temporary\"}  \n    }, MissingField.Ignore),\n  #\"Removed columns\" = Table.RemoveColumns(RenamedColumns, {\"class_id\", \"fee\", \"is_confirmed\", \"is_standard_fee_applied\", \"zip_code\", \"other_country_of_birth_id\", \"doctors_name\", \"doctors_contact_no\", \"known_allergies\", \"created_by\", \"updated_by\", \"parent_id\", \"is_dormant\", \"profile_completed\", \"created_at\", \"special_need_description\", \"sassa_status\"}),\n  #\"Capitalized each word\" = Table.TransformColumns(#\"Removed columns\", {{\"tcbgrow_gender\", each Text.Proper(_), type nullable text}}),\n  #\"Trimmed text\" = Table.TransformColumns(#\"Capitalized each word\", {{\"tcbgrow_gender\", each Text.Trim(_), type nullable text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Trimmed text\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_name\", \"tcbgrow_idnumber\", \"address\", \"tcbgrow_middlename\", \"tcbgrow_lastname\", \"tcbgrow_firstname\"}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Replaced value\", {{\"tcbgrow_temporary\", type text}, {\"tcbgrow_leaneractive\", type text}, {\"tcbgrow_leanerspecial\", type text}, {\"tcbgrow_learnergraduated\", type text}}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Changed column type\", \"true\", \"1\", Replacer.ReplaceText, {\"tcbgrow_temporary\", \"tcbgrow_leaneractive\", \"tcbgrow_leanerspecial\", \"tcbgrow_learnergraduated\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"false\", \"0\", Replacer.ReplaceText, {\"tcbgrow_temporary\", \"tcbgrow_leaneractive\", \"tcbgrow_leanerspecial\", \"tcbgrow_learnergraduated\"}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Replaced value 2\", {{\"tcbgrow_temporary\", Int64.Type}, {\"tcbgrow_leaneractive\", Int64.Type}, {\"tcbgrow_leanerspecial\", Int64.Type}, {\"tcbgrow_learnergraduated\", Int64.Type}})  \n  \nin  \n    #\"Changed column type 1\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -5417,7 +5415,7 @@
 					],
 					"scriptLines": [
 						"parameters{",
-						"     updated_at as string (\"2000-02-01\")",
+						"     updated_at as string (\"2026-03-08\")",
 						"}",
 						"source(output(",
 						"          tcbgrow_appid as string,",
@@ -5435,7 +5433,7 @@
 						"          tcbgrow_learnergraduated as boolean,",
 						"          tcbgrow_schoolagegroup as long,",
 						"          address as string,",
-						"          tcbgrow_region as long,",
+						"          cog_region as long,",
 						"          tcbgrow_city as long,",
 						"          tcbgrow_country as long,",
 						"          tcbgrow_race as long,",
@@ -5450,7 +5448,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"date derive({cog_City@odata.bind} = iif(\r",
+						"date derive({tcbgrow_City@odata.bind} = iif(\r",
 						"    isNull(tcbgrow_city),\r",
 						"    toString(null()),\r",
 						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
@@ -5460,7 +5458,7 @@
 						"    toString(null()),\r",
 						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
 						"),",
-						"          {cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
+						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
 						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
 						"          {tcbgrow_AgeGroup@odata.bind} = iif(    isNull(tcbgrow_schoolagegroup),    toString(null()),    concat(\"/tcbgrow_schoolagegroups(tcbgrow_appid==\", toString(tcbgrow_schoolagegroup), \")\")),",
 						"          tcbgrow_gender = case(\r",
@@ -5476,7 +5474,7 @@
 						"     insertable:false,",
 						"     updateable:false,",
 						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_school_staff_key',",
+						"     alternateKeyName: 'tcbgrow_import_key',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 1,",
@@ -5485,6 +5483,11 @@
 						"     assertFailure_folderPath: 'errors',",
 						"     mapColumn(",
 						"          tcbgrow_appid,",
+						"          {tcbgrow_AgeGroup@odata.bind},",
+						"          {tcbgrow_School@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          {tcbgrow_Country@odata.bind},",
+						"          {tcbgrow_City@odata.bind},",
 						"          tcbgrow_firstname,",
 						"          tcbgrow_lastname,",
 						"          tcbgrow_middlename,",
@@ -5492,26 +5495,15 @@
 						"          tcbgrow_startdate,",
 						"          tcbgrow_enrolldate,",
 						"          tcbgrow_gender,",
-						"          tcbgrow_school,",
 						"          tcbgrow_temporary,",
 						"          tcbgrow_leaneractive,",
 						"          tcbgrow_leanerspecial,",
 						"          tcbgrow_learnergraduated,",
-						"          tcbgrow_schoolagegroup,",
 						"          address,",
-						"          tcbgrow_region,",
-						"          tcbgrow_city,",
-						"          tcbgrow_country,",
 						"          tcbgrow_race,",
 						"          tcbgrow_idnumber,",
-						"          updated_at,",
 						"          tcbgrow_leanerage,",
-						"          tcbgrow_name,",
-						"          bind = {cog_City@odata.bind},",
-						"          bind = {tcbgrow_Country@odata.bind},",
-						"          bind = {cog_Region@odata.bind},",
-						"          bind = {tcbgrow_School@odata.bind},",
-						"          bind = {tcbgrow_AgeGroup@odata.bind}",
+						"          tcbgrow_name",
 						"     )) ~> sink1"
 					]
 				}
