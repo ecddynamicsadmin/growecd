@@ -20,7 +20,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}' ",
+							"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}' ",
 							"type": "Expression"
 						}
 					},

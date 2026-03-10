@@ -93,10 +93,7 @@
 						"referenceName": "Schools Age Group",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"Watermarkdate": "@variables('WatermarkDate')"
-					}
+					"waitOnCompletion": true
 				}
 			},
 			{

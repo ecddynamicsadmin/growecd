@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  \n\n",
+							"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
 							"type": "Expression"
 						}
 					},
