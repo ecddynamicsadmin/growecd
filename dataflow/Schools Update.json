@@ -37,9 +37,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     LastRunDate as string (\"2001-01-01\")",
-				"}",
 				"source(output(",
 				"          tcbgrow_breakeven as integer,",
 				"          tcbgrow_ecdowner as long,",

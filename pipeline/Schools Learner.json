@@ -141,12 +141,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"WatermarkDate": {
-				"type": "string",
-				"defaultValue": "2000-01-01"
-			}
-		},
 		"variables": {
 			"updated_at": {
 				"type": "String",

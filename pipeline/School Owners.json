@@ -351,13 +351,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "School Owners",
-						"type": "DataFlowReference",
-						"parameters": {
-							"LastRunDate": {
-								"value": "'@{pipeline().parameters.LastRunDate}'",
-								"type": "Expression"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,

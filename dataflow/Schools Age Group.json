@@ -34,9 +34,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     LastRunDate as string (\"2026-03-03\")",
-				"}",
 				"source(output(",
 				"          tcbgrow_appid as long,",
 				"          tcbgrow_agegroup as string,",

@@ -31,9 +31,6 @@
 				},
 				{
 					"name": "derivedColumn1"
-				},
-				{
-					"name": "date"
 				}
 			],
 			"scriptLines": [
@@ -71,7 +68,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"date derive({tcbgrow_City@odata.bind} = iif(\r",
+				"parquetsource derive({tcbgrow_City@odata.bind} = iif(\r",
 				"    isNull(tcbgrow_city),\r",
 				"    toString(null()),\r",
 				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
@@ -106,7 +103,6 @@
 				"    toInteger(null())\r",
 				"    ),",
 				"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
-				"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",

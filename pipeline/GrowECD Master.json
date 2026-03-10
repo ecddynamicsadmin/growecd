@@ -104,7 +104,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"WatermarkDate": "@variables('WatermarkDate')"
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -130,13 +133,7 @@
 						"referenceName": "Schools Learner",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"WatermarkDate": {
-							"value": "@variables('WatermarkDate')",
-							"type": "Expression"
-						}
-					}
+					"waitOnCompletion": true
 				}
 			}
 		],

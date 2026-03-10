@@ -34,9 +34,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     LastRunDate as string (\"2001-01-01\")",
-				"}",
 				"source(output(",
 				"          tcbgrow_appid as long,",
 				"          tcbgrow_address as string,",
