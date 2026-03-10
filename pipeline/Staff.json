@@ -699,7 +699,8 @@
 		],
 		"parameters": {
 			"WatermarkDate": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "'2026-03-07 16:45:28'"
 			}
 		},
 		"variables": {
