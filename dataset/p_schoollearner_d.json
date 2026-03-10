@@ -77,7 +77,7 @@
 				"type": "INT64"
 			},
 			{
-				"name": "address",
+				"name": "tcbgrow_address",
 				"type": "UTF8"
 			},
 			{
