@@ -627,7 +627,7 @@
 					{
 						"activity": "Schools Update from Maria",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],

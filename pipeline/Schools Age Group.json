@@ -61,7 +61,7 @@
 					{
 						"activity": "School Age Group from Maria",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],

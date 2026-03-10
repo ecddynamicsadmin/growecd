@@ -291,7 +291,7 @@
 					{
 						"activity": "Schools ECD Owners from Maria",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
