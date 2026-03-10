@@ -118,7 +118,6 @@
 				"          tcbgrow_startdate,",
 				"          tcbgrow_enrolldate,",
 				"          tcbgrow_gender,",
-				"          tcbgrow_school,",
 				"          tcbgrow_temporary,",
 				"          tcbgrow_leaneractive,",
 				"          tcbgrow_leanerspecial,",
