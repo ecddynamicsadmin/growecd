@@ -142,7 +142,7 @@
 			}
 		],
 		"parameters": {
-			"LastRunDate": {
+			"Watermarkdate": {
 				"type": "string",
 				"defaultValue": "\"2026-03-03\""
 			}

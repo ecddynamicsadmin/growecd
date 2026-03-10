@@ -17,10 +17,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"LastRunDate": {
-							"value": "@pipeline().parameters.LastRunDate",
-							"type": "Expression"
-						}
+						"WatermarkDate": "@variables('WatermarkDate')"
 					}
 				}
 			},
@@ -46,10 +43,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"LastRunDate": {
-							"value": "@pipeline().parameters.LastRunDate",
-							"type": "Expression"
-						}
+						"WatermarkDate": "@variables('WatermarkDate')"
 					}
 				}
 			},
@@ -75,10 +69,7 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"LastRunDate": {
-							"value": "@pipeline().parameters.LastRunDate",
-							"type": "Expression"
-						}
+						"WatermarkDate": "@variables('WatermarkDate')"
 					}
 				}
 			},
@@ -102,7 +93,10 @@
 						"referenceName": "Schools Age Group",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"Watermarkdate": "@variables('WatermarkDate')"
+					}
 				}
 			},
 			{
@@ -127,14 +121,23 @@
 						"referenceName": "Schools Learner",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": "@variables('WatermarkDate')"
+					}
 				}
 			}
 		],
 		"parameters": {
-			"LastRunDate": {
+			"RunDate": {
 				"type": "string",
-				"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-3),2),'yyyy-MM-dd HH:mm:ss')"
+				"defaultValue": "@utcNow()"
+			}
+		},
+		"variables": {
+			"WatermarkDate": {
+				"type": "String",
+				"defaultValue": "@formatDateTime(addDays(pipeline().parameters.RunDate, -3), 'yyyy-MM-dd HH:mm:ss') "
 			}
 		},
 		"annotations": []

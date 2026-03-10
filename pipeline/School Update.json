@@ -704,7 +704,7 @@
 			}
 		],
 		"parameters": {
-			"LastRunDate": {
+			"WatermarkDate": {
 				"type": "string"
 			}
 		},
