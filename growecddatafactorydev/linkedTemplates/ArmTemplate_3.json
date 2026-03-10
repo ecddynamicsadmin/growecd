@@ -34,7 +34,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
+									"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'  \n\n",
 									"type": "Expression"
 								}
 							},
@@ -1320,7 +1320,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE last_modified >= '@{pipeline().parameters.WatermarkDate}' ",
+									"value": "SELECT *  \nFROM crm.vw_learners_export  \nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' ",
 									"type": "Expression"
 								}
 							},
