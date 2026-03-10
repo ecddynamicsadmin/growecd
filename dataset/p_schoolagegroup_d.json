@@ -19,6 +19,51 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "id",
+				"type": "INT64"
+			},
+			{
+				"name": "age_group_id",
+				"type": "INT64"
+			},
+			{
+				"name": "fees",
+				"type": "INT64"
+			},
+			{
+				"name": "renewed_effective_fees",
+				"type": "INT64"
+			},
+			{
+				"name": "renewed_effective_date",
+				"type": "INT96"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "created_by",
+				"type": "INT32"
+			},
+			{
+				"name": "updated_by",
+				"type": "INT32"
+			},
+			{
+				"name": "created_at",
+				"type": "INT96"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			},
+			{
+				"name": "late_early_fee",
+				"type": "INT64"
+			}
+		]
 	}
 }
