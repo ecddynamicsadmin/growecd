@@ -309,7 +309,7 @@
 							{
 								"activity": "Schools ECD Owners from Maria",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -1036,7 +1036,7 @@
 							{
 								"activity": "Schools Update from Maria",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -1197,7 +1197,7 @@
 							{
 								"activity": "School Age Group from Maria",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -1365,7 +1365,7 @@
 							{
 								"activity": "School Learner from Maria",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
@@ -2092,7 +2092,7 @@
 							{
 								"activity": "School Staff from Maria",
 								"dependencyConditions": [
-									"Completed"
+									"Succeeded"
 								]
 							}
 						],
