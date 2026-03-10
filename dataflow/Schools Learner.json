@@ -38,7 +38,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     updated_at as string (\"2026-03-08\")",
+				"     LastRunDate as string (\"2026-03-08\")",
 				"}",
 				"source(output(",
 				"          tcbgrow_appid as string,",
@@ -106,7 +106,7 @@
 				"    toInteger(null())\r",
 				"    ),",
 				"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
-				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> date",
+				"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",

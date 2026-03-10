@@ -689,8 +689,8 @@
 						"referenceName": "Schools Staff",
 						"type": "DataFlowReference",
 						"parameters": {
-							"updated_at": {
-								"value": "'@{variables('updated_at')}'",
+							"LastRunDate": {
+								"value": "'@{pipeline().parameters.LastRunDate}'",
 								"type": "Expression"
 							}
 						}

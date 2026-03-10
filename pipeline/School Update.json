@@ -684,7 +684,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Schools Update",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"LastRunDate": {
+								"value": "'@{pipeline().parameters.LastRunDate}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,

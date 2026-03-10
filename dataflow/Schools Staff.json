@@ -70,7 +70,7 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     updated_at as string (\"2000-02-01\")",
+				"     LastRunDate as string (\"2000-02-01\")",
 				"}",
 				"source(output(",
 				"          tcbgrow_alternativenumber as string,",
@@ -138,7 +138,7 @@
 				"    trim(gendercode) == 'TBC', 3,\r",
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
-				"parquetsource filter(toDate(updated_at)>=toDate($updated_at)) ~> dateandroleisprinciple",
+				"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> dateandroleisprinciple",
 				"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",

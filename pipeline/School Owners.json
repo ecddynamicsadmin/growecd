@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Schools Owners from Maria",
+				"name": "Schools ECD Owners from Maria",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -285,11 +285,11 @@
 				]
 			},
 			{
-				"name": "Schools Owners Query",
+				"name": "Schools ECD Owners Query",
 				"type": "ExecuteWranglingDataflow",
 				"dependsOn": [
 					{
-						"activity": "Schools Owners from Maria",
+						"activity": "Schools ECD Owners from Maria",
 						"dependencyConditions": [
 							"Completed"
 						]
@@ -330,11 +330,11 @@
 				}
 			},
 			{
-				"name": "Dataverse Update",
+				"name": "Dataverse ECD Owner Update",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
-						"activity": "Schools Owners Query",
+						"activity": "Schools ECD Owners Query",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -351,7 +351,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "School Owners",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"LastRunDate": {
+								"value": "'@{pipeline().parameters.LastRunDate}'",
+								"type": "Expression"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
