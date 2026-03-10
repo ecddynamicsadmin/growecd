@@ -158,7 +158,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "WatermarkDate",
-					"value": "@formatDateTime(addDays(utcNow(), -3), 'yyyy-MM-dd HH:mm:ss')"
+					"value": {
+						"value": "@formatDateTime(addDays(addHours(utcNow(), 2), -3), 'yyyy-MM-dd HH:mm:ss')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
