@@ -5,7 +5,14 @@
 			{
 				"name": "ECD Owners",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set WatermarkDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -139,18 +146,25 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Set WatermarkDate",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "WatermarkDate",
+					"value": "@formatDateTime(addDays(utcNow(), -3), 'yyyy-MM-dd HH:mm:ss')"
+				}
 			}
 		],
-		"parameters": {
-			"RunDate": {
-				"type": "string",
-				"defaultValue": "@utcNow()"
-			}
-		},
 		"variables": {
 			"WatermarkDate": {
-				"type": "String",
-				"defaultValue": "@formatDateTime(addDays(pipeline().parameters.RunDate, -3), 'yyyy-MM-dd HH:mm:ss') "
+				"type": "String"
 			}
 		},
 		"annotations": []
