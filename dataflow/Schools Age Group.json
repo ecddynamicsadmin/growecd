@@ -1,0 +1,150 @@
+{
+	"name": "Schools Age Group",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "p_schoolagegroup_d",
+						"type": "DatasetReference"
+					},
+					"name": "parquetsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataverseSchoolAgeGroup",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "date"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     LastRunDate as string (\"2026-03-08\")",
+				"}",
+				"source(output(",
+				"          tcbgrow_appid as string,",
+				"          tcbgrow_firstname as string,",
+				"          tcbgrow_lastname as string,",
+				"          tcbgrow_middlename as string,",
+				"          tcbgrow_dateofbirth as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_enrolldate as timestamp,",
+				"          tcbgrow_gender as string,",
+				"          tcbgrow_school as long,",
+				"          tcbgrow_temporary as boolean,",
+				"          tcbgrow_leaneractive as boolean,",
+				"          tcbgrow_leanerspecial as boolean,",
+				"          tcbgrow_learnergraduated as boolean,",
+				"          tcbgrow_schoolagegroup as long,",
+				"          tcbgrow_address as string,",
+				"          cog_region as long,",
+				"          tcbgrow_city as long,",
+				"          tcbgrow_country as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_idnumber as string,",
+				"          updated_at as timestamp,",
+				"          tcbgrow_leanerage as long,",
+				"          tcbgrow_name as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> parquetsource",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"date derive({tcbgrow_City@odata.bind} = iif(\r",
+				"    isNull(tcbgrow_city),\r",
+				"    toString(null()),\r",
+				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
+				"),",
+				"          {tcbgrow_Country@odata.bind} = iif(\r",
+				"    isNull(tcbgrow_country),\r",
+				"    toString(null()),\r",
+				"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
+				"),",
+				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
+				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
+				"          {tcbgrow_AgeGroup@odata.bind} = iif(    isNull(tcbgrow_schoolagegroup),    toString(null()),    concat(\"/tcbgrow_schoolagegroups(tcbgrow_appid==\", toString(tcbgrow_schoolagegroup), \")\")),",
+				"          tcbgrow_gender = case(\r",
+				"    trim(tcbgrow_gender) == 'Male', 301220000,\r",
+				"    trim(tcbgrow_gender) == 'Female', 301220001,\r",
+				"    trim(tcbgrow_gender) == 'Not Provided', 301220002,\r",
+				"    toInteger(null())\r",
+				"    ),",
+				"          tcbgrow_leaneractive = case(\r",
+				"    trim(toString(tcbgrow_leaneractive)) == 'true', 1,\r",
+				"    trim(toString(tcbgrow_leaneractive)) == 'false', 0,\r",
+				"    toInteger(null())\r",
+				"    ),",
+				"          tcbgrow_leanerspecial = case(\r",
+				"    trim(toString(tcbgrow_leanerspecial)) == 'true', 1,\r",
+				"    trim(toString(tcbgrow_leanerspecial)) == 'false', 0,\r",
+				"    toInteger(null())\r",
+				"    ),",
+				"          tcbgrow_learnergraduated = case(\r",
+				"    trim(toString(tcbgrow_learnergraduated)) == 'true', 1,\r",
+				"    trim(toString(tcbgrow_learnergraduated)) == 'false', 0,\r",
+				"    toInteger(null())\r",
+				"    ),",
+				"          tcbgrow_temporary = toString(tcbgrow_temporary)) ~> derivedColumn1",
+				"parquetsource filter(toDate(updated_at)>=toDate($LastRunDate)) ~> date",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_import_key',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'giraffe',",
+				"     assertFailure_folderPath: 'errors',",
+				"     mapColumn(",
+				"          tcbgrow_appid,",
+				"          {tcbgrow_AgeGroup@odata.bind},",
+				"          {tcbgrow_School@odata.bind},",
+				"          {cog_Region@odata.bind},",
+				"          {tcbgrow_Country@odata.bind},",
+				"          {tcbgrow_City@odata.bind},",
+				"          tcbgrow_firstname,",
+				"          tcbgrow_lastname,",
+				"          tcbgrow_middlename,",
+				"          tcbgrow_dateofbirth,",
+				"          tcbgrow_startdate,",
+				"          tcbgrow_enrolldate,",
+				"          tcbgrow_gender,",
+				"          tcbgrow_temporary,",
+				"          tcbgrow_leaneractive,",
+				"          tcbgrow_leanerspecial,",
+				"          tcbgrow_learnergraduated,",
+				"          tcbgrow_race,",
+				"          tcbgrow_idnumber,",
+				"          tcbgrow_leanerage,",
+				"          tcbgrow_name,",
+				"          tcbgrow_address",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
