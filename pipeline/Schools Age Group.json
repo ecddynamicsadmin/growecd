@@ -5,6 +5,8 @@
 			{
 				"name": "School Age Group from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -57,6 +59,8 @@
 			{
 				"name": "School Age Group Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Group from Maria",
@@ -92,7 +96,7 @@
 										"referenceName": "p_schoolagegroup_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tid as long,\n\t\tage_group_id as long,\n\t\tfees as long,\n\t\trenewed_effective_fees as long,\n\t\trenewed_effective_date as timestamp,\n\t\tschool_id as long,\n\t\tcreated_by as integer,\n\t\tupdated_by as integer,\n\t\tcreated_at as timestamp,\n\t\tupdated_at as timestamp,\n\t\tlate_early_fee as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_agegroup as string,\n\t\ttcbgrow_fees as long,\n\t\ttcbgrow_school as long,\n\t\tupdated_at as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
 								}
 							]
 						}
@@ -102,8 +106,6 @@
 			{
 				"name": "Dataverse Age Group Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Group Query",
