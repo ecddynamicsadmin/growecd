@@ -1254,8 +1254,6 @@
 					{
 						"name": "Dataverse Age Group Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Group Query",
