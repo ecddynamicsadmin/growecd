@@ -59,8 +59,6 @@
 			{
 				"name": "School Learner Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Learner from Maria",
@@ -106,6 +104,8 @@
 			{
 				"name": "Dataverse Learner Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Learner Query",
