@@ -120,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Schools Age Group",
+						"referenceName": "Age Groups Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {

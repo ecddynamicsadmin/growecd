@@ -120,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Schools Learner",
+						"referenceName": "Learner Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {

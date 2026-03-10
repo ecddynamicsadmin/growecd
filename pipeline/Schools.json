@@ -1,5 +1,5 @@
 {
-	"name": "School",
+	"name": "Schools",
 	"properties": {
 		"activities": [
 			{
@@ -120,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Schools",
+						"referenceName": "Schools Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {

@@ -1,5 +1,5 @@
 {
-	"name": "Schools Age Group",
+	"name": "Age Groups Dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {

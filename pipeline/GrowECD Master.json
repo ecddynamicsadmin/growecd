@@ -48,7 +48,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "School",
+						"referenceName": "Schools",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
