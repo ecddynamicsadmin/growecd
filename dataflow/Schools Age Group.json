@@ -57,6 +57,7 @@
 				"     insertable:false,",
 				"     updateable:false,",
 				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_import_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
