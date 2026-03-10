@@ -69,21 +69,7 @@
 				"     saveOrder: 1,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
-				"     assertFailure_folderPath: 'errors',",
-				"     mapColumn(",
-				"          id,",
-				"          age_group_id,",
-				"          fees,",
-				"          renewed_effective_fees,",
-				"          renewed_effective_date,",
-				"          school_id,",
-				"          created_by,",
-				"          updated_by,",
-				"          created_at,",
-				"          updated_at,",
-				"          late_early_fee,",
-				"          bind = {tcbgrow_School@odata.bind}",
-				"     )) ~> sink1"
+				"     assertFailure_folderPath: 'errors') ~> sink1"
 			]
 		}
 	}
