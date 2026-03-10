@@ -313,42 +313,6 @@
 							},
 							{
 								"source": {
-									"name": "operating_days",
-									"physicalType": "Null"
-								},
-								"sink": {
-									"name": "operating_days"
-								}
-							},
-							{
-								"source": {
-									"name": "opening_hours_monday_to_friday",
-									"physicalType": "Null"
-								},
-								"sink": {
-									"name": "opening_hours_monday_to_friday"
-								}
-							},
-							{
-								"source": {
-									"name": "closing_hours_monday_to_thursday",
-									"physicalType": "Null"
-								},
-								"sink": {
-									"name": "closing_hours_monday_to_thursday"
-								}
-							},
-							{
-								"source": {
-									"name": "closing_hours_friday",
-									"physicalType": "Null"
-								},
-								"sink": {
-									"name": "closing_hours_friday"
-								}
-							},
-							{
-								"source": {
 									"name": "business_mentor_id",
 									"type": "UInt64",
 									"physicalType": "UInt64"
