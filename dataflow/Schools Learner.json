@@ -55,7 +55,7 @@
 				"          tcbgrow_leanerspecial as boolean,",
 				"          tcbgrow_learnergraduated as boolean,",
 				"          tcbgrow_schoolagegroup as long,",
-				"          address as string,",
+				"          tcbgrow_address as string,",
 				"          cog_region as long,",
 				"          tcbgrow_city as long,",
 				"          tcbgrow_country as long,",
@@ -141,7 +141,8 @@
 				"          tcbgrow_race,",
 				"          tcbgrow_idnumber,",
 				"          tcbgrow_leanerage,",
-				"          tcbgrow_name",
+				"          tcbgrow_name,",
+				"          tcbgrow_address",
 				"     )) ~> sink1"
 			]
 		}
