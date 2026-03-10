@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT *  \nFROM crm.vw_schools_rpt_final_null_op  \nWHERE last_modified >= '@{pipeline().parameters.LastRunDate}'  \n\n",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
