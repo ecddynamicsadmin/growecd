@@ -86,7 +86,7 @@
 		"parameters": {
 			"LastRunDate": {
 				"type": "string",
-				"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-1),2),'yyyy-MM-dd HH:mm:ss')"
+				"defaultValue": "@formatDateTime(addHours(addDays(trigger().scheduledTime,-3),2),'yyyy-MM-dd HH:mm:ss')"
 			}
 		},
 		"annotations": []
