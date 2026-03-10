@@ -21,96 +21,48 @@
 		},
 		"schema": [
 			{
-				"name": "tcbgrow_appid",
-				"type": "UTF8"
+				"name": "id",
+				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_firstname",
-				"type": "UTF8"
+				"name": "age_group_id",
+				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_lastname",
-				"type": "UTF8"
+				"name": "fees",
+				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_middlename",
-				"type": "UTF8"
+				"name": "renewed_effective_fees",
+				"type": "INT64"
 			},
 			{
-				"name": "tcbgrow_dateofbirth",
+				"name": "renewed_effective_date",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_startdate",
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "created_by",
+				"type": "INT32"
+			},
+			{
+				"name": "updated_by",
+				"type": "INT32"
+			},
+			{
+				"name": "created_at",
 				"type": "INT96"
-			},
-			{
-				"name": "tcbgrow_enrolldate",
-				"type": "INT96"
-			},
-			{
-				"name": "tcbgrow_gender",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_school",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_temporary",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "tcbgrow_leaneractive",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "tcbgrow_leanerspecial",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "tcbgrow_learnergraduated",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "tcbgrow_schoolagegroup",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_address",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_region",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_city",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_country",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_race",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_idnumber",
-				"type": "UTF8"
 			},
 			{
 				"name": "updated_at",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_leanerage",
+				"name": "late_early_fee",
 				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_name",
-				"type": "UTF8"
 			}
 		]
 	}
