@@ -5,8 +5,6 @@
 			{
 				"name": "School Learner from Maria",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -59,8 +57,6 @@
 			{
 				"name": "School Learner Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Learner from Maria",
@@ -125,13 +121,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Schools Learner",
-						"type": "DataFlowReference",
-						"parameters": {
-							"LastRunDate": {
-								"value": "'@{pipeline().parameters.LastRunDate}'",
-								"type": "Expression"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
@@ -141,12 +131,6 @@
 				}
 			}
 		],
-		"variables": {
-			"updated_at": {
-				"type": "String",
-				"defaultValue": "2000-02-01"
-			}
-		},
 		"annotations": []
 	}
 }

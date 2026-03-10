@@ -47,9 +47,6 @@
 					"name": "derivedColumn1"
 				},
 				{
-					"name": "dateandroleisprinciple"
-				},
-				{
 					"name": "joinschoolappis"
 				},
 				{
@@ -60,9 +57,6 @@
 				},
 				{
 					"name": "select1"
-				},
-				{
-					"name": "filter1"
 				},
 				{
 					"name": "staffroleprinciple"
@@ -115,7 +109,7 @@
 				"     validateSchema: false,",
 				"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"dateandroleisprinciple derive({cog_City@odata.bind} = iif(\r",
+				"parquetsource derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(cog_city),\r",
 				"    toString(null()),\r",
 				"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
@@ -135,8 +129,7 @@
 				"    trim(gendercode) == 'TBC', 3,\r",
 				"    toInteger(null())\r",
 				"    )) ~> derivedColumn1",
-				"parquetsource filter(ERROR_FUNCTION('')) ~> dateandroleisprinciple",
-				"staffroleprinciple, filter1 join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+				"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
@@ -150,8 +143,7 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"dataverseschools filter(toInteger(tcbgrow_appid)==9493) ~> filter1",
-				"dateandroleisprinciple filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+				"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
