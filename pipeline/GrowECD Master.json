@@ -17,7 +17,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"WatermarkDate": "@variables('WatermarkDate')"
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -43,7 +46,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"WatermarkDate": "@variables('WatermarkDate')"
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -69,7 +75,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"WatermarkDate": "@variables('WatermarkDate')"
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -93,7 +102,10 @@
 						"referenceName": "Schools Age Group",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": "@variables('WatermarkDate')"
+					}
 				}
 			},
 			{
@@ -120,7 +132,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"WatermarkDate": "@variables('WatermarkDate')"
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
 					}
 				}
 			}
