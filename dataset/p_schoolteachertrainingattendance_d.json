@@ -19,6 +19,51 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_attendancedate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_attendancedatestring",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_attended",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_course",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_dateemployed",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_position",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_region",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_schoolid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_staffid",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_staffname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_teacher",
+				"type": "UTF8"
+			}
+		]
 	}
 }
