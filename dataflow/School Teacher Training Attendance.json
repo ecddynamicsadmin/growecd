@@ -1,20 +1,82 @@
 {
 	"name": "School Teacher Training Attendance",
 	"properties": {
-		"type": "WranglingDataFlow",
+		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "p_schoolteachertrainingattendance_s",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolteachertrainingattendance_s",
 					"dataset": {
-						"referenceName": "p_schoolteachertrainingattendance_s",
+						"referenceName": "p_schoolteachertrainingattendance_d",
 						"type": "DatasetReference"
+					},
+					"name": "parquetsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataverseSchoolTeacherTrainingAttendance",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \r\n    Source = #\"p_schoolteachertrainingattendance_s\",  \r\n  \r\n    // Duplicate required columns  \r\n    #\"Duplicated attendance_date\" = Table.DuplicateColumn(Source, \"attendance_date\", \"meetingdatestring\"),  \r\n    #\"Duplicated teacher_id\" = Table.DuplicateColumn(#\"Duplicated attendance_date\", \"teacher_id\", \"teacher_id_copy\"),  \r\n  \r\n    // Replace values  \r\n    #\"Replaced value 1\" = Table.ReplaceValue(  \r\n        #\"Duplicated teacher_id\",  \r\n        \"not_required\",  \r\n        \"absent\",  \r\n        Replacer.ReplaceText,  \r\n        {\"status\"}  \r\n    ),  \r\n  \r\n    // Keep only required source columns  \r\n    #\"Selected Columns\" = Table.SelectColumns(#\"Replaced value 1\",{  \r\n        \"attendance_date\",  \r\n        \"meetingdatestring\",  \r\n        \"attended\",  \r\n        \"course\",  \r\n        \"date_employed\",  \r\n        \"position\",  \r\n        \"region\",  \r\n        \"school_id\",  \r\n        \"teacher_id\",  \r\n        \"staff\",  \r\n        \"teacher_id_copy\"  \r\n    }),  \r\n  \r\n    // Rename to destination schema  \r\n    #\"Renamed Columns\" = Table.RenameColumns(#\"Selected Columns\",{  \r\n        {\"attendance_date\",\"tcbgrow_attendancedate\"},  \r\n        {\"meetingdatestring\",\"tcbgrow_attendancedatestring\"},  \r\n        {\"attended\",\"tcbgrow_attended\"},  \r\n        {\"course\",\"tcbgrow_course\"},  \r\n        {\"date_employed\",\"tcbgrow_dateemployed\"},  \r\n        {\"position\",\"tcbgrow_position\"},  \r\n        {\"region\",\"tcbgrow_region\"},  \r\n        {\"school_id\",\"tcbgrow_schoolid\"},  \r\n        {\"teacher_id\",\"tcbgrow_staffid\"},  \r\n        {\"staff\",\"tcbgrow_staffname\"},  \r\n        {\"teacher_id_copy\",\"tcbgrow_teacher\"}  \r\n    }),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_attendancedatestring\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_attendancedatestring\", type text}})  \r\n  \r\nin  \r\n    #\"Changed column type 1\";\r\n",
-			"documentLocale": "en-us"
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> parquetsource",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"parquetsource derive({cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
+				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
+				"          {tcbgrow_ECDOwner@odata.bind} = iif(    isNull(tcbgrow_ecdowner),    toString(null()),    concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\")),",
+				"          tcbgrow_attended = case(  \r",
+				"    tcbgrow_attended == 1, 'true',\r",
+				"    tcbgrow_attended == 0, 'false',  \r",
+				"    '')) ~> derivedColumn1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_importkey_schoolownertraining',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'giraffe',",
+				"     assertFailure_folderPath: 'errors',",
+				"     mapColumn(",
+				"          tcbgrow_attended,",
+				"          tcbgrow_coursetype,",
+				"          tcbgrow_franchiseenumber,",
+				"          tcbgrow_groupname,",
+				"          tcbgrow_grouptrain,",
+				"          tcbgrow_meeting,",
+				"          tcbgrow_meetingdate,",
+				"          tcbgrow_mentor,",
+				"          tcbgrow_ownername,",
+				"          {tcbgrow_School@odata.bind},",
+				"          {cog_Region@odata.bind},",
+				"          {tcbgrow_ECDOwner@odata.bind},",
+				"          tcbgrow_meetingdatestring,",
+				"          tcbgrow_ownerid,",
+				"          tcbgrow_schoolid",
+				"     )) ~> sink1"
+			]
 		}
 	}
 }
