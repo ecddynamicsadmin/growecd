@@ -5,6 +5,8 @@
 			{
 				"name": "Teacher Training Attendance from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -34,6 +36,188 @@
 					"enableStaging": false,
 					"translator": {
 						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "staff",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "staff",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "school",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "school",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "region",
+									"type": "UInt32",
+									"physicalType": "UInt32"
+								},
+								"sink": {
+									"name": "region",
+									"type": "UInt32",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "ecd_code",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "ecd_code",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "position",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "position",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "date_employed",
+									"type": "DateTime",
+									"physicalType": "Date"
+								},
+								"sink": {
+									"name": "date_employed",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "ecd_start_date",
+									"type": "DateTime",
+									"physicalType": "Date"
+								},
+								"sink": {
+									"name": "ecd_start_date",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "attendance_date",
+									"type": "DateTime",
+									"physicalType": "Date"
+								},
+								"sink": {
+									"name": "attendance_date",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "attended",
+									"type": "Int32",
+									"physicalType": "Int32"
+								},
+								"sink": {
+									"name": "attended",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
+									"name": "status",
+									"type": "String",
+									"physicalType": "Enum"
+								},
+								"sink": {
+									"name": "status",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "reason",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "reason",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "course",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "course",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "school_id",
+									"type": "UInt32",
+									"physicalType": "UInt32"
+								},
+								"sink": {
+									"name": "school_id",
+									"type": "UInt32",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "course_type",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "course_type",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "teacher_id",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "teacher_id",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							}
+						],
 						"typeConversion": true,
 						"typeConversionSettings": {
 							"allowDataTruncation": true,
@@ -57,8 +241,6 @@
 			{
 				"name": "Teacher Training Attendance Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Teacher Training Attendance from Maria",
@@ -77,7 +259,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Owner Training Attendance",
+						"referenceName": "School Teacher Training Attendance",
 						"type": "DataFlowReference"
 					},
 					"compute": {
