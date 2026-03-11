@@ -19,6 +19,55 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_attended",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_coursetype",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_ecdowner",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_franchiseenumber",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_groupname",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_grouptrain",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_meeting",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_meetingdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_mentor",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_ownername",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_region",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_schoolid",
+				"type": "INT64"
+			}
+		]
 	}
 }
