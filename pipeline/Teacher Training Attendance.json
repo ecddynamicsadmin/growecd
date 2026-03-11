@@ -5,8 +5,6 @@
 			{
 				"name": "Teacher Training Attendance from Maria",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -286,8 +284,6 @@
 			{
 				"name": "Teacher Training Attendance Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Teacher Training Attendance Query",
