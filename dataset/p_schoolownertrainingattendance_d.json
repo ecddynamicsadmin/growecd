@@ -67,6 +67,14 @@
 			{
 				"name": "tcbgrow_schoolid",
 				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_meetingdatestring",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_ownerid",
+				"type": "INT64"
 			}
 		]
 	}
