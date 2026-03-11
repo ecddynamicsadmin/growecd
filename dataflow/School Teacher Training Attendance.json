@@ -85,7 +85,9 @@
 				"          tcbgrow_schoolid,",
 				"          tcbgrow_staffid,",
 				"          tcbgrow_staffname,",
-				"          tcbgrow_teacher",
+				"          {cog_Region@odata.bind},",
+				"          {tcbgrow_School@odata.bind},",
+				"          {tcbgrow_Teacher@odata.bind}",
 				"     )) ~> sink1"
 			]
 		}
