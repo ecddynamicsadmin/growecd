@@ -5,6 +5,8 @@
 			{
 				"name": "Learner Stats from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -57,8 +59,6 @@
 			{
 				"name": "Learner Stats Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Stats from Maria",
@@ -104,8 +104,6 @@
 			{
 				"name": "Dataverse Learner Stats Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Stats Query",
