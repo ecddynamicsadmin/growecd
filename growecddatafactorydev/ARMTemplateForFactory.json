@@ -3814,10 +3814,10 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Owner Training Attendance",
+								"referenceName": "School Teacher Train Attendance",
 								"type": "DataFlowReference",
 								"datasetParameters": {
-									"p_schoolownertrainingattendance_s": {},
+									"p_schoolteachertrainingattendance_s": {},
 									"UserQuerypschoolteachertrainingattendanced": {}
 								}
 							},
@@ -3896,7 +3896,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MariaSchoolTeacherTrainingAttendance')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolteachertrainingattendance_s')]",
-				"[concat(variables('factoryId'), '/dataflows/School Owner Training Attendance')]",
+				"[concat(variables('factoryId'), '/dataflows/School Teacher Train Attendance')]",
 				"[concat(variables('factoryId'), '/dataflows/School Teacher Training Attendance')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolteachertrainingattendance_d')]"
 			]
@@ -7405,6 +7405,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Teacher Train Attendance')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolteachertrainingattendance_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolteachertrainingattendance_s",
+							"dataset": {
+								"referenceName": "p_schoolteachertrainingattendance_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolteachertrainingattendance_s\" in Source;\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolteachertrainingattendance_s')]"
 			]
 		},
 		{
