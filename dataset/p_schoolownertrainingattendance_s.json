@@ -19,6 +19,77 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "ecd_code",
+				"type": "UTF8"
+			},
+			{
+				"name": "region",
+				"type": "INT64"
+			},
+			{
+				"name": "schoolname",
+				"type": "UTF8"
+			},
+			{
+				"name": "owner",
+				"type": "UTF8"
+			},
+			{
+				"name": "meeting_date",
+				"type": "INT96"
+			},
+			{
+				"name": "reason_for_absence",
+				"type": "UTF8"
+			},
+			{
+				"name": "other_reason_for_absence",
+				"type": "UTF8"
+			},
+			{
+				"name": "meeting",
+				"type": "UTF8"
+			},
+			{
+				"name": "group_train",
+				"type": "UTF8"
+			},
+			{
+				"name": "group_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "person_id",
+				"type": "INT64"
+			},
+			{
+				"name": "attended",
+				"type": "INT32"
+			},
+			{
+				"name": "mentor",
+				"type": "UTF8"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "course_type",
+				"type": "UTF8"
+			},
+			{
+				"name": "franch_no",
+				"type": "INT64"
+			},
+			{
+				"name": "attend_id",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			}
+		]
 	}
 }
