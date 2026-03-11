@@ -57,6 +57,8 @@
 			{
 				"name": "Teacher Training Attendance Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Teacher Training Attendance from Maria",
@@ -102,6 +104,8 @@
 			{
 				"name": "Teacher Training Attendance Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Teacher Training Attendance Query",
