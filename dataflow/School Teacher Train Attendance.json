@@ -1,0 +1,20 @@
+{
+	"name": "School Teacher Train Attendance",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "p_schoolteachertrainingattendance_s",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolteachertrainingattendance_s",
+					"dataset": {
+						"referenceName": "p_schoolteachertrainingattendance_s",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolteachertrainingattendance_s\" in Source;\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
