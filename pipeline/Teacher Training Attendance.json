@@ -1,0 +1,138 @@
+{
+	"name": "Teacher Training Attendance",
+	"properties": {
+		"activities": [
+			{
+				"name": "Teacher Training Attendance from Maria",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MariaDBSource"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MariaSchoolTeacherTrainingAttendance",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "p_schoolteachertrainingattendance_s",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Teacher Training Attendance Query",
+				"type": "ExecuteWranglingDataflow",
+				"dependsOn": [
+					{
+						"activity": "Teacher Training Attendance from Maria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Owner Training Attendance",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQuerypschoolownertrainingattendanced",
+									"dataset": {
+										"referenceName": "p_schoolownertrainingattendance_d",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_attended as integer,\n\t\ttcbgrow_coursetype as string,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_franchiseenumber as long,\n\t\ttcbgrow_groupname as string,\n\t\ttcbgrow_grouptrain as string,\n\t\ttcbgrow_meeting as string,\n\t\ttcbgrow_meetingdate as timestamp,\n\t\ttcbgrow_mentor as string,\n\t\ttcbgrow_ownername as string,\n\t\ttcbgrow_region as long,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_meetingdatestring as string,\n\t\ttcbgrow_ownerid as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolownertrainingattendance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownertrainingattendanced"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Teacher Training Attendance Update",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Teacher Training Attendance Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Teacher Training Attendance",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"WatermarkDate": {
+				"type": "string",
+				"defaultValue": "'2026-03-05 16:45:28'"
+			}
+		},
+		"annotations": []
+	}
+}
