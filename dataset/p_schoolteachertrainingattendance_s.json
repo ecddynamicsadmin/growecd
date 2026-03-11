@@ -19,6 +19,67 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "staff",
+				"type": "UTF8"
+			},
+			{
+				"name": "school",
+				"type": "UTF8"
+			},
+			{
+				"name": "region",
+				"type": "INT64"
+			},
+			{
+				"name": "ecd_code",
+				"type": "UTF8"
+			},
+			{
+				"name": "position",
+				"type": "UTF8"
+			},
+			{
+				"name": "date_employed",
+				"type": "INT96"
+			},
+			{
+				"name": "ecd_start_date",
+				"type": "INT96"
+			},
+			{
+				"name": "attendance_date",
+				"type": "INT96"
+			},
+			{
+				"name": "attended",
+				"type": "INT32"
+			},
+			{
+				"name": "status",
+				"type": "UTF8"
+			},
+			{
+				"name": "reason",
+				"type": "UTF8"
+			},
+			{
+				"name": "course",
+				"type": "UTF8"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "course_type",
+				"type": "UTF8"
+			},
+			{
+				"name": "teacher_id",
+				"type": "UTF8"
+			}
+		]
 	}
 }
