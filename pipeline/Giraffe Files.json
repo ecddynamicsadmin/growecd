@@ -116,7 +116,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MySqlSource"
+						"type": "MariaDBSource"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -141,7 +141,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "maria_GRW_SchoolOwnerTraining_AUTO",
+						"referenceName": "MariaSchoolOwnerTrainingAttendance",
 						"type": "DatasetReference"
 					}
 				],
