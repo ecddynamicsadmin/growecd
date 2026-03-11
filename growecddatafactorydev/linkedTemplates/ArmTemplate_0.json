@@ -382,6 +382,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolTeacherTrainingAttendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_teachertrainingattendance"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MariaSchoolAgeGroup')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -513,29 +536,6 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "vw_schoolstaff_export_all"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolUpdate')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MariaDBCRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "vw_schools_rpt_final_null_op"
 				}
 			},
 			"dependsOn": [
