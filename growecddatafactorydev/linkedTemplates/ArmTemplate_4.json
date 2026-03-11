@@ -2488,6 +2488,8 @@
 					{
 						"name": "Teacher Training Attendance Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance Query",
