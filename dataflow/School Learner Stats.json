@@ -1,0 +1,20 @@
+{
+	"name": "School Learner Stats",
+	"properties": {
+		"type": "WranglingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "p_schoollearnerstats_s",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoollearnerstats_s",
+					"dataset": {
+						"referenceName": "p_schoollearnerstats_s",
+						"type": "DatasetReference"
+					}
+				}
+			],
+			"script": "section Section1;\r\nshared p_schoollearnerstats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearnerstats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoollearnerstats_s\",\n   #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"attendance_day - Copy\"),\n  #\"Renamed columns\" = Table.RenameColumns(#\"Duplicated column\", {{\"attendance_day - Copy\", \"Stats Day\"}}),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed columns\", {{\"Stats Day\", type text}})\n\n \n in #\"Changed column type\";\r\n",
+			"documentLocale": "en-us"
+		}
+	}
+}
