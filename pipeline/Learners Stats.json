@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT * FROM vw_learner_attendance_stats_3months WHERE attendance_day >= @{pipeline().parameters.WatermarkDate}",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -90,7 +94,7 @@
 										"referenceName": "p_schoollearnerstats_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoollearnerstatsd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_attendanceday as timestamp,\n\t\ttcbgrow_nooflearnersattended as long,\n\t\ttcbgrow_statsday as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearnerstats_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerstatsd"
 								}
 							]
 						}
@@ -133,7 +137,8 @@
 		],
 		"parameters": {
 			"WatermarkDate": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "'2026-03-07 16:45:28'"
 			}
 		},
 		"annotations": []
