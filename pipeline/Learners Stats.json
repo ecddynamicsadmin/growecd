@@ -53,6 +53,8 @@
 			{
 				"name": "Learner Stats Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Stats from Maria",
@@ -71,7 +73,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Learner",
+						"referenceName": "School Learner Stats",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -83,12 +85,12 @@
 							"queryName": "UserQuery",
 							"dataflowSinks": [
 								{
-									"name": "UserQuerypschoollearnerd",
+									"name": "UserQuerypschoollearnerstatsd",
 									"dataset": {
-										"referenceName": "p_schoollearner_d",
+										"referenceName": "p_schoollearnerstats_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_middlename as string,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_enrolldate as timestamp,\n\t\ttcbgrow_gender as string,\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_temporary as boolean,\n\t\ttcbgrow_leaneractive as boolean,\n\t\ttcbgrow_leanerspecial as boolean,\n\t\ttcbgrow_learnergraduated as boolean,\n\t\ttcbgrow_schoolagegroup as long,\n\t\ttcbgrow_address as string,\n\t\tcog_region as long,\n\t\ttcbgrow_city as long,\n\t\ttcbgrow_country as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_leanerage as long,\n\t\ttcbgrow_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoollearnerstatsd"
 								}
 							]
 						}
@@ -98,6 +100,8 @@
 			{
 				"name": "Dataverse Learner Stats Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Stats Query",
