@@ -290,6 +290,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_learnerattendedstats"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchoolOwners')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -375,6 +398,29 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "vw_learners_export"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learner_attendance_stats_3months"
 				}
 			},
 			"dependsOn": [
@@ -490,52 +536,6 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "`vw_schoolfees_3months`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolIncome_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolincome_3months`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/mysql_crm')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolOwnerTraining_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`schoolowner_training_attendance_update`"
 				}
 			},
 			"dependsOn": [

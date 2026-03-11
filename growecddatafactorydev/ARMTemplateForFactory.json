@@ -1174,6 +1174,174 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Learners Stats')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Learner Stats from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_learner_attendance_stats_3months WHERE attendance_day >= @{pipeline().parameters.WatermarkDate}",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolLearnerStats",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoollearnerstats_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Learner Stats Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Learner Stats from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Learner Stats",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoollearnerstats_s": {},
+									"UserQuerypschoollearnerstatsd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoollearnerstatsd",
+											"dataset": {
+												"referenceName": "p_schoollearnerstats_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_attendanceday as timestamp,\n\t\ttcbgrow_nooflearnersattended as long,\n\t\ttcbgrow_statsday as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearnerstats_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerstatsd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Learner Stats Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Learner Stats Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Learner Stats Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "'2026-03-07 16:45:28'"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolLearnerStats')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoollearnerstats_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Learner Stats')]",
+				"[concat(variables('factoryId'), '/dataflows/Learner Stats Dataflow')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoollearnerstats_d')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Learners')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1195,7 +1363,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -1327,7 +1495,8 @@
 				},
 				"parameters": {
 					"WatermarkDate": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "2026-03-07 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2459,7 +2628,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-07 16:45:28'"
+						"defaultValue": "'2000-03-07 16:45:28'"
 					}
 				},
 				"annotations": []
@@ -2494,7 +2663,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
 									"type": "Expression"
 								}
 							},
@@ -3284,6 +3453,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_learnerattendedstats"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchoolOwners')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3369,6 +3561,29 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "vw_learners_export"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learner_attendance_stats_3months"
 				}
 			},
 			"dependsOn": [
@@ -4052,6 +4267,94 @@
 					},
 					{
 						"name": "school_age_group_id",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoollearnerstats_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoollearnerstats_d.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_school",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_attendanceday",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_nooflearnersattended",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_statsday",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoollearnerstats_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parque"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoollearnerstats_s.parquet",
+						"folderPath": "parque",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "attendance_day",
+						"type": "INT96"
+					},
+					{
+						"name": "daily_count",
 						"type": "INT64"
 					}
 				]
@@ -5788,6 +6091,87 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Learner Stats Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoollearnerstats_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolLearnerStats",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_school as long,",
+						"          tcbgrow_attendanceday as timestamp,",
+						"          tcbgrow_nooflearnersattended as long,",
+						"          tcbgrow_statsday as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
+						"          tcbgrow_schoolid = tcbgrow_school) ~> derivedColumn1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_import_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_attendanceday,",
+						"          tcbgrow_nooflearnersattended,",
+						"          tcbgrow_statsday,",
+						"          {tcbgrow_School@odata.bind},",
+						"          tcbgrow_schoolid",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoollearnerstats_d')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseSchoolLearnerStats')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Age Group')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -5810,6 +6194,31 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schoolagegroup_s')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Learner Stats')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoollearnerstats_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoollearnerstats_s",
+							"dataset": {
+								"referenceName": "p_schoollearnerstats_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoollearnerstats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearnerstats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoollearnerstats_s\",\n   #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"attendance_day - Copy\"),\n  #\"Renamed columns\" = Table.RenameColumns(#\"Duplicated column\", {{\"attendance_day - Copy\", \"Stats Day\"}}),\n  #\"Renamed columns 1\" = Table.RenameColumns(#\"Renamed columns\", {{\"school_id\", \"tcbgrow_school\"}, {\"daily_count\", \"tcbgrow_nooflearnersattended\"}, {\"attendance_day\", \"tcbgrow_attendanceday\"}, {\"Stats Day\", \"tcbgrow_statsday\"}}),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed columns 1\", {{\"tcbgrow_statsday\", type date}}),\n  #\"textformat\" = Table.TransformColumns(#\"Changed column type\", {{\"tcbgrow_statsday\", each Date.ToText(_, \"yyyy-MM-dd\"), type text}}  \n)  \n\n \n in #\"textformat\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoollearnerstats_s')]"
 			]
 		},
 		{
