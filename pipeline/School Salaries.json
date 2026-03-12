@@ -59,8 +59,6 @@
 			{
 				"name": "School Salaries Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Salaries from Maria",
