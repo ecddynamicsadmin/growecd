@@ -1,0 +1,146 @@
+{
+	"name": "School Compliance",
+	"properties": {
+		"activities": [
+			{
+				"name": "Compliance from Maria",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT * FROM school_government_compliences",
+							"type": "Expression"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MariaSchoolCompliance",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "p_schoolcompliance_s",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Staff Attendance Stats Query",
+				"type": "ExecuteWranglingDataflow",
+				"dependsOn": [
+					{
+						"activity": "Compliance from Maria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Compliance",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQuerypschoolstaffattendancestatsd",
+									"dataset": {
+										"referenceName": "p_schoolstaffattendancestats_d",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_dayattended as date,\n\t\ttcbgrow_noofstaffattended as long,\n\t\ttcbgrow_statsday as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolstaffattendancestats_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolstaffattendancestatsd"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Staff Attendance Stats Attendance Update",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Staff Attendance Stats Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Compliance",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"WatermarkDate": {
+				"type": "string",
+				"defaultValue": "'2026-03-05 16:45:28'"
+			}
+		},
+		"annotations": []
+	}
+}
