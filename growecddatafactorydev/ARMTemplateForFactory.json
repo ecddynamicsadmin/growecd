@@ -2017,6 +2017,168 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Compliance')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Compliance from Maria",
+						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM school_government_compliences",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolCompliance",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolcompliance_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Staff Attendance Stats Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Compliance from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Compliance",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolcompliance_s": {},
+									"UserQuerypschoolcomplianced": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolcomplianced",
+											"dataset": {
+												"referenceName": "p_schoolcompliance_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolcompliance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolcomplianced"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Staff Attendance Stats Attendance Update",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Staff Attendance Stats Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "'2026-03-05 16:45:28'"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MariaSchoolCompliance')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolcompliance_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Compliance')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolcompliance_d')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Salaries')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -5013,90 +5175,88 @@
 				},
 				"schema": [
 					{
-						"name": "tcbgrow_breakeven",
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "is_npo_registered",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "npo_registration_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "npo_registration_date",
+						"type": "INT96"
+					},
+					{
+						"name": "registration_certificate",
+						"type": "UTF8"
+					},
+					{
+						"name": "amount",
+						"type": "INT64"
+					},
+					{
+						"name": "effective_date",
+						"type": "INT96"
+					},
+					{
+						"name": "school_capacity",
+						"type": "INT64"
+					},
+					{
+						"name": "expiry_date",
+						"type": "INT96"
+					},
+					{
+						"name": "dsd_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "dsd_grant_approved",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_dsd_grant_paid",
+						"type": "UTF8"
+					},
+					{
+						"name": "dsd_grant_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "number_of_childrens_registration",
 						"type": "INT32"
 					},
 					{
-						"name": "tcbgrow_ecdowner",
-						"type": "INT64"
+						"name": "is_eligible_for_other_subsidy",
+						"type": "BOOLEAN"
 					},
 					{
-						"name": "tcbgrow_paymenttype",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_schoolsegment",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_monthlysalaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 9
-					},
-					{
-						"name": "tcbgrow_schoolstatus",
-						"type": "UTF8"
-					},
-					{
-						"name": "updated_at",
+						"name": "other_subsidy_start_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_contractdate",
+						"name": "other_subsidy_end_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_ecdcode",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_commencementdate",
+						"name": "grow_franchisee_commencement_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_address",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_numberofclassrooms",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_city",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_growid",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_appid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_country",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_appaccountcreationdate",
+						"name": "dsd_application_submission_date",
 						"type": "INT96"
 					},
 					{
-						"name": "tcbgrow_centrestartdate",
-						"type": "INT96"
+						"name": "registration_checklist",
+						"type": "UTF8"
 					}
 				]
 			},
@@ -8008,116 +8168,24 @@
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "MappingDataFlow",
+				"type": "WranglingDataFlow",
 				"typeProperties": {
 					"sources": [
 						{
+							"name": "p_schoolcompliance_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolcompliance_s",
 							"dataset": {
-								"referenceName": "p_schoolcompliance_d",
+								"referenceName": "p_schoolcompliance_s",
 								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseCompliance",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
 							}
 						}
 					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_breakeven as integer,",
-						"          tcbgrow_ecdowner as long,",
-						"          tcbgrow_paymenttype as string,",
-						"          tcbgrow_schoolsegment as string,",
-						"          tcbgrow_monthlysalaries as decimal(38,9),",
-						"          tcbgrow_schoolstatus as string,",
-						"          updated_at as timestamp,",
-						"          tcbgrow_contractdate as timestamp,",
-						"          tcbgrow_ecdcode as string,",
-						"          tcbgrow_commencementdate as timestamp,",
-						"          tcbgrow_address as string,",
-						"          tcbgrow_numberofclassrooms as string,",
-						"          tcbgrow_name as string,",
-						"          cog_city as long,",
-						"          cog_region as long,",
-						"          tcbgrow_growid as string,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_capacity as integer,",
-						"          tcbgrow_country as integer,",
-						"          tcbgrow_appaccountcreationdate as timestamp,",
-						"          tcbgrow_centrestartdate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_City@odata.bind} = true(),",
-						"          {tcbgrow_CountryofBirth@odata.bind} = true(),",
-						"          {cog_Region@odata.bind} = true()) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_ecdownerappid',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_breakeven,",
-						"          tcbgrow_ecdowner,",
-						"          tcbgrow_paymenttype,",
-						"          tcbgrow_schoolsegment,",
-						"          tcbgrow_monthlysalaries,",
-						"          tcbgrow_schoolstatus,",
-						"          updated_at,",
-						"          tcbgrow_contractdate,",
-						"          tcbgrow_ecdcode,",
-						"          tcbgrow_commencementdate,",
-						"          tcbgrow_address,",
-						"          tcbgrow_numberofclassrooms,",
-						"          tcbgrow_name,",
-						"          cog_city,",
-						"          cog_region,",
-						"          tcbgrow_growid,",
-						"          tcbgrow_appid,",
-						"          tcbgrow_capacity,",
-						"          tcbgrow_country,",
-						"          tcbgrow_appaccountcreationdate,",
-						"          tcbgrow_centrestartdate,",
-						"          bind = {tcbgrow_City@odata.bind},",
-						"          bind = {tcbgrow_CountryofBirth@odata.bind},",
-						"          bind = {cog_Region@odata.bind}",
-						"     )) ~> sink1"
-					]
+					"script": "section Section1;\r\nshared p_schoolcompliance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolcompliance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolcompliance_s\",  \n  \n    // Select required columns FIRST (better performance)  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount\",  \n            \"id\",  \n            \"registration_checklist\",  \n            \"dsd_application_submission_date\",  \n            \"dsd_grant_approved\",  \n            \"is_dsd_grant_paid\",  \n            \"dsd_status\",  \n            \"effective_date\",  \n            \"is_eligible_for_other_subsidy\",  \n            \"expiry_date\",  \n            \"grow_franchisee_commencement_date\",  \n            \"is_npo_registered\",  \n            \"npo_registration_date\",  \n            \"npo_registration_number\",  \n            \"number_of_childrens_registration\",  \n            \"other_subsidy_end_date\",  \n            \"other_subsidy_start_date\",  \n            \"school_id\",  \n            \"school_capacity\"  \n        }),  \n  \n    // Replace nulls (text + numeric in ONE step)  \n    #\"Replace Nulls\" =  \n        Table.TransformColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"npo_registration_number\", each if _ = null then \"\" else _},  \n                {\"registration_checklist\", each if _ = null then \"\" else _},  \n                {\"dsd_grant_approved\", each if _ = null then \"\" else _},  \n                {\"amount\", each if _ = null then 0 else _},  \n                {\"school_capacity\", each if _ = null then 0 else _},  \n                {\"school_id\", each if _ = null then 0 else _},  \n                {\"number_of_childrens_registration\", each if _ = null then 0 else _}  \n            }  \n        ),  \n  \n    // Transform DSD Status + Boolean fields in ONE step  \n    #\"Transform Fields\" =  \n        Table.TransformColumns(  \n            #\"Replace Nulls\",  \n            {  \n                // Option set mapping  \n                {\"dsd_status\", each  \n                    if _ = \"Registered\" then \"301220002\"  \n                    else if _ = \"Gold/Full registration\" then \"301220006\"  \n                    else if _ = \"Bronze registration\" then \"301220007\"  \n                    else if _ = \"Expired\" then \"301220000\"  \n                    else if _ = \"Application Submitted\" then \"301220001\"  \n                    else if _ = \"Application Denied\" then \"301220005\"  \n                    else if _ = \"Not Registered\" then \"301220003\"  \n                    else if _ = \"Conditionally Registered\" then \"301220004\"  \n                    else _  \n                },  \n  \n                // Yes/No → true/false directly (skip 0/1 conversion completely)  \n                {\"is_dsd_grant_paid\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical},  \n                {\"dsd_grant_approved\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical}  \n            }  \n        ),  \n  \n    // Rename at the END (cleaner pipeline)  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Transform Fields\",{  \n            {\"amount\", \"tcbgrow_amountid\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"registration_checklist\", \"tcbgrow_checklistholder\"},  \n            {\"dsd_application_submission_date\", \"tcbgrow_dsdapplicationsubmission\"},  \n            {\"dsd_grant_approved\", \"tcbgrow_dsdgrantapproval\"},  \n            {\"is_dsd_grant_paid\", \"tcbgrow_dsdgrantpaid\"},  \n            {\"dsd_status\", \"tcbgrow_dsdstatus\"},  \n            {\"effective_date\", \"tcbgrow_effectivedate\"},  \n            {\"is_eligible_for_other_subsidy\", \"tcbgrow_eligibleforotherstudy\"},  \n            {\"expiry_date\", \"tcbgrow_expirydate\"},  \n            {\"grow_franchisee_commencement_date\", \"tcbgrow_franchisecommencementdate\"},  \n            {\"is_npo_registered\", \"tcbgrow_nporegistered\"},  \n            {\"npo_registration_date\", \"tcbgrow_nporegistrationdate\"},  \n            {\"npo_registration_number\", \"tcbgrow_nporegistrationnumber\"},  \n            {\"number_of_childrens_registration\", \"tcbgrow_numberofchildrensregistration\"},  \n            {\"other_subsidy_end_date\", \"tcbgrow_othersubsidyenddate\"},  \n            {\"other_subsidy_start_date\", \"tcbgrow_othersubsidystartdate\"},  \n            {\"school_id\", \"tcbgrow_schoolid\"},  \n            {\"school_capacity\", \"tcbgrow_schoolcapacity\"}  \n        }),  \n  \n    // Final datatype adjustments  \n    #\"Changed Column Types\" =  \n        Table.TransformColumnTypes(#\"Renamed Columns\",{  \n            {\"tcbgrow_eligibleforotherstudy\", type text},  \n            {\"tcbgrow_nporegistered\", type text},\n            {\"tcbgrow_dsdgrantapproval\", type text},\n            {\"tcbgrow_dsdgrantpaid\", type text}  \n        })  \n  \nin  \n    #\"Changed Column Types\";\r\n",
+					"documentLocale": "en-us"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolcompliance_d')]",
-				"[concat(variables('factoryId'), '/datasets/DataverseCompliance')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('factoryId'), '/datasets/p_schoolcompliance_s')]"
 			]
 		},
 		{
