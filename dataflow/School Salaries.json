@@ -1,12 +1,12 @@
 {
-	"name": "Schhol Salaries",
+	"name": "School Salaries",
 	"properties": {
 		"type": "WranglingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
 					"name": "p_schoolsalaries_s",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolsalaries_s",
+					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolsalaries_s",
 					"dataset": {
 						"referenceName": "p_schoolsalaries_s",
 						"type": "DatasetReference"
