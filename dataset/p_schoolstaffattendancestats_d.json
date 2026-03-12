@@ -19,6 +19,23 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_schoolid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_dayattended",
+				"type": "DATE"
+			},
+			{
+				"name": "tcbgrow_noofstaffattended",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_statsday",
+				"type": "UTF8"
+			}
+		]
 	}
 }
