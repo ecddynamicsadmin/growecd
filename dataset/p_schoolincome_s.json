@@ -1,0 +1,24 @@
+{
+	"name": "p_schoolincome_s",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "p_schoolincome_s.parquet",
+				"folderPath": "parquet",
+				"fileSystem": "giraffe"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
