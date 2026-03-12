@@ -483,12 +483,6 @@
 					},
 					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "DataverseStaffAttendanceStats",
-						"type": "DatasetReference"
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "storage_GRW_StaffStatsImport_AUTO",
