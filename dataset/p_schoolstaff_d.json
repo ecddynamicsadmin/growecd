@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "p_schoolstaff_d.parquet",
-				"folderPath": "parque",
+				"folderPath": "parquet",
 				"fileSystem": "giraffe"
 			},
 			"compressionCodec": "snappy"
