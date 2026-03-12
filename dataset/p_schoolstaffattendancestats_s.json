@@ -19,27 +19,6 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": [
-			{
-				"name": "tcbgrow_appid",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_agegroup",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_fees",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_school",
-				"type": "INT64"
-			},
-			{
-				"name": "updated_at",
-				"type": "INT96"
-			}
-		]
+		"schema": []
 	}
 }
