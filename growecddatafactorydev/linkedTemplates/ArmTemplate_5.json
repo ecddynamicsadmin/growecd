@@ -536,7 +536,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Owners",
+								"referenceName": "School Owners Dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -813,7 +813,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Salaries",
+								"referenceName": "Schhol Salaries",
 								"type": "DataFlowReference",
 								"datasetParameters": {
 									"p_schoolsalaries_s": {},
@@ -866,7 +866,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Salaries",
+								"referenceName": "School Salaries Dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -1752,7 +1752,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Staff Attendance Stats",
+								"referenceName": "School Staff Attendance Stats Dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -2832,7 +2832,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "School Teacher Training Attendance",
+								"referenceName": "School Teacher Training Attendance Dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
