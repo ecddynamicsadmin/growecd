@@ -1,5 +1,5 @@
 {
-	"name": "School Teacher Training Attendance",
+	"name": "School Teacher Training Attendance Dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -57,12 +57,12 @@
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 				"          {tcbgrow_Teacher@odata.bind} = iif(    isNull(tcbgrow_teacher),    toString(null()),    concat(\"/contacts(new_staff_id='\", toString(tcbgrow_teacher), \"')\")),",
 				"          tcbgrow_attended = case(      tcbgrow_attended == 1, 'true',    tcbgrow_attended == 0, 'false',      ''),",
-				"          tcbgrow_attendancedate = toString(tcbgrow_attendancedate,'dd/MMM/yyyy')  ,",
-				"          tcbgrow_dateemployed = toString(tcbgrow_dateemployed,'dd/MMM/yyyy')  ,",
+				"          tcbgrow_attendancedate = toString(tcbgrow_attendancedate,'dd/MMM/yyyy'),",
+				"          tcbgrow_dateemployed = toString(tcbgrow_dateemployed,'dd/MMM/yyyy'),",
 				"          tcbgrow_course = replace(  \r",
 				"    replace(tcbgrow_course,'%20',' '),  \r",
 				"    '%2F','/'  \r",
-				")  ) ~> derivedColumn1",
+				")) ~> derivedColumn1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",

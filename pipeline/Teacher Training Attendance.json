@@ -302,7 +302,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Teacher Training Attendance",
+						"referenceName": "School Teacher Training Attendance Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {

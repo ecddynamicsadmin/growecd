@@ -78,10 +78,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataflow": {
-						"referenceName": "School Staff Attendance Stats",
-						"type": "DataFlowReference"
-					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
@@ -124,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Staff Attendance Stats",
+						"referenceName": "School Staff Attendance Stats Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {

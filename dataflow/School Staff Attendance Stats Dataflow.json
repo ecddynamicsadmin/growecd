@@ -1,5 +1,5 @@
 {
-	"name": "School Staff Attendance Stats",
+	"name": "School Staff Attendance Stats Dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
