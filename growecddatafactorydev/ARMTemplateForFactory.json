@@ -3077,7 +3077,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2000-03-07 16:45:28'"
+						"defaultValue": "'2020-01-01 16:45:28'"
 					}
 				},
 				"annotations": []
