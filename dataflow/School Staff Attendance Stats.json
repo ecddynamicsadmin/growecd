@@ -1,20 +1,79 @@
 {
 	"name": "School Staff Attendance Stats",
 	"properties": {
-		"type": "WranglingDataFlow",
+		"type": "MappingDataFlow",
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "p_schoolstaffattendancestats_s",
-					"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolstaffattendancestats_s",
 					"dataset": {
-						"referenceName": "p_schoolstaffattendancestats_s",
+						"referenceName": "p_schoolstaffattendancestats_d",
 						"type": "DatasetReference"
+					},
+					"name": "parquetsource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataverseSchoolStaffAttendanceStats",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureDataLakeStorage1",
+						"type": "LinkedServiceReference"
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\",\n  #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"DayStats\"),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"attendance_day\", type date}, {\"school_id\", Int64.Type}, {\"daily_count\", Int64.Type}, {\"DayStats\", type date}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"DayStats\", type text}}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Changed column type 1\", {{\"school_id\", \"tcbgrow_schoolid\"}, {\"daily_count\", \"tcbgrow_noofstaffattended\"}, {\"DayStats\", \"tcbgrow_statsday\"}, {\"attendance_day\", \"tcbgrow_dayattended\"}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Renamed columns\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_statsday\"})\nin\n  #\"Replaced value\";\r\n",
-			"documentLocale": "en-us"
+			"transformations": [
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          tcbgrow_schoolid as long,",
+				"          tcbgrow_dayattended as date,",
+				"          tcbgrow_noofstaffattended as long,",
+				"          tcbgrow_statsday as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> parquetsource",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'tcbgrow_import_teacherattendance_key',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     outputAssertFailedRows: true,",
+				"     assertFailure_fileSystem: 'giraffe',",
+				"     assertFailure_folderPath: 'errors',",
+				"     mapColumn(",
+				"          tcbgrow_attendancedate,",
+				"          tcbgrow_attendancedatestring,",
+				"          tcbgrow_attended,",
+				"          tcbgrow_course,",
+				"          tcbgrow_dateemployed,",
+				"          tcbgrow_position,",
+				"          tcbgrow_schoolid,",
+				"          tcbgrow_staffid,",
+				"          tcbgrow_staffname,",
+				"          {cog_Region@odata.bind},",
+				"          {tcbgrow_School@odata.bind},",
+				"          {tcbgrow_Teacher@odata.bind}",
+				"     )) ~> sink1"
+			]
 		}
 	}
 }
