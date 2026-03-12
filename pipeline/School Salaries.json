@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -130,7 +134,7 @@
 		"parameters": {
 			"WatermarkDate": {
 				"type": "string",
-				"defaultValue": "'2026-03-05 16:45:28'"
+				"defaultValue": "'2026-01-05 16:45:28'"
 			}
 		},
 		"annotations": []
