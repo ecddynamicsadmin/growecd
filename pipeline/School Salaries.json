@@ -124,7 +124,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Salaries",
+						"referenceName": "School Salaries Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
