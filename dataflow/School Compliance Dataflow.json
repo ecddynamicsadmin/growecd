@@ -76,7 +76,7 @@
 				"     assertFailure_fileSystem: 'giraffe',",
 				"     assertFailure_folderPath: 'errors',",
 				"     mapColumn(",
-				"          tcbgrow_amountid,",
+				"          tcbgrow_amount = tcbgrow_amountid,",
 				"          tcbgrow_appid,",
 				"          tcbgrow_checklistholder,",
 				"          tcbgrow_dsdapplicationsubmission,",
