@@ -2251,8 +2251,6 @@
 					{
 						"name": "School Salaries Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries from Maria",
@@ -2270,6 +2268,14 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Salaries",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolsalaries_s": {},
+									"UserQuerypschoolsalariesd": {}
+								}
+							},
 							"staging": {},
 							"compute": {
 								"coreCount": 8,
@@ -2286,7 +2292,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsalaries_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsalariesd"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> UserQuerypschoolsalariesd"
 										}
 									]
 								}
@@ -2296,6 +2302,8 @@
 					{
 						"name": "School Salaries Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries Query",
@@ -2345,6 +2353,7 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MariaSchoolSalaries')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsalaries_s')]",
+				"[concat(variables('factoryId'), '/dataflows/School Salaries')]",
 				"[concat(variables('factoryId'), '/dataflows/School Salaries')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolsalaries_d')]"
 			]
@@ -9414,6 +9423,31 @@
 				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Salaries')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolsalaries_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolsalaries_s",
+							"dataset": {
+								"referenceName": "p_schoolsalaries_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolsalaries_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolsalaries_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \r\n    Source = #\"p_schoolsalaries_s\",  \r\n  \r\n    #\"Selected Columns\" =  \r\n        Table.SelectColumns(Source,{  \r\n            \"amount_paid\",  \r\n            \"date_paid\",  \r\n            \"recordid\",  \r\n            \"school_id\",  \r\n            \"month\",  \r\n            \"year\",  \r\n            \"first_name\",  \r\n            \"last_name\"  \r\n        }),  \r\n  \r\n    #\"Added Description\" =  \r\n        Table.AddColumn(  \r\n            #\"Selected Columns\",  \r\n            \"description\",  \r\n            each   \r\n                (if [first_name] = null then \"\" else Text.From([first_name]))   \r\n                & \" \" &   \r\n                (if [last_name] = null then \"\" else Text.From([last_name])),  \r\n            type text  \r\n        ),  \r\n  \r\n    // ✅ Add column WITHOUT declaring type  \r\n    #\"Added TranType\" =  \r\n        Table.AddColumn(  \r\n            #\"Added Description\",  \r\n            \"TranType\",  \r\n            each 301220001  \r\n        ),  \r\n  \r\n    // ✅ Set type in separate step (Spark safe)  \r\n    #\"Changed Type\" =  \r\n        Table.TransformColumnTypes(  \r\n            #\"Added TranType\",  \r\n            {{\"TranType\", Int64.Type}}  \r\n        ),  \r\n  \r\n    #\"Removed Unnecessary Columns\" =  \r\n        Table.RemoveColumns(#\"Changed Type\",{\"first_name\",\"last_name\"}),  \r\n  \r\n    #\"Renamed Columns\" =  \r\n        Table.RenameColumns(#\"Removed Unnecessary Columns\",{  \r\n            {\"amount_paid\", \"tcbgrow_amount\"},  \r\n            {\"date_paid\", \"tcbgrow_asofdate\"},  \r\n            {\"recordid\", \"tcbgrow_importsalaryid\"},  \r\n            {\"school_id\", \"tcbgrow_importschoolid\"},  \r\n            {\"month\", \"tcbgrow_month\"},  \r\n            {\"year\", \"tcbgrow_year\"},  \r\n            {\"description\", \"tcbgrow_description\"},  \r\n            {\"TranType\", \"tcbgrow_transactiontype\"}  \r\n        })  \r\n  \r\nin  \r\n    #\"Renamed Columns\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolsalaries_s')]"
 			]
 		}
 	]

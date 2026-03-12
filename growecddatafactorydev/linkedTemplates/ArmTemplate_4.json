@@ -1031,6 +1031,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Salaries')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolsalaries_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolsalaries_s",
+							"dataset": {
+								"referenceName": "p_schoolsalaries_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolsalaries_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolsalaries_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \r\n    Source = #\"p_schoolsalaries_s\",  \r\n  \r\n    #\"Selected Columns\" =  \r\n        Table.SelectColumns(Source,{  \r\n            \"amount_paid\",  \r\n            \"date_paid\",  \r\n            \"recordid\",  \r\n            \"school_id\",  \r\n            \"month\",  \r\n            \"year\",  \r\n            \"first_name\",  \r\n            \"last_name\"  \r\n        }),  \r\n  \r\n    #\"Added Description\" =  \r\n        Table.AddColumn(  \r\n            #\"Selected Columns\",  \r\n            \"description\",  \r\n            each   \r\n                (if [first_name] = null then \"\" else Text.From([first_name]))   \r\n                & \" \" &   \r\n                (if [last_name] = null then \"\" else Text.From([last_name])),  \r\n            type text  \r\n        ),  \r\n  \r\n    // ✅ Add column WITHOUT declaring type  \r\n    #\"Added TranType\" =  \r\n        Table.AddColumn(  \r\n            #\"Added Description\",  \r\n            \"TranType\",  \r\n            each 301220001  \r\n        ),  \r\n  \r\n    // ✅ Set type in separate step (Spark safe)  \r\n    #\"Changed Type\" =  \r\n        Table.TransformColumnTypes(  \r\n            #\"Added TranType\",  \r\n            {{\"TranType\", Int64.Type}}  \r\n        ),  \r\n  \r\n    #\"Removed Unnecessary Columns\" =  \r\n        Table.RemoveColumns(#\"Changed Type\",{\"first_name\",\"last_name\"}),  \r\n  \r\n    #\"Renamed Columns\" =  \r\n        Table.RenameColumns(#\"Removed Unnecessary Columns\",{  \r\n            {\"amount_paid\", \"tcbgrow_amount\"},  \r\n            {\"date_paid\", \"tcbgrow_asofdate\"},  \r\n            {\"recordid\", \"tcbgrow_importsalaryid\"},  \r\n            {\"school_id\", \"tcbgrow_importschoolid\"},  \r\n            {\"month\", \"tcbgrow_month\"},  \r\n            {\"year\", \"tcbgrow_year\"},  \r\n            {\"description\", \"tcbgrow_description\"},  \r\n            {\"TranType\", \"tcbgrow_transactiontype\"}  \r\n        })  \r\n  \r\nin  \r\n    #\"Renamed Columns\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Age Groups')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1518,171 +1541,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/School Learner')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Owner Training Attendance')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Owner Training Attendance from Maria",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MariaDBSource",
-								"query": {
-									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= @{pipeline().parameters.WatermarkDate}",
-									"type": "Expression"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "MariaSchoolOwnerTrainingAttendance",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "p_schoolownertrainingattendance_s",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Owner Training Query",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "Owner Training Attendance from Maria",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "School Owner Training Attendance",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"p_schoolownertrainingattendance_s": {},
-									"UserQuerypschoolownertrainingattendanced": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"queries": [
-								{
-									"queryName": "UserQuery",
-									"dataflowSinks": [
-										{
-											"name": "UserQuerypschoolownertrainingattendanced",
-											"dataset": {
-												"referenceName": "p_schoolownertrainingattendance_d",
-												"type": "DatasetReference",
-												"parameters": {}
-											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_attended as integer,\n\t\ttcbgrow_coursetype as string,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_franchiseenumber as long,\n\t\ttcbgrow_groupname as string,\n\t\ttcbgrow_grouptrain as string,\n\t\ttcbgrow_meeting as string,\n\t\ttcbgrow_meetingdate as timestamp,\n\t\ttcbgrow_mentor as string,\n\t\ttcbgrow_ownername as string,\n\t\ttcbgrow_region as long,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_meetingdatestring as string,\n\t\ttcbgrow_ownerid as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolownertrainingattendance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownertrainingattendanced"
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"name": "Owner Training Attendance Update",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Owner Training Query",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "School Owners Training Attendance",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"parquetsource": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"WatermarkDate": {
-						"type": "string",
-						"defaultValue": "'2026-03-05 16:45:28'"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/School Owner Training Attendance')]",
-				"[concat(variables('factoryId'), '/dataflows/School Owners Training Attendance')]"
 			]
 		}
 	]
