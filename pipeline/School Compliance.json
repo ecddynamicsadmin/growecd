@@ -59,6 +59,8 @@
 			{
 				"name": "Staff Attendance Stats Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Compliance from Maria",
@@ -94,7 +96,7 @@
 										"referenceName": "p_schoolcompliance_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolcompliance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolcomplianced"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amountid as long,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_checklistholder as string,\n\t\ttcbgrow_dsdapplicationsubmission as timestamp,\n\t\ttcbgrow_dsdgrantapproval as string,\n\t\ttcbgrow_dsdgrantpaid as string,\n\t\ttcbgrow_dsdstatus as string,\n\t\ttcbgrow_effectivedate as timestamp,\n\t\ttcbgrow_eligibleforotherstudy as string,\n\t\ttcbgrow_expirydate as timestamp,\n\t\ttcbgrow_franchisecommencementdate as timestamp,\n\t\ttcbgrow_nporegistered as string,\n\t\ttcbgrow_nporegistrationdate as timestamp,\n\t\ttcbgrow_nporegistrationnumber as string,\n\t\ttcbgrow_numberofchildrensregistration as integer,\n\t\ttcbgrow_othersubsidyenddate as timestamp,\n\t\ttcbgrow_othersubsidystartdate as timestamp,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_schoolcapacity as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolcompliance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolcomplianced"
 								}
 							]
 						}
@@ -104,8 +106,6 @@
 			{
 				"name": "Staff Attendance Stats Attendance Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Staff Attendance Stats Query",
@@ -124,7 +124,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "School Compliance",
+						"referenceName": "School Compliance Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
