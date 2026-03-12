@@ -19,6 +19,19 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "attendance_day",
+				"type": "INT96"
+			},
+			{
+				"name": "daily_count",
+				"type": "INT64"
+			}
+		]
 	}
 }
