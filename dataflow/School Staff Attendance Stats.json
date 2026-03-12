@@ -13,7 +13,7 @@
 					}
 				}
 			],
-			"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\" in Source;\r\n",
+			"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\",\n  #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"DayStats\"),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"attendance_day\", type date}, {\"school_id\", Int64.Type}, {\"daily_count\", Int64.Type}, {\"DayStats\", type date}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"DayStats\", type text}}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Changed column type 1\", {{\"school_id\", \"tcbgrow_schoolid\"}, {\"daily_count\", \"tcbgrow_noofstaffattended\"}, {\"DayStats\", \"tcbgrow_statsday\"}, {\"attendance_day\", \"tcbgrow_dayattended\"}})\nin\n  #\"Renamed columns\";\r\n",
 			"documentLocale": "en-us"
 		}
 	}
