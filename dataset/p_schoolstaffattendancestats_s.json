@@ -1,0 +1,45 @@
+{
+	"name": "p_schoolstaffattendancestats_s",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "p_schoolstaffattendancestats_s.parquet",
+				"folderPath": "parque",
+				"fileSystem": "giraffe"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "tcbgrow_appid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_agegroup",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_fees",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_school",
+				"type": "INT64"
+			},
+			{
+				"name": "updated_at",
+				"type": "INT96"
+			}
+		]
+	}
+}
