@@ -19,6 +19,67 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "Salaries",
+				"type": "UTF8"
+			},
+			{
+				"name": "name",
+				"type": "UTF8"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "recordid",
+				"type": "INT64"
+			},
+			{
+				"name": "amount_paid",
+				"type": "INT64"
+			},
+			{
+				"name": "date_paid",
+				"type": "INT96"
+			},
+			{
+				"name": "last_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "first_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "discount",
+				"type": "INT32"
+			},
+			{
+				"name": "month",
+				"type": "INT32"
+			},
+			{
+				"name": "year",
+				"type": "INT32"
+			},
+			{
+				"name": "region_id",
+				"type": "INT64"
+			},
+			{
+				"name": "-1*amount_paid",
+				"type": "INT64"
+			},
+			{
+				"name": "ecd_code",
+				"type": "UTF8"
+			},
+			{
+				"name": "id",
+				"type": "INT64"
+			}
+		]
 	}
 }
