@@ -483,6 +483,12 @@
 					},
 					"enableStaging": false
 				},
+				"inputs": [
+					{
+						"referenceName": "DataverseSchoolStaffAttendanceStats",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "storage_GRW_StaffStatsImport_AUTO",
