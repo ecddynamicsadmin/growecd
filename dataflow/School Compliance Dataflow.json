@@ -79,7 +79,7 @@
 				"          tcbgrow_amount = tcbgrow_amountid,",
 				"          tcbgrow_appid,",
 				"          tcbgrow_checklistholder,",
-				"          tcbgrow_dsdapplicationsubmission,",
+				"          tcbgrow_dsdapplicationsubmissiondate = tcbgrow_dsdapplicationsubmission,",
 				"          tcbgrow_dsdgrantapproval,",
 				"          tcbgrow_dsdgrantpaid,",
 				"          tcbgrow_dsdstatus,",
