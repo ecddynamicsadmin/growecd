@@ -21,90 +21,88 @@
 		},
 		"schema": [
 			{
-				"name": "tcbgrow_breakeven",
+				"name": "id",
+				"type": "INT64"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "is_npo_registered",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "npo_registration_number",
+				"type": "UTF8"
+			},
+			{
+				"name": "npo_registration_date",
+				"type": "INT96"
+			},
+			{
+				"name": "registration_certificate",
+				"type": "UTF8"
+			},
+			{
+				"name": "amount",
+				"type": "INT64"
+			},
+			{
+				"name": "effective_date",
+				"type": "INT96"
+			},
+			{
+				"name": "school_capacity",
+				"type": "INT64"
+			},
+			{
+				"name": "expiry_date",
+				"type": "INT96"
+			},
+			{
+				"name": "dsd_status",
+				"type": "UTF8"
+			},
+			{
+				"name": "dsd_grant_approved",
+				"type": "UTF8"
+			},
+			{
+				"name": "is_dsd_grant_paid",
+				"type": "UTF8"
+			},
+			{
+				"name": "dsd_grant_start_date",
+				"type": "INT96"
+			},
+			{
+				"name": "number_of_childrens_registration",
 				"type": "INT32"
 			},
 			{
-				"name": "tcbgrow_ecdowner",
-				"type": "INT64"
+				"name": "is_eligible_for_other_subsidy",
+				"type": "BOOLEAN"
 			},
 			{
-				"name": "tcbgrow_paymenttype",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_schoolsegment",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_monthlysalaries",
-				"type": "DECIMAL",
-				"precision": 38,
-				"scale": 9
-			},
-			{
-				"name": "tcbgrow_schoolstatus",
-				"type": "UTF8"
-			},
-			{
-				"name": "updated_at",
+				"name": "other_subsidy_start_date",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_contractdate",
+				"name": "other_subsidy_end_date",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_ecdcode",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_commencementdate",
+				"name": "grow_franchisee_commencement_date",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_address",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_numberofclassrooms",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_name",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_city",
-				"type": "INT64"
-			},
-			{
-				"name": "cog_region",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_growid",
-				"type": "UTF8"
-			},
-			{
-				"name": "tcbgrow_appid",
-				"type": "INT64"
-			},
-			{
-				"name": "tcbgrow_capacity",
-				"type": "INT32"
-			},
-			{
-				"name": "tcbgrow_country",
-				"type": "INT32"
-			},
-			{
-				"name": "tcbgrow_appaccountcreationdate",
+				"name": "dsd_application_submission_date",
 				"type": "INT96"
 			},
 			{
-				"name": "tcbgrow_centrestartdate",
-				"type": "INT96"
+				"name": "registration_checklist",
+				"type": "UTF8"
 			}
 		]
 	}
