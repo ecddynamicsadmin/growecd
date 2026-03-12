@@ -20,7 +20,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM school_government_compliences",
+							"value": "SELECT * FROM vw_schoolsalaries_3months\n",
 							"type": "Expression"
 						}
 					},
