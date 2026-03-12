@@ -221,6 +221,29 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseCompliance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_schoolcompliance"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchool')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -260,6 +283,29 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_schoolagegroup"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolIncomeExpenses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_schoolincomeandexpenses"
 				}
 			},
 			"dependsOn": [
@@ -382,6 +428,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolStaffAttendanceStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_staffattendancestat"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchoolTeacherTrainingAttendance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -428,76 +497,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearner')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MariaDBCRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "vw_learners_export"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearnerStats')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MariaDBCRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "vw_learner_attendance_stats_3months"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwnerTrainingAttendance')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "MariaDBCRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "schoolowner_training_attendance_update"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/MariaDBCRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwners')]",
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolCompliance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -512,7 +512,7 @@
 				"type": "MariaDBTable",
 				"schema": [],
 				"typeProperties": {
-					"tableName": "persons"
+					"tableName": "school_government_compliences"
 				}
 			},
 			"dependsOn": [
@@ -520,7 +520,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/MariaSchoolStaff')]",
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolExpenses')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -535,7 +535,7 @@
 				"type": "MariaDBTable",
 				"schema": [],
 				"typeProperties": {
-					"tableName": "vw_schoolstaff_export_all"
+					"tableName": "vw_schoolexpenses_3months"
 				}
 			},
 			"dependsOn": [

@@ -13,6 +13,195 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolFees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolfees_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolIncome')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolincome_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearner')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learners_export"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learner_attendance_stats_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwnerTrainingAttendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "schoolowner_training_attendance_update"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwners')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBGrowECD",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "persons"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolSalaries')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolsalaries_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolStaff')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolstaff_export_all"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolStaffAttendanceStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_staff_attendance_stats_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MariaSchoolTeacherTrainingAttendance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -55,153 +244,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolExpense_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolexpenses_3months`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolFees_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolfees_3months`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolIncome_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolincome_3months`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolTeacherTraining_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`teacher_training_attendance`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_SchoolsSalaries_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_schoolsalaries_3months`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_GRW_StaffStatsImport_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_crm",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`vw_staff_attendance_stats_3months`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/maria_SchoolCompliance_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "mysql_growecd",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Maria Db"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`school_government_compliences`"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolagegroup_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -211,7 +253,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "Parque"
+					"name": "Parquet"
 				},
 				"annotations": [],
 				"type": "Parquet",
@@ -219,7 +261,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "p_schoolagegroup_d.parquet",
-						"folderPath": "parque",
+						"folderPath": "parquet",
 						"fileSystem": "giraffe"
 					},
 					"compressionCodec": "snappy"
@@ -259,7 +301,7 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "Parque"
+					"name": "Parquet"
 				},
 				"annotations": [],
 				"type": "Parquet",
@@ -267,7 +309,7 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "p_schoolagegroup_s.parquet",
-						"folderPath": "parque",
+						"folderPath": "parquet",
 						"fileSystem": "giraffe"
 					},
 					"compressionCodec": "snappy"
@@ -322,7 +364,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/p_schoollearner_d')]",
+			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -331,781 +373,15 @@
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "Parque"
+					"name": "Parquet"
 				},
 				"annotations": [],
 				"type": "Parquet",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoollearner_d.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_appid",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_firstname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_lastname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_middlename",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_dateofbirth",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_startdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_enrolldate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_gender",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_school",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_temporary",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "tcbgrow_leaneractive",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "tcbgrow_leanerspecial",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "tcbgrow_learnergraduated",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "tcbgrow_schoolagegroup",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_address",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_city",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_country",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_race",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_idnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_leanerage",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_name",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoollearner_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoollearner_s.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "UTF8"
-					},
-					{
-						"name": "first_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "last_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "middle_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "date_of_birth",
-						"type": "INT96"
-					},
-					{
-						"name": "start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "enroll_date",
-						"type": "INT96"
-					},
-					{
-						"name": "gender",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "is_temporary",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_active",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_special",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_graduated",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_confirmed",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "age_group_id",
-						"type": "INT64"
-					},
-					{
-						"name": "class_id",
-						"type": "UTF8"
-					},
-					{
-						"name": "fee",
-						"type": "INT64"
-					},
-					{
-						"name": "is_standard_fee_applied",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "address",
-						"type": "UTF8"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "zip_code",
-						"type": "INT32"
-					},
-					{
-						"name": "country_of_birth_id",
-						"type": "INT64"
-					},
-					{
-						"name": "other_country_of_birth_id",
-						"type": "INT64"
-					},
-					{
-						"name": "race_type_id",
-						"type": "INT64"
-					},
-					{
-						"name": "doctors_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "doctors_contact_no",
-						"type": "UTF8"
-					},
-					{
-						"name": "known_allergies",
-						"type": "UTF8"
-					},
-					{
-						"name": "created_by",
-						"type": "INT32"
-					},
-					{
-						"name": "updated_by",
-						"type": "INT32"
-					},
-					{
-						"name": "parent_id",
-						"type": "INT32"
-					},
-					{
-						"name": "is_dormant",
-						"type": "INT_8"
-					},
-					{
-						"name": "profile_completed",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "id_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "special_need_description",
-						"type": "UTF8"
-					},
-					{
-						"name": "sassa_status",
-						"type": "INT32"
-					},
-					{
-						"name": "school_age_group_id",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoollearnerstats_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoollearnerstats_d.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_school",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_attendanceday",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_nooflearnersattended",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_statsday",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoollearnerstats_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoollearnerstats_s.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "attendance_day",
-						"type": "INT96"
-					},
-					{
-						"name": "daily_count",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolowners_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolowners_d.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_appid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_address",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_alternativenumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_city",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_lastappdate",
-						"type": "INT96"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_contactnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_countryofbirth",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_dateofbirth",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_emailaddress",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_firstname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_lastname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_preferredname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_race",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolowners_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolowners_s.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "first_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "last_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "preferred_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "email",
-						"type": "UTF8"
-					},
-					{
-						"name": "date_of_birth",
-						"type": "INT96"
-					},
-					{
-						"name": "gender",
-						"type": "UTF8"
-					},
-					{
-						"name": "contact_no",
-						"type": "UTF8"
-					},
-					{
-						"name": "alternative_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "address",
-						"type": "UTF8"
-					},
-					{
-						"name": "country_of_birth_id",
-						"type": "INT64"
-					},
-					{
-						"name": "other_country_of_birth_id",
-						"type": "INT64"
-					},
-					{
-						"name": "race_type_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "region_id",
-						"type": "INT64"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "zip_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolownertrainingattendance_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolownertrainingattendance_d.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_attended",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_coursetype",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_ecdowner",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_franchiseenumber",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_groupname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_grouptrain",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_meeting",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_meetingdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_mentor",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_ownername",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_meetingdatestring",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_ownerid",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolownertrainingattendance_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolownertrainingattendance_s.parquet",
-						"folderPath": "parque",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "region",
-						"type": "INT64"
-					},
-					{
-						"name": "schoolname",
-						"type": "UTF8"
-					},
-					{
-						"name": "owner",
-						"type": "UTF8"
-					},
-					{
-						"name": "meeting_date",
-						"type": "INT96"
-					},
-					{
-						"name": "reason_for_absence",
-						"type": "UTF8"
-					},
-					{
-						"name": "other_reason_for_absence",
-						"type": "UTF8"
-					},
-					{
-						"name": "meeting",
-						"type": "UTF8"
-					},
-					{
-						"name": "group_train",
-						"type": "UTF8"
-					},
-					{
-						"name": "group_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "person_id",
-						"type": "INT64"
-					},
-					{
-						"name": "attended",
-						"type": "INT32"
-					},
-					{
-						"name": "mentor",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "course_type",
-						"type": "UTF8"
-					},
-					{
-						"name": "franch_no",
-						"type": "INT64"
-					},
-					{
-						"name": "attend_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schools_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parque"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schools_d.parquet",
-						"folderPath": "parque",
+						"fileName": "p_schoolcompliance_d.parquet",
+						"folderPath": "parquet",
 						"fileSystem": "giraffe"
 					},
 					"compressionCodec": "snappy"
@@ -1198,6 +474,255 @@
 						"type": "INT96"
 					}
 				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolcompliance_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_breakeven",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_ecdowner",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_paymenttype",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_schoolsegment",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_monthlysalaries",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "tcbgrow_schoolstatus",
+						"type": "UTF8"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_contractdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_ecdcode",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_commencementdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_numberofclassrooms",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_growid",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_appid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_capacity",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_country",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_appaccountcreationdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_centrestartdate",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolexpenses_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolexpenses_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolexpenses_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolexpenses_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolfees_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolfees_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolfees_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolfees_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolincome_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolincome_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": []
 		}
