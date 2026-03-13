@@ -35,7 +35,66 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "id",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "income_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "amount_received",
+						"type": "INT64"
+					},
+					{
+						"name": "received_on_date",
+						"type": "INT96"
+					},
+					{
+						"name": "discounted_amount",
+						"type": "INT64"
+					},
+					{
+						"name": "source",
+						"type": "UTF8"
+					},
+					{
+						"name": "descriptions",
+						"type": "UTF8"
+					},
+					{
+						"name": "created_by",
+						"type": "INT32"
+					},
+					{
+						"name": "updated_by",
+						"type": "INT32"
+					},
+					{
+						"name": "created_at",
+						"type": "INT96"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "month",
+						"type": "INT32"
+					},
+					{
+						"name": "year",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": []
 		},
