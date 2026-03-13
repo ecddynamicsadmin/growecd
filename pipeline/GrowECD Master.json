@@ -65,7 +65,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Schools",
+						"activity": "School Age Groups",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -94,7 +94,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Staff",
+						"activity": "Schools",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -123,7 +123,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "School Age Groups",
+						"activity": "Staff",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -159,9 +159,216 @@
 				"typeProperties": {
 					"variableName": "WatermarkDate",
 					"value": {
-						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
+						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-5),'yyyy-MM-dd HH:mm:ss'))",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Owner Training Attendance",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Learners Stats",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Owner Training Attendance",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Teacher Training Attendance",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Owner Training Attendance",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Teacher Training Attendance",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Staff Attendance Stats",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Teacher Training Attendance",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Staff Attendance Stats",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Compliance",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Staff Attendance Stats",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Compliance",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "School Salaries",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Compliance",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Salaries",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "School Income",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "School Salaries",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Income",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "School Fees",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "School Income",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Fees",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "School Expenses",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "School Fees",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "School Expenses",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Learners Stats",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "School Learners",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Learners Stats",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
 				}
 			}
 		],
