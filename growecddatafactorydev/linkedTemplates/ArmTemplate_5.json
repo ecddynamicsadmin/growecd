@@ -266,7 +266,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -914,7 +914,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM persons WHERE updated_at >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM persons WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2116,7 +2116,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -3008,7 +3008,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4222,6 +4222,8 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -4268,6 +4270,8 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -4292,6 +4296,8 @@
 					{
 						"name": "Teacher Training Attendance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Owner Training Attendance",
@@ -4316,6 +4322,8 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
@@ -4340,6 +4348,8 @@
 					{
 						"name": "Compliance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats",
@@ -4364,6 +4374,8 @@
 					{
 						"name": "School Salaries",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance",
@@ -4388,6 +4400,8 @@
 					{
 						"name": "School Income",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries",
@@ -4412,6 +4426,8 @@
 					{
 						"name": "School Fees",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Income",
@@ -4436,6 +4452,8 @@
 					{
 						"name": "School Expenses",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees",
@@ -4460,6 +4478,8 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
