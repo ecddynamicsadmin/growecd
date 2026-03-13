@@ -1885,7 +1885,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM persons WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
+									"value": "SELECT * FROM persons WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -3123,7 +3123,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -10206,6 +10206,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/School Staff Attendance Stats')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolstaffattendancestats_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolstaffattendancestats_s",
+							"dataset": {
+								"referenceName": "p_schoolstaffattendancestats_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\",\r\n  #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"tcbgrow_statsday\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"tcbgrow_statsday\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_statsday\", type text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_statsday\"}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Replaced value\", {{\"school_id\", \"tcbgrow_schoolid\"}, {\"attendance_day\", \"tcbgrow_dayattended\"}, {\"daily_count\", \"tcbgrow_noofstaffattended\"}}) in #\"Renamed columns\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaffattendancestats_s')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Staff')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -10772,31 +10797,6 @@
 				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Staff Attendance Stats')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolstaffattendancestats_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolstaffattendancestats_s",
-							"dataset": {
-								"referenceName": "p_schoolstaffattendancestats_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\",\r\n  #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"tcbgrow_statsday\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"tcbgrow_statsday\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_statsday\", type text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_statsday\"}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Replaced value\", {{\"school_id\", \"tcbgrow_schoolid\"}, {\"attendance_day\", \"tcbgrow_dayattended\"}, {\"daily_count\", \"tcbgrow_noofstaffattended\"}}) in #\"Renamed columns\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaffattendancestats_s')]"
 			]
 		}
 	]
