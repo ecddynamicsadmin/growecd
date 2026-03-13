@@ -602,7 +602,44 @@
 					},
 					"compressionCodec": "snappy"
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "tcbgrow_amount",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_asofdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_description",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_importexpenseid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_importschoolid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_source",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_month",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_year",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_transactiontype",
+						"type": "INT64"
+					}
+				]
 			},
 			"dependsOn": []
 		},
@@ -631,19 +668,15 @@
 				},
 				"schema": [
 					{
-						"name": "Salaries",
+						"name": "fin_code",
 						"type": "UTF8"
 					},
 					{
-						"name": "name",
+						"name": "school",
 						"type": "UTF8"
 					},
 					{
 						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "recordid",
 						"type": "INT64"
 					},
 					{
@@ -655,12 +688,16 @@
 						"type": "INT96"
 					},
 					{
-						"name": "last_name",
+						"name": "detail",
 						"type": "UTF8"
 					},
 					{
-						"name": "first_name",
+						"name": "fin_type",
 						"type": "UTF8"
+					},
+					{
+						"name": "recordid",
+						"type": "INT64"
 					},
 					{
 						"name": "discount",
@@ -675,11 +712,11 @@
 						"type": "INT32"
 					},
 					{
-						"name": "region_id",
+						"name": "region",
 						"type": "INT64"
 					},
 					{
-						"name": "-1*amount_paid",
+						"name": "running_total",
 						"type": "INT64"
 					},
 					{
