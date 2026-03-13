@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM vw_schoolincome_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}",
+							"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate}",
 							"type": "Expression"
 						}
 					},
@@ -57,6 +57,8 @@
 			{
 				"name": "School Income Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income from Maria",
@@ -102,6 +104,8 @@
 			{
 				"name": "School Income Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income Query",
