@@ -69,7 +69,6 @@
 				"          tcbgrow_importincomeid,",
 				"          tcbgrow_month,",
 				"          tcbgrow_source,",
-				"          tcbgrow_year,",
 				"          {tcbgrow_School@odata.bind}",
 				"     )) ~> sink1"
 			]
