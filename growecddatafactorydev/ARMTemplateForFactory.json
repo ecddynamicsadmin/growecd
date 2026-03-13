@@ -114,7 +114,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'AND updated_at < CURDATE();",
+									"value": "SELECT * FROM vw_school_age_group WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1300,6 +1300,8 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
@@ -1539,7 +1541,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1707,7 +1709,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= '@{pipeline().parameters.WatermarkDate}'  AND meeting_date < CURDATE();",
+									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= @{pipeline().parameters.WatermarkDate}  AND meeting_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1875,7 +1877,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM persons WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"value": "SELECT * FROM persons WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2441,7 +2443,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
+									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate} AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2609,7 +2611,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}' AND received_on_date < CURDATE();",
+									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate} AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2777,7 +2779,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}'  AND received_on_date < CURDATE();",
+									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate} AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2945,7 +2947,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}'' AND date_paid < CURDATE();",
+									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate} AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -3113,7 +3115,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -3847,7 +3849,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_staff_attendance_stats_3months\n WHERE attendance_day >= '@{pipeline().parameters.WatermarkDate}' AND attendance_day < CURDATE();",
+									"value": "SELECT * FROM vw_staff_attendance_stats_3months\n WHERE attendance_day >= @{pipeline().parameters.WatermarkDate} AND attendance_day < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4015,7 +4017,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4757,7 +4759,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= '@{pipeline().parameters.WatermarkDate}' AND attendance_date < CURDATE();",
+									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= @{pipeline().parameters.WatermarkDate} AND attendance_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
