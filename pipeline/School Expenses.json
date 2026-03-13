@@ -59,6 +59,8 @@
 			{
 				"name": "School Expenses Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Expenses from Maria",
@@ -94,7 +96,7 @@
 										"referenceName": "p_schoolexpenses_d",
 										"type": "DatasetReference"
 									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolexpenses_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolexpensesd"
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_importexpenseid as long,\n\t\ttcbgrow_importschoolid as long,\n\t\ttcbgrow_source as string,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_year as string,\n\t\ttcbgrow_transactiontype as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolexpenses_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolexpensesd"
 								}
 							]
 						}
@@ -104,8 +106,6 @@
 			{
 				"name": "School Expenses Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Expenses Query",
