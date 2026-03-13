@@ -59,6 +59,8 @@
 			{
 				"name": "School Fees Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Fees from Maria",
@@ -104,8 +106,6 @@
 			{
 				"name": "School Fees Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Fees Query",
