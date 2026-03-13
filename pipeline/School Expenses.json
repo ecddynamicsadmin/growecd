@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "MariaDBSource",
-						"query": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}"
+						"query": {
+							"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
