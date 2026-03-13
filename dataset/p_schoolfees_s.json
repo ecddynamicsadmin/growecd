@@ -19,6 +19,57 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "name",
+				"type": "UTF8"
+			},
+			{
+				"name": "school_id",
+				"type": "INT64"
+			},
+			{
+				"name": "recordid",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "amount_received",
+				"type": "INT64"
+			},
+			{
+				"name": "received_on_date",
+				"type": "INT96"
+			},
+			{
+				"name": "last_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "first_name",
+				"type": "UTF8"
+			},
+			{
+				"name": "amount_discounted",
+				"type": "INT64"
+			},
+			{
+				"name": "month",
+				"type": "INT32"
+			},
+			{
+				"name": "year",
+				"type": "INT32"
+			},
+			{
+				"name": "ecd_code",
+				"type": "UTF8"
+			},
+			{
+				"name": "id",
+				"type": "INT64"
+			}
+		]
 	}
 }
