@@ -936,6 +936,8 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
@@ -965,6 +967,8 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
@@ -994,6 +998,8 @@
 					{
 						"name": "Staff",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Groups",
@@ -1023,6 +1029,8 @@
 					{
 						"name": "School Age Groups",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools",
@@ -1052,8 +1060,6 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -1100,8 +1106,6 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -1126,8 +1130,6 @@
 					{
 						"name": "Teacher Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Owner Training Attendance",
@@ -1152,8 +1154,6 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
@@ -1178,8 +1178,6 @@
 					{
 						"name": "Compliance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats",
@@ -1204,8 +1202,6 @@
 					{
 						"name": "School Salaries",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance",
@@ -1230,8 +1226,6 @@
 					{
 						"name": "School Income",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries",
@@ -1256,8 +1250,6 @@
 					{
 						"name": "School Fees",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Income",
@@ -1282,8 +1274,6 @@
 					{
 						"name": "School Expenses",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees",
@@ -1308,8 +1298,6 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
@@ -1381,7 +1369,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_learner_attendance_stats_3months WHERE attendance_day >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_learner_attendance_stats_3months WHERE attendance_day >= '@{pipeline().parameters.WatermarkDate}'  AND attendance_day < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1549,7 +1537,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1717,7 +1705,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= '@{pipeline().parameters.WatermarkDate}'  AND meeting_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2451,7 +2439,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2619,7 +2607,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}' AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2787,7 +2775,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}'  AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2955,7 +2943,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}'' AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -3857,7 +3845,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_staff_attendance_stats_3months\n WHERE attendance_day >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM vw_staff_attendance_stats_3months\n WHERE attendance_day >= '@{pipeline().parameters.WatermarkDate}' AND attendance_day < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4767,7 +4755,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= '@{pipeline().parameters.WatermarkDate}' AND attendance_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
