@@ -21,19 +21,15 @@
 		},
 		"schema": [
 			{
-				"name": "Salaries",
+				"name": "fin_code",
 				"type": "UTF8"
 			},
 			{
-				"name": "name",
+				"name": "school",
 				"type": "UTF8"
 			},
 			{
 				"name": "school_id",
-				"type": "INT64"
-			},
-			{
-				"name": "recordid",
 				"type": "INT64"
 			},
 			{
@@ -45,12 +41,16 @@
 				"type": "INT96"
 			},
 			{
-				"name": "last_name",
+				"name": "detail",
 				"type": "UTF8"
 			},
 			{
-				"name": "first_name",
+				"name": "fin_type",
 				"type": "UTF8"
+			},
+			{
+				"name": "recordid",
+				"type": "INT64"
 			},
 			{
 				"name": "discount",
@@ -65,11 +65,11 @@
 				"type": "INT32"
 			},
 			{
-				"name": "region_id",
+				"name": "region",
 				"type": "INT64"
 			},
 			{
-				"name": "-1*amount_paid",
+				"name": "running_total",
 				"type": "INT64"
 			},
 			{
