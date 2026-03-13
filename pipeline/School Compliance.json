@@ -102,7 +102,7 @@
 				}
 			},
 			{
-				"name": "Staff Attendance Stats Attendance Update",
+				"name": "School Compliance Update",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
