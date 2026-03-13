@@ -69,7 +69,6 @@
 				"          tcbgrow_amount,",
 				"          tcbgrow_asofdate,",
 				"          tcbgrow_importfeesid,",
-				"          tcbgrow_schoolid,",
 				"          tcbgrow_month,",
 				"          tcbgrow_year,",
 				"          tcbgrow_description,",
