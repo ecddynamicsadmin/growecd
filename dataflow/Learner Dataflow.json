@@ -77,7 +77,7 @@
 				"),",
 				"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
-				"          {tcbgrow_AgeGroup@odata.bind} = iif(    isNull(tcbgrow_schoolagegroup),    toString(null()),    concat(\"/tcbgrow_schoolagegroups(tcbgrow_appid==\", toString(tcbgrow_schoolagegroup), \")\")),",
+				"          {tcbgrow_AgeGroup@odata.bind} = iif(    isNull(tcbgrow_schoolagegroup),    toString(null()),    concat(\"/tcbgrow_schoolagegroups(tcbgrow_appid=\", toString(tcbgrow_schoolagegroup), \")\")),",
 				"          tcbgrow_gender = case(\r",
 				"    trim(tcbgrow_gender) == 'Male', 301220000,\r",
 				"    trim(tcbgrow_gender) == 'Female', 301220001,\r",
