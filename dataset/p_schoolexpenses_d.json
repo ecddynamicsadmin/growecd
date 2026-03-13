@@ -19,6 +19,43 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_amount",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_asofdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_description",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_importexpenseid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_importschoolid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_source",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_month",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_year",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_transactiontype",
+				"type": "INT64"
+			}
+		]
 	}
 }
