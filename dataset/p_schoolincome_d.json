@@ -19,6 +19,37 @@
 			},
 			"compressionCodec": "snappy"
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "tcbgrow_amount",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_asofdate",
+				"type": "INT96"
+			},
+			{
+				"name": "tcbgrow_description",
+				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_schoolid",
+				"type": "INT64"
+			},
+			{
+				"name": "tcbgrow_importincomeid",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 9
+			},
+			{
+				"name": "tcbgrow_month",
+				"type": "INT32"
+			},
+			{
+				"name": "tcbgrow_source",
+				"type": "UTF8"
+			}
+		]
 	}
 }
