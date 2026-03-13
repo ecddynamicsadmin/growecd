@@ -13,178 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/Schools Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schools_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchool",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_breakeven as integer,",
-						"          tcbgrow_ecdowner as long,",
-						"          tcbgrow_paymenttype as string,",
-						"          tcbgrow_schoolsegment as string,",
-						"          tcbgrow_monthlysalaries as decimal(38,9),",
-						"          tcbgrow_schoolstatus as string,",
-						"          updated_at as timestamp,",
-						"          tcbgrow_contractdate as timestamp,",
-						"          tcbgrow_ecdcode as string,",
-						"          tcbgrow_commencementdate as timestamp,",
-						"          tcbgrow_address as string,",
-						"          tcbgrow_numberofclassrooms as string,",
-						"          tcbgrow_name as string,",
-						"          cog_city as long,",
-						"          cog_region as long,",
-						"          tcbgrow_growid as string,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_capacity as integer,",
-						"          tcbgrow_country as integer,",
-						"          tcbgrow_appaccountcreationdate as timestamp,",
-						"          tcbgrow_centrestartdate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant Only', 301220011,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Partner Funded', 301220006,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Cash', 301220002,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant/Cash', 301220001,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Cash', 301220003,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Grant/Partner Funded', 301220007,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Partner Funded', 301220008,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Grant/Partner Funded', 301220009,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Loan/Grant/Partner Funded', 301220010,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Loan/Partner Funded', 301220012,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Cash/Partner Funded', 523930001,  \r",
-						"    trim(tcbgrow_paymenttype) == 'None', 301220013,  \r",
-						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
-						"    toInteger(null())  \r",
-						"),",
-						"          {cog_City@odata.bind} = iif(\r",
-						"    isNull(cog_city),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\")\r",
-						"),",
-						"          {tcbgrow_Country@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_country),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
-						"),",
-						"          {tcbgrow_ECDOwner@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_ecdowner),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\")\r",
-						"),",
-						"          {cog_Region@odata.bind} = iif(\r",
-						"    isNull(cog_region),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")\r",
-						"),",
-						"          {tcbgrow_SchoolSegment@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_schoolsegment),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
-						"),",
-						"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms)) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_breakeven,",
-						"          tcbgrow_paymenttype = tcbgrow_paymenttypechoice,",
-						"          tcbgrow_monthlysalaries,",
-						"          tcbgrow_schoolstatus,",
-						"          tcbgrow_contractdate,",
-						"          tcbgrow_commencementdate,",
-						"          tcbgrow_address,",
-						"          tcbgrow_numberofclassrooms,",
-						"          tcbgrow_name,",
-						"          tcbgrow_growid,",
-						"          tcbgrow_appid,",
-						"          tcbgrow_capacity,",
-						"          tcbgrow_appaccountcreationdate,",
-						"          tcbgrow_centrestartdate,",
-						"          {cog_City@odata.bind},",
-						"          {tcbgrow_Country@odata.bind},",
-						"          {tcbgrow_ECDOwner@odata.bind},",
-						"          {tcbgrow_SchoolSegment@odata.bind},",
-						"          {cog_Region@odata.bind}",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Schools')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolsupdate_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolsupdate_s",
-							"dataset": {
-								"referenceName": "p_schools_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schools_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schools_s.parquet\"), Parquet = Parquet.Document(AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schools_s.parquet\")) in Parquet;\r\nshared UserQuery = let\n  Source = p_schools_s,\n\nCleanText = (txt as nullable text) =>  \n    if txt = null then null else  \n    Text.Remove(  \n        txt,  \n        List.Transform({0..31}, each Character.FromNumber(_))  \n    ),  \n  #\"Cleaned address\" = Table.TransformColumns(  \n    Source,  \n    {{\"address\", CleanText, type text}}  \n  ),    \n  #\"Removed other columns\" = Table.SelectColumns(#\"Cleaned address\", {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed other columns\", {{\"number_of_classrooms\", Int64.Type}}),\n  #\"Removed columns\" = Table.RemoveColumns(#\"Changed column type 1\", {\"created_at\"}),\n  Replace_Status_Active = Table.ReplaceValue(#\"Removed columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, 0, Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n  Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", type number}, {\"tcbgrow_schoolstatus\", Int64.Type}}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Changed column type\", \"Programme\", \"2\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"Platform\", \"1\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"Non-2\", \"5\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_schoolsegment\"}),\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 4\", {{\"tcbgrow_schoolsegment\", Int64.Type}})  \n\nin\n  #\"Changed column type 2\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/Staff Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -389,6 +217,29 @@
 						"          tcbgrow_schoolid",
 						"     )) ~> sink2"
 					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Staff Attendance Stats')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolstaffattendancestats_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~>  p_schoolstaffattendancestats_s",
+							"dataset": {
+								"referenceName": "p_schoolstaffattendancestats_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolstaffattendancestats_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaffattendancestats_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolstaffattendancestats_s\",\r\n  #\"Duplicated column\" = Table.DuplicateColumn(Source, \"attendance_day\", \"tcbgrow_statsday\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"tcbgrow_statsday\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_statsday\", type text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_statsday\"}),\r\n  #\"Renamed columns\" = Table.RenameColumns(#\"Replaced value\", {{\"school_id\", \"tcbgrow_schoolid\"}, {\"attendance_day\", \"tcbgrow_dayattended\"}, {\"daily_count\", \"tcbgrow_noofstaffattended\"}}) in #\"Renamed columns\";\r\n",
+					"documentLocale": "en-us"
 				}
 			},
 			"dependsOn": []
@@ -1442,8 +1293,6 @@
 					{
 						"name": "Compliance from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1496,7 +1345,7 @@
 						]
 					},
 					{
-						"name": "Staff Attendance Stats Query",
+						"name": "School Compliance Query",
 						"type": "ExecuteWranglingDataflow",
 						"dependsOn": [
 							{
@@ -1547,11 +1396,11 @@
 						}
 					},
 					{
-						"name": "Staff Attendance Stats Attendance Update",
+						"name": "School Compliance Update",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [
 							{
-								"activity": "Staff Attendance Stats Query",
+								"activity": "School Compliance Query",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -1606,8 +1455,6 @@
 					{
 						"name": "School Expenses from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1662,8 +1509,6 @@
 					{
 						"name": "School Expenses Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Expenses from Maria",
@@ -1772,8 +1617,6 @@
 					{
 						"name": "School Fees from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1828,8 +1671,6 @@
 					{
 						"name": "School Fees Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees from Maria",
@@ -2100,8 +1941,6 @@
 					{
 						"name": "School Salaries from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2156,8 +1995,6 @@
 					{
 						"name": "School Salaries Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries from Maria",
@@ -2983,9 +2820,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/Schools Dataflow')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Staff Attendance Stats')]",
@@ -2996,8 +2831,6 @@
 					{
 						"name": "Staff Attendance Stats from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -3052,8 +2885,6 @@
 					{
 						"name": "Staff Attendance Stats Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats from Maria",
@@ -3071,6 +2902,14 @@
 						},
 						"userProperties": [],
 						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Staff Attendance Stats",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolstaffattendancestats_s": {},
+									"UserQuerypschoolstaffattendancestatsd": {}
+								}
+							},
 							"staging": {},
 							"compute": {
 								"coreCount": 8,
@@ -3143,7 +2982,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/School Staff Attendance Stats')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Staff')]",
@@ -4325,7 +4166,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Schools",
+								"activity": "School Age Groups",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4354,7 +4195,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "Staff",
+								"activity": "Schools",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4383,7 +4224,7 @@
 						"type": "ExecutePipeline",
 						"dependsOn": [
 							{
-								"activity": "School Age Groups",
+								"activity": "Staff",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -4419,9 +4260,225 @@
 						"typeProperties": {
 							"variableName": "WatermarkDate",
 							"value": {
-								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-5),'yyyy-MM-dd HH:mm:ss'))",
 								"type": "Expression"
 							}
+						}
+					},
+					{
+						"name": "Owner Training Attendance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Learners Stats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Owner Training Attendance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Teacher Training Attendance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Owner Training Attendance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Teacher Training Attendance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Staff Attendance Stats",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Teacher Training Attendance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Staff Attendance Stats",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Compliance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Staff Attendance Stats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Compliance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "School Salaries",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Compliance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Salaries",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "School Income",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Salaries",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Income",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "School Fees",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Income",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Fees",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "School Expenses",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Fees",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Expenses",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Learners Stats",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Learners",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Learners Stats",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
 						}
 					}
 				],
@@ -4440,7 +4497,16 @@
 				"[concat(variables('factoryId'), '/pipelines/Schools')]",
 				"[concat(variables('factoryId'), '/pipelines/Staff')]",
 				"[concat(variables('factoryId'), '/pipelines/Age Groups')]",
-				"[concat(variables('factoryId'), '/pipelines/Learners')]"
+				"[concat(variables('factoryId'), '/pipelines/Learners')]",
+				"[concat(variables('factoryId'), '/pipelines/Owner Training Attendance')]",
+				"[concat(variables('factoryId'), '/pipelines/Teacher Training Attendance')]",
+				"[concat(variables('factoryId'), '/pipelines/Staff Attendance Stats')]",
+				"[concat(variables('factoryId'), '/pipelines/School Compliance')]",
+				"[concat(variables('factoryId'), '/pipelines/School Salaries')]",
+				"[concat(variables('factoryId'), '/pipelines/School Income')]",
+				"[concat(variables('factoryId'), '/pipelines/School Fees')]",
+				"[concat(variables('factoryId'), '/pipelines/School Expenses')]",
+				"[concat(variables('factoryId'), '/pipelines/Learners Stats')]"
 			]
 		}
 	]
