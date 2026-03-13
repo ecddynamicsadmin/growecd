@@ -1,0 +1,143 @@
+{
+	"name": "School Expenses",
+	"properties": {
+		"activities": [
+			{
+				"name": "School Expenses from Maria",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MariaDBSource",
+						"query": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate}"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MariaSchoolExpenses",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "p_schoolexpenses_s",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "School Expenses Query",
+				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "School Expenses from Maria",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Salaries",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQuerypschoolsalariesd",
+									"dataset": {
+										"referenceName": "p_schoolsalaries_d",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_importsalaryid as long,\n\t\ttcbgrow_importschoolid as long,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_year as integer,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_transactiontype as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolsalaries_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsalariesd"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "School Expenses Update",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "School Expenses Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "School Salaries Dataflow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"WatermarkDate": {
+				"type": "string",
+				"defaultValue": "'2026-03-12 16:45:28'"
+			}
+		},
+		"annotations": []
+	}
+}
