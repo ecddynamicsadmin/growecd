@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'",
+							"value": "SELECT * FROM vw_schoolstaff_export_all WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 							"type": "Expression"
 						}
 					},
