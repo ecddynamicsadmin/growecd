@@ -3871,7 +3871,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= '@{pipeline().parameters.WatermarkDate}' AND attendance_date < CURDATE();",
+									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= @{pipeline().parameters.WatermarkDate} AND attendance_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4463,6 +4463,8 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
