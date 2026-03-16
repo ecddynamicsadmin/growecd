@@ -1593,7 +1593,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate} AND date_paid < CURDATE();",
+									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1755,7 +1755,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate} AND received_on_date < CURDATE();",
+									"value": "SELECT * FROM vw_schoolfees_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}' AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1917,7 +1917,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate} AND received_on_date < CURDATE();",
+									"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}' AND received_on_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -2079,7 +2079,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= @{pipeline().parameters.WatermarkDate} AND date_paid < CURDATE();",
+									"value": "SELECT * FROM vw_schoolsalaries_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
 									"type": "Expression"
 								}
 							},
