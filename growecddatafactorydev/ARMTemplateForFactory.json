@@ -936,8 +936,6 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
@@ -967,8 +965,6 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
@@ -998,8 +994,6 @@
 					{
 						"name": "Staff",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Groups",
@@ -1029,8 +1023,6 @@
 					{
 						"name": "School Age Groups",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools",
@@ -1060,8 +1052,6 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -1100,7 +1090,7 @@
 						"typeProperties": {
 							"variableName": "WatermarkDate",
 							"value": {
-								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-5),'yyyy-MM-dd HH:mm:ss'))",
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-14),'yyyy-MM-dd HH:mm:ss'))",
 								"type": "Expression"
 							}
 						}
@@ -1108,8 +1098,6 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -1302,8 +1290,6 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
@@ -3816,7 +3802,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2020-01-01 16:45:28'"
+						"defaultValue": "'2026-03-06 16:45:28'"
 					}
 				},
 				"annotations": []
