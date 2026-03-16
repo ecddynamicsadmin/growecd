@@ -2424,7 +2424,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate}",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -4419,8 +4419,6 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
@@ -4450,8 +4448,6 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
@@ -4481,8 +4477,6 @@
 					{
 						"name": "Staff",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Groups",
@@ -4512,8 +4506,6 @@
 					{
 						"name": "School Age Groups",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools",
@@ -4543,8 +4535,6 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -4591,8 +4581,6 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -4622,8 +4610,6 @@
 					{
 						"name": "Teacher Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Owner Training Attendance",
@@ -4653,8 +4639,6 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
@@ -4684,8 +4668,6 @@
 					{
 						"name": "Compliance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats",
@@ -4831,8 +4813,6 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",

@@ -13,6 +13,142 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolfees_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolfees_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "name",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "recordid",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 0
+					},
+					{
+						"name": "amount_received",
+						"type": "INT64"
+					},
+					{
+						"name": "received_on_date",
+						"type": "INT96"
+					},
+					{
+						"name": "last_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "first_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "amount_discounted",
+						"type": "INT64"
+					},
+					{
+						"name": "month",
+						"type": "INT32"
+					},
+					{
+						"name": "year",
+						"type": "INT32"
+					},
+					{
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "id",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolincome_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolincome_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_amount",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_asofdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_description",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_schoolid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_importincomeid",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 9
+					},
+					{
+						"name": "tcbgrow_month",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_source",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolincome_s')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1865,123 +2001,6 @@
 						"type": "UTF8"
 					}
 				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolteachertrainingattendance_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolteachertrainingattendance_s.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "staff",
-						"type": "UTF8"
-					},
-					{
-						"name": "school",
-						"type": "UTF8"
-					},
-					{
-						"name": "region",
-						"type": "INT64"
-					},
-					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "position",
-						"type": "UTF8"
-					},
-					{
-						"name": "date_employed",
-						"type": "INT96"
-					},
-					{
-						"name": "ecd_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "attendance_date",
-						"type": "INT96"
-					},
-					{
-						"name": "attended",
-						"type": "INT32"
-					},
-					{
-						"name": "status",
-						"type": "UTF8"
-					},
-					{
-						"name": "reason",
-						"type": "UTF8"
-					},
-					{
-						"name": "course",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "course_type",
-						"type": "UTF8"
-					},
-					{
-						"name": "teacher_id",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/storage_GRW_LearnersStats_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Storage"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "vw_learner_attendance_stats_3months.csv",
-						"folderPath": "giraffe"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
 			},
 			"dependsOn": []
 		}
