@@ -254,6 +254,8 @@
 			{
 				"name": "Compliance",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Staff Attendance Stats",
@@ -283,6 +285,8 @@
 			{
 				"name": "School Salaries",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Compliance",
@@ -312,6 +316,8 @@
 			{
 				"name": "School Income",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Salaries",
@@ -341,6 +347,8 @@
 			{
 				"name": "School Fees",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income",
@@ -370,6 +378,8 @@
 			{
 				"name": "School Expenses",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Fees",
