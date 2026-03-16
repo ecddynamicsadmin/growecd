@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= @{pipeline().parameters.WatermarkDate} AND received_on_date < CURDATE();",
+							"value": "SELECT * FROM vw_schoolincome_3months WHERE received_on_date >= '@{pipeline().parameters.WatermarkDate}' AND received_on_date < CURDATE();",
 							"type": "Expression"
 						}
 					},
