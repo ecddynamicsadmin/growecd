@@ -2424,7 +2424,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"value": "SELECT * FROM crm.vw_schools_rpt_final_null_op WHERE updated_at >= @{pipeline().parameters.WatermarkDate}",
 									"type": "Expression"
 								}
 							},
@@ -3127,7 +3127,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-06 16:45:28'"
+						"defaultValue": "'2026-03-12 16:45:28'"
 					}
 				},
 				"annotations": []
