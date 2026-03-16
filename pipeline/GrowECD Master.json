@@ -184,7 +184,13 @@
 						"referenceName": "Owner Training Attendance",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -207,7 +213,13 @@
 						"referenceName": "Teacher Training Attendance",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -230,7 +242,13 @@
 						"referenceName": "Staff Attendance Stats",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -253,7 +271,13 @@
 						"referenceName": "School Compliance",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -276,7 +300,13 @@
 						"referenceName": "School Salaries",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -299,7 +329,13 @@
 						"referenceName": "School Income",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -322,7 +358,13 @@
 						"referenceName": "School Fees",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -345,7 +387,13 @@
 						"referenceName": "School Expenses",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			},
 			{
@@ -368,7 +416,13 @@
 						"referenceName": "Learners Stats",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"WatermarkDate": {
+							"value": "@variables('WatermarkDate')",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
