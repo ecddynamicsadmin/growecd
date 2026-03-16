@@ -237,6 +237,7 @@
 				"     alternateKeyName: 'tcbgrow_import_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
 				"     assertFailure_folderPath: 'errors',",
@@ -269,17 +270,10 @@
 				"     upsertable:false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
 				"     mapColumn(",
-				"          etag = partnermapping@{@odata.etag},",
-				"          cog_choicevalue,",
-				"          cog_partnercode,",
-				"          cog_partnermappingid,",
-				"          cog_partnername,",
-				"          partnercode,",
-				"          tcbgrow_appid = flatten1@tcbgrow_appid,",
-				"          etag = school@{@odata.etag},",
-				"          tcbgrow_appid = school@tcbgrow_appid,",
-				"          tcbgrow_schoolid",
+				"          tcbgrow_schoolid,",
+				"          cog_partnermapping_tcbgrow_schoolid",
 				"     )) ~> sink2"
 			]
 		}
