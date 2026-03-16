@@ -80,6 +80,9 @@
 				},
 				{
 					"name": "derivedColumn4"
+				},
+				{
+					"name": "alterRow2"
 				}
 			],
 			"scriptLines": [
@@ -228,6 +231,7 @@
 				"     broadcast: 'auto')~> join2",
 				"join1 derive(tcbgrow_schoolid = tcbgrow_schoolid,",
 				"          cog_partnermapping_tcbgrow_schoolid = cog_partnermappingid) ~> derivedColumn4",
+				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -262,12 +266,12 @@
 				"          {tcbgrow_SchoolSegment@odata.bind},",
 				"          {cog_Region@odata.bind}",
 				"     )) ~> sink1",
-				"derivedColumn4 sink(allowSchemaDrift: true,",
+				"alterRow2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
-				"     insertable:true,",
+				"     insertable:false,",
 				"     updateable:false,",
-				"     upsertable:false,",
+				"     upsertable:true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 2,",
