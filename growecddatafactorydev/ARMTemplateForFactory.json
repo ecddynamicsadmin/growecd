@@ -1116,7 +1116,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1140,7 +1145,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1164,7 +1174,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1188,7 +1203,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1212,7 +1232,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1236,7 +1261,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1260,7 +1290,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1284,7 +1319,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					},
 					{
@@ -1308,7 +1348,12 @@
 								"type": "PipelineReference"
 							},
 							"waitOnCompletion": true,
-							"parameters": {}
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
 						}
 					}
 				],
@@ -1865,7 +1910,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM persons WHERE updated_at >= @{pipeline().parameters.WatermarkDate} AND updated_at < CURDATE();",
+									"value": "SELECT * FROM persons WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'' AND updated_at < CURDATE();",
 									"type": "Expression"
 								}
 							},
