@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= @{pipeline().parameters.WatermarkDate}",
+							"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= @{pipeline().parameters.WatermarkDate} AND attendance_date < CURDATE();",
 							"type": "Expression"
 						}
 					},
