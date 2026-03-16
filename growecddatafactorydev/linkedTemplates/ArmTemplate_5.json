@@ -4404,6 +4404,8 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
