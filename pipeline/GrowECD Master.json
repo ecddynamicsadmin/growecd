@@ -208,6 +208,8 @@
 			{
 				"name": "Teacher Training Attendance",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Owner Training Attendance",
