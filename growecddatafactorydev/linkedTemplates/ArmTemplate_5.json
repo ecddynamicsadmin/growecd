@@ -3835,7 +3835,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "2026-03-07 16:45:28"
+						"defaultValue": "'2026-03-07 16:45:28'"
 					}
 				},
 				"variables": {
@@ -4404,6 +4404,8 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
