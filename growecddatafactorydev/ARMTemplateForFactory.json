@@ -1170,6 +1170,8 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
