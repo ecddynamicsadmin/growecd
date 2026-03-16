@@ -1431,7 +1431,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM vw_schoolsalaries_3months\n",
+									"value": "SELECT * FROM school_government_compliences\n",
 									"type": "Expression"
 								}
 							},
