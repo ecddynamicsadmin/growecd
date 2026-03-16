@@ -176,7 +176,6 @@
 				"          lastname,",
 				"          middlename,",
 				"          tcbgrow_race,",
-				"          tcbgrow_schoolappid,",
 				"          tcbgrow_schoolstaff,",
 				"          new_start_date,",
 				"          tcbgrow_startdate,",
