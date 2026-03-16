@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "parquetsource"
+				},
+				{
+					"dataset": {
+						"referenceName": "DataversePartnerMapping",
+						"type": "DatasetReference"
+					},
+					"name": "partnermapping"
 				}
 			],
 			"sinks": [
@@ -31,6 +38,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -62,6 +72,8 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> partnermapping",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
 				"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
@@ -107,6 +119,11 @@
 				"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
 				"),",
 				"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms)) ~> derivedColumn1",
+				"partnermapping, parquetsource join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
