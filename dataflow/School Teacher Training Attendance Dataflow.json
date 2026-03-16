@@ -56,7 +56,7 @@
 				"parquetsource derive({cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 				"          {tcbgrow_Teacher@odata.bind} = iif(    isNull(tcbgrow_teacher),    toString(null()),    concat(\"/contacts(new_staff_id='\", toString(tcbgrow_teacher), \"')\")),",
-				"          tcbgrow_attended = case(tcbgrow_attended == 1, 'true',tcbgrow_attended == 0,'false','false'),",
+				"          tcbgrow_attended = case(tcbgrow_attended == 1, 'true', tcbgrow_attended == 0,'false','false'),",
 				"          tcbgrow_attendancedate = toString(tcbgrow_attendancedate,'dd/MMM/yyyy'),",
 				"          tcbgrow_dateemployed = toString(tcbgrow_dateemployed,'dd/MMM/yyyy'),",
 				"          tcbgrow_course = replace(  \r",
