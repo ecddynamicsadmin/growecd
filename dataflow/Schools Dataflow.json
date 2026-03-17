@@ -266,8 +266,8 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 2,",
 				"     mapColumn(",
-				"          {cog_School@odata.bind},",
-				"          {cog_account@odata.bind},",
+				"          bind = {cog_School@odata.bind},",
+				"          bind = {cog_account@odata.bind},",
 				"          cog_schoolpartnername",
 				"     )) ~> sink2"
 			]
