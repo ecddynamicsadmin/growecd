@@ -265,7 +265,8 @@
 				"     saveOrder: 2,",
 				"     mapColumn(",
 				"          {cog_School@odata.bind},",
-				"          {cog_Partner@odata.bind}",
+				"          {cog_Partner@odata.bind},",
+				"          cog_schoolpartnername",
 				"     )) ~> sink2"
 			]
 		}
