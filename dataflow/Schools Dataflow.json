@@ -204,7 +204,7 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
 				"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
-				"          {cog_Partner@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\"))\r",
+				"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\"))\r",
 				",",
 				"          cog_schoolpartnername = name) ~> derivedColumn4",
 				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
@@ -265,7 +265,7 @@
 				"     saveOrder: 2,",
 				"     mapColumn(",
 				"          {cog_School@odata.bind},",
-				"          {cog_Partner@odata.bind},",
+				"          {cog_Partner@odata.bind} = {cog_account@odata.bind},",
 				"          cog_schoolpartnername",
 				"     )) ~> sink2"
 			]
