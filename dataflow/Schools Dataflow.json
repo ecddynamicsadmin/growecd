@@ -40,7 +40,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DataverseAccount",
+						"referenceName": "DataverseSchoolPartner",
 						"type": "DatasetReference"
 					},
 					"name": "sink2"
@@ -70,6 +70,12 @@
 				},
 				{
 					"name": "alterRow2"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "join1"
 				}
 			],
 			"scriptLines": [
@@ -196,9 +202,21 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
-				"derivedColumn3 derive(tcbgrow_schoolid = tcbgrow_schoolid,",
-				"          cog_partnermapping_tcbgrow_schoolid = cog_partnermappingid) ~> derivedColumn4",
+				"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+				"          {cog_Partner@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\"))\r",
+				") ~> derivedColumn4",
 				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
+				"account select(mapColumn(",
+				"          accountid,",
+				"          tcbgrow_shortcode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"derivedColumn3, select2 join(partnercode == tcbgrow_shortcode,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -243,8 +261,8 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 2,",
 				"     mapColumn(",
-				"          tcbgrow_schoolid,",
-				"          cog_partnermapping_tcbgrow_schoolid",
+				"          {cog_School@odata.bind},",
+				"          {cog_Partner@odata.bind}",
 				"     )) ~> sink2"
 			]
 		}
