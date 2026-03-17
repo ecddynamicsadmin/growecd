@@ -1,5 +1,5 @@
 {
-	"name": "DataverseSchoolPartner",
+	"name": "DataverseAccount",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Dataverse1",
@@ -12,7 +12,7 @@
 		"type": "CommonDataServiceForAppsEntity",
 		"schema": [],
 		"typeProperties": {
-			"entityName": "cog_schoolpartner"
+			"entityName": "account"
 		}
 	}
 }
