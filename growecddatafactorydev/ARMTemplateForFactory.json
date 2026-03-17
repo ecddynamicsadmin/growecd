@@ -3135,6 +3135,8 @@
 					{
 						"name": "Schools from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -3755,6 +3757,8 @@
 					{
 						"name": "Schools Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools from Maria",
@@ -3829,9 +3833,8 @@
 								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
-									"partnermapping": {},
 									"source1": {},
-									"school": {},
+									"account": {},
 									"sink1": {},
 									"sink2": {}
 								}
@@ -5125,6 +5128,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseAccount')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "account"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseCompliance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5141,52 +5167,6 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_schoolcompliance"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataversePartnerMapping')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Dataverse1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_partnermapping"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataversePartnerSchoolNN')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Dataverse1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_partnermapping_tcbgrow_school"
 				}
 			},
 			"dependsOn": [
@@ -5348,6 +5328,29 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_schoolownertraining"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolPartner')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_schoolpartner"
 				}
 			},
 			"dependsOn": [
@@ -10528,13 +10531,6 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "DataversePartnerMapping",
-								"type": "DatasetReference"
-							},
-							"name": "partnermapping"
-						},
-						{
-							"dataset": {
 								"referenceName": "p_schools_d",
 								"type": "DatasetReference"
 							},
@@ -10542,10 +10538,10 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "DataverseSchool",
+								"referenceName": "DataverseAccount",
 								"type": "DatasetReference"
 							},
-							"name": "school"
+							"name": "account"
 						}
 					],
 					"sinks": [
@@ -10562,7 +10558,7 @@
 						},
 						{
 							"dataset": {
-								"referenceName": "DataversePartnerSchoolNN",
+								"referenceName": "DataverseSchoolPartner",
 								"type": "DatasetReference"
 							},
 							"name": "sink2"
@@ -10574,9 +10570,6 @@
 						},
 						{
 							"name": "derivedColumn1"
-						},
-						{
-							"name": "join1"
 						},
 						{
 							"name": "derivedColumn2"
@@ -10591,10 +10584,16 @@
 							"name": "derivedColumn3"
 						},
 						{
-							"name": "join2"
+							"name": "derivedColumn4"
 						},
 						{
-							"name": "derivedColumn4"
+							"name": "alterRow2"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "join1"
 						}
 					],
 					"scriptLines": [
@@ -10627,16 +10626,6 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"source(output(",
-						"          {@odata.etag} as string,",
-						"          cog_choicevalue as string,",
-						"          cog_partnercode as string,",
-						"          cog_partnermappingid as string,",
-						"          cog_partnername as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     query: '<fetch>\\n  <entity name=\"cog_partnermapping\">\\n    <attribute name=\"cog_account\" />\\n    <attribute name=\"cog_choicevalue\" />\\n    <attribute name=\"cog_partnercode\" />\\n    <attribute name=\"cog_partnermappingid\" />\\n    <attribute name=\"cog_partnername\" />\\n  </entity>\\n</fetch>') ~> partnermapping",
-						"source(output(",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",
 						"          tcbgrow_paymenttype as string,",
@@ -10665,12 +10654,13 @@
 						"     format: 'parquet') ~> source1",
 						"source(output(",
 						"          {@odata.etag} as string,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_schoolid as string",
+						"          accountid as string,",
+						"          name as string,",
+						"          tcbgrow_shortcode as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> school",
+						"     query: '<fetch>\\n  <entity name=\"account\">\\n    <attribute name=\"accountid\" />\\n    <attribute name=\"tcbgrow_shortcode\" />\\n    <attribute name=\"name\" />\\n    <filter>\\n      <condition attribute=\"tcbgrow_shortcode\" operator=\"not-null\" />\\n    </filter>\\n  </entity>\\n</fetch>') ~> account",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
 						"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
@@ -10716,33 +10706,39 @@
 						"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
 						"),",
 						"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms)) ~> derivedColumn1",
-						"partnermapping, join2 join(cog_partnercode == partnercode,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
 						"select1 derive(splitCodes = split(tcbgrow_ecdcode,'/')) ~> derivedColumn2",
 						"derivedColumn2 foldDown(unroll(splitCodes),",
 						"     mapColumn(",
 						"          partnercode = splitCodes,",
-						"          tcbgrow_appid",
+						"          tcbgrow_appid,",
+						"          tcbgrow_name",
 						"     ),",
 						"     skipDuplicateMapInputs: false,",
 						"     skipDuplicateMapOutputs: false) ~> flatten1",
 						"source1 select(mapColumn(",
 						"          tcbgrow_ecdcode,",
-						"          tcbgrow_appid",
+						"          tcbgrow_appid,",
+						"          tcbgrow_name",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
 						"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
-						"derivedColumn3, school join(flatten1@tcbgrow_appid == school@tcbgrow_appid,",
+						"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+						"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\")),",
+						"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \"-\",partnercode)) ~> derivedColumn4",
+						"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
+						"account select(mapColumn(",
+						"          accountid,",
+						"          name,",
+						"          tcbgrow_shortcode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"derivedColumn3, select2 join(partnercode == tcbgrow_shortcode,",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join2",
-						"join1 derive(tcbgrow_schoolid = tcbgrow_schoolid,",
-						"          cog_partnermapping_tcbgrow_schoolid = cog_partnermappingid) ~> derivedColumn4",
+						"     broadcast: 'auto')~> join1",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -10777,28 +10773,30 @@
 						"          {tcbgrow_SchoolSegment@odata.bind},",
 						"          {cog_Region@odata.bind}",
 						"     )) ~> sink1",
-						"derivedColumn4 sink(allowSchemaDrift: true,",
+						"alterRow2 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
-						"     insertable:true,",
+						"     insertable:false,",
 						"     updateable:false,",
-						"     upsertable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_name',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 2,",
 						"     mapColumn(",
-						"          tcbgrow_schoolid,",
-						"          cog_partnermapping_tcbgrow_schoolid",
+						"          {cog_School@odata.bind},",
+						"          {cog_account@odata.bind},",
+						"          cog_schoolpartnername",
 						"     )) ~> sink2"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schools_d')]",
-				"[concat(variables('factoryId'), '/datasets/DataversePartnerMapping')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseAccount')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
-				"[concat(variables('factoryId'), '/datasets/DataversePartnerSchoolNN')]"
+				"[concat(variables('factoryId'), '/datasets/DataverseSchoolPartner')]"
 			]
 		},
 		{
