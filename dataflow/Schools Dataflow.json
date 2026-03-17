@@ -208,7 +208,7 @@
 				"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 				"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\"))\r",
 				",",
-				"          cog_schoolpartnername = concat(tcbgrow_name, \"-\",partnercode)) ~> derivedColumn4",
+				"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \"-\",partnercode)) ~> derivedColumn4",
 				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
 				"account select(mapColumn(",
 				"          accountid,",
