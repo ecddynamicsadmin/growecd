@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "parquetsource"
+				},
+				{
+					"dataset": {
+						"referenceName": "p_schoolcompliance_d",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
 				}
 			],
 			"sinks": [
@@ -31,6 +38,18 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "parse1"
+				},
+				{
+					"name": "unpivot1"
 				}
 			],
 			"scriptLines": [
@@ -60,8 +79,67 @@
 				"     inferDriftedColumnTypes: true,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
+				"source(output(",
+				"          tcbgrow_amountid as long,",
+				"          tcbgrow_appid as long,",
+				"          tcbgrow_checklistholder as string,",
+				"          tcbgrow_dsdapplicationsubmission as timestamp,",
+				"          tcbgrow_dsdgrantapproval as string,",
+				"          tcbgrow_dsdgrantpaid as string,",
+				"          tcbgrow_dsdstatus as string,",
+				"          tcbgrow_effectivedate as timestamp,",
+				"          tcbgrow_eligibleforotherstudy as string,",
+				"          tcbgrow_expirydate as timestamp,",
+				"          tcbgrow_franchisecommencementdate as timestamp,",
+				"          tcbgrow_nporegistered as string,",
+				"          tcbgrow_nporegistrationdate as timestamp,",
+				"          tcbgrow_nporegistrationnumber as string,",
+				"          tcbgrow_numberofchildrensregistration as integer,",
+				"          tcbgrow_othersubsidyenddate as timestamp,",
+				"          tcbgrow_othersubsidystartdate as timestamp,",
+				"          tcbgrow_schoolid as long,",
+				"          tcbgrow_schoolcapacity as long",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source1",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
+				"source1 select(mapColumn(",
+				"          tcbgrow_appid,",
+				"          tcbgrow_checklistholder",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 derive(parsedChecklist = tcbgrow_checklistholder) ~> derivedColumn2",
+				"derivedColumn2 parse(parsedChecklist = tcbgrow_checklistholder ? (business_plan as boolean,",
+				"     disciplinary_policy as boolean,",
+				"     lease_agreement as boolean,",
+				"     npo_certificate as boolean,",
+				"     building_plan as boolean,",
+				"     emergency_plan as boolean,",
+				"     zoning_certificate as boolean,",
+				"     constitution as boolean,",
+				"     form29 as boolean,",
+				"     form30 as boolean,",
+				"     fire_safety as boolean,",
+				"     health_clearance as boolean,",
+				"     form16 as boolean,",
+				"     form17 as boolean,",
+				"     western_cape as boolean,",
+				"     kwa_zulu_natal as boolean)[],",
+				"     format: 'json',",
+				"     documentForm: 'documentPerLine') ~> parse1",
+				"parse1 unpivot(output(",
+				"          checklist_item as string,",
+				"          parsedChecklist_output as (business_plan as boolean, disciplinary_policy as boolean, lease_agreement as boolean, npo_certificate as boolean, building_plan as boolean, emergency_plan as boolean, zoning_certificate as boolean, constitution as boolean, form29 as boolean, form30 as boolean, fire_safety as boolean, health_clearance as boolean, form16 as boolean, form17 as boolean, western_cape as boolean, kwa_zulu_natal as boolean)[],",
+				"          tcbgrow_appid_output as long",
+				"     ),",
+				"     ungroupBy(parsedChecklist,",
+				"          tcbgrow_appid),",
+				"     lateral: false,",
+				"     ignoreNullPivots: true) ~> unpivot1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
