@@ -50,6 +50,9 @@
 				},
 				{
 					"name": "unpivot1"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -113,7 +116,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"select1 derive(parsedChecklist = tcbgrow_checklistholder) ~> derivedColumn2",
-				"derivedColumn2 parse(parsedChecklist = tcbgrow_checklistholder ? (business_plan as boolean,",
+				"derivedColumn2 parse(parsed_checklist = tcbgrow_checklistholder ? (business_plan as boolean,",
 				"     disciplinary_policy as boolean,",
 				"     lease_agreement as boolean,",
 				"     npo_certificate as boolean,",
@@ -131,15 +134,19 @@
 				"     kwa_zulu_natal as boolean)[],",
 				"     format: 'json',",
 				"     documentForm: 'documentPerLine') ~> parse1",
-				"parse1 unpivot(output(",
+				"select2 unpivot(output(",
 				"          checklist_item as string,",
-				"          parsedChecklist_output as (business_plan as boolean, disciplinary_policy as boolean, lease_agreement as boolean, npo_certificate as boolean, building_plan as boolean, emergency_plan as boolean, zoning_certificate as boolean, constitution as boolean, form29 as boolean, form30 as boolean, fire_safety as boolean, health_clearance as boolean, form16 as boolean, form17 as boolean, western_cape as boolean, kwa_zulu_natal as boolean)[],",
-				"          tcbgrow_appid_output as long",
+				"          is_checked as string",
 				"     ),",
-				"     ungroupBy(parsedChecklist,",
-				"          tcbgrow_appid),",
+				"     ungroupBy(tcbgrow_appid),",
 				"     lateral: false,",
 				"     ignoreNullPivots: true) ~> unpivot1",
+				"parse1 select(mapColumn(",
+				"          tcbgrow_appid,",
+				"          business_plan = {parsedChecklist.business_plan}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
