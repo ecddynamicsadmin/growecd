@@ -49,9 +49,6 @@
 					"name": "unpivot1"
 				},
 				{
-					"name": "select2"
-				},
-				{
 					"name": "flatten1"
 				}
 			],
@@ -132,21 +129,15 @@
 				"     western_cape as boolean,",
 				"     kwa_zulu_natal as boolean)[],",
 				"     format: 'json',",
-				"     documentForm: 'documentPerLine') ~> parse1",
+				"     documentForm: 'singleDocument') ~> parse1",
 				"flatten1 unpivot(output(",
 				"          checklist_item as string,",
 				"          parsed as (business_plan as boolean, disciplinary_policy as boolean, lease_agreement as boolean, npo_certificate as boolean, building_plan as boolean, emergency_plan as boolean, zoning_certificate as boolean, constitution as boolean, form29 as boolean, form30 as boolean, fire_safety as boolean, health_clearance as boolean, form16 as boolean, form17 as boolean, western_cape as boolean, kwa_zulu_natal as boolean)[]",
 				"     ),",
 				"     ungroupBy(tcbgrow_appid),",
-				"     pivotValues: ['is_checked'],",
 				"     lateral: false,",
-				"     ignoreNullPivots: false) ~> unpivot1",
-				"parse1 select(mapColumn(",
-				"          tcbgrow_appid,",
-				"          parsed",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select2",
+				"     ignoreNullPivots: false,",
+				"     partitionBy('hash', 1)) ~> unpivot1",
 				"parse1 foldDown(unroll(parsed),",
 				"     mapColumn(",
 				"          tcbgrow_appid,",
