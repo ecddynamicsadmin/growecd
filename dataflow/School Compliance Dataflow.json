@@ -19,7 +19,11 @@
 					"name": "source1"
 				},
 				{
-					"name": "source2"
+					"dataset": {
+						"referenceName": "DataverseChecklist",
+						"type": "DatasetReference"
+					},
+					"name": "checklist"
 				}
 			],
 			"sinks": [
@@ -114,7 +118,7 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> source1",
 				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> source2",
+				"     validateSchema: false) ~> checklist",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
 				"source1 select(mapColumn(",

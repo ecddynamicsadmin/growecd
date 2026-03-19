@@ -59,8 +59,6 @@
 			{
 				"name": "School Compliance Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Compliance from Maria",
