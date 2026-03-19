@@ -37,6 +37,13 @@
 						"referenceName": "AzureDataLakeStorage1",
 						"type": "LinkedServiceReference"
 					}
+				},
+				{
+					"dataset": {
+						"referenceName": "DataverseRegistrationStatusChecklist",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
 				}
 			],
 			"transformations": [
@@ -72,6 +79,12 @@
 				},
 				{
 					"name": "select4"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "alterRow2"
 				}
 			],
 			"scriptLines": [
@@ -216,14 +229,26 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"select4 derive() ~> derivedColumn2",
+				"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_registrationstatuses(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+				"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
+				"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)) ,",
+				"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",
 				"join1 select(mapColumn(",
 				"          tcbgrow_appid,",
-				"          cog_checklistid,",
+				"          cog_checklist = cog_checklistid,",
 				"          cog_checklistname",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select4",
+				"derivedColumn2 select(mapColumn(",
+				"          {cog_RegistrationStatus@odata.bind},",
+				"          {cog_Checklist@odata.bind},",
+				"          cog_name,",
+				"          cog_registrationstatusappid",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 alterRow(upsertIf(true())) ~> alterRow2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -257,7 +282,22 @@
 				"          tcbgrow_othersubsidystartdate,",
 				"          tcbgrow_schoolcapacity,",
 				"          {tcbgrow_School@odata.bind}",
-				"     )) ~> sink1"
+				"     )) ~> sink1",
+				"alterRow2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'cog_importkey',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          cog_name,",
+				"          cog_registrationstatusappid,",
+				"          {cog_RegistrationStatus@odata.bind},",
+				"          {cog_Checklist@odata.bind}",
+				"     )) ~> sink2"
 			]
 		}
 	}
