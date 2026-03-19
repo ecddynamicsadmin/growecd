@@ -63,6 +63,15 @@
 				},
 				{
 					"name": "filter1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn2"
+				},
+				{
+					"name": "select4"
 				}
 			],
 			"scriptLines": [
@@ -202,6 +211,19 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select3",
 				"select3 filter(checklist_complete == true()) ~> filter1",
+				"filter1, checklist join(checklist_item == cog_checklistname,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"select4 derive() ~> derivedColumn2",
+				"join1 select(mapColumn(",
+				"          tcbgrow_appid,",
+				"          cog_checklistid,",
+				"          cog_checklistname",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
