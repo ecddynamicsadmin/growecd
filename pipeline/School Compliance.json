@@ -5,6 +5,8 @@
 			{
 				"name": "Compliance from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -18,7 +20,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM school_government_compliences\n",
+							"value": "SELECT * FROM school_government_compliences WHERE effective_date >= pipeline().parameters.WatermarkDate' AND effective_date < CURDATE();",
 							"type": "Expression"
 						}
 					},
@@ -57,6 +59,8 @@
 			{
 				"name": "School Compliance Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Compliance from Maria",
