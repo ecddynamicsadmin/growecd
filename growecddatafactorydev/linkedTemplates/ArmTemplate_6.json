@@ -1,0 +1,487 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "growecddatafactorydev"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Run hourly')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Giraffe Files",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Hour",
+						"interval": 1,
+						"startTime": "2026-02-20T04:36:00",
+						"endTime": "2026-02-21T04:36:00",
+						"timeZone": "South Africa Standard Time"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GrowECD Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ECD Owners",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set WatermarkDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Owners",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Schools",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "ECD Owners",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Schools",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Staff",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Age Groups",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Staff",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Age Groups",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Schools",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Age Groups",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Learners",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Staff",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Learners",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Set WatermarkDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "WatermarkDate",
+							"value": {
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Owner Training Attendance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Learners Stats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Owner Training Attendance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Teacher Training Attendance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Owner Training Attendance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Teacher Training Attendance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Staff Attendance Stats",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Teacher Training Attendance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Staff Attendance Stats",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Compliance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Staff Attendance Stats",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Compliance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Salaries",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Compliance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Salaries",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Income",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Salaries",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Income",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Fees",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Income",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Fees",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Expenses",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Fees",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Expenses",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Learners Stats",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Learners",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Learners Stats",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"WatermarkDate": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		}
+	]
+}

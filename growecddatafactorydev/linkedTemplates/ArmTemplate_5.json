@@ -13,6 +13,126 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/School Teacher Train Attendance')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolteachertrainingattendance_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolteachertrainingattendance_s",
+							"dataset": {
+								"referenceName": "p_schoolteachertrainingattendance_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolteachertrainingattendance_s\",  \n  \n    // Duplicate required columns  \n    #\"Duplicated attendance_date\" = Table.DuplicateColumn(Source, \"attendance_date\", \"meetingdatestring\"),  \n    #\"Duplicated teacher_id\" = Table.DuplicateColumn(#\"Duplicated attendance_date\", \"teacher_id\", \"teacher_id_copy\"),  \n  \n    // Replace values  \n    #\"Replaced value 1\" = Table.ReplaceValue(  \n        #\"Duplicated teacher_id\",  \n        \"not_required\",  \n        \"absent\",  \n        Replacer.ReplaceText,  \n        {\"status\"}  \n    ),  \n  \n    // Keep only required source columns  \n    #\"Selected Columns\" = Table.SelectColumns(#\"Replaced value 1\",{  \n        \"attendance_date\",  \n        \"meetingdatestring\",  \n        \"attended\",  \n        \"course\",  \n        \"date_employed\",  \n        \"position\",  \n        \"region\",  \n        \"school_id\",  \n        \"teacher_id\",  \n        \"staff\",  \n        \"teacher_id_copy\"  \n    }),  \n  \n    // Rename to destination schema  \n    #\"Renamed Columns\" = Table.RenameColumns(#\"Selected Columns\",{  \n        {\"attendance_date\",\"tcbgrow_attendancedate\"},  \n        {\"meetingdatestring\",\"tcbgrow_attendancedatestring\"},  \n        {\"attended\",\"tcbgrow_attended\"},  \n        {\"course\",\"tcbgrow_course\"},  \n        {\"date_employed\",\"tcbgrow_dateemployed\"},  \n        {\"position\",\"tcbgrow_position\"},  \n        {\"region\",\"tcbgrow_region\"},  \n        {\"school_id\",\"tcbgrow_schoolid\"},  \n        {\"teacher_id\",\"tcbgrow_staffid\"},  \n        {\"staff\",\"tcbgrow_staffname\"},  \n        {\"teacher_id_copy\",\"tcbgrow_teacher\"}  \n    }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_attendancedatestring\", type date}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_attendancedatestring\", type text}}),\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_attendancedatestring\"}),\r\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Replaced value\", \"  \", \" \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 6\", \":\", \"-\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \" \", \"_\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 5\", {{\"tcbgrow_attended\", type text}}),\r\n  #\"Replaced value 7\" = Table.ReplaceValue(#\"Changed column type 2\", null, \"0\", Replacer.ReplaceValue, {\"tcbgrow_attended\"}),\r\n  #\"Replaced value 8\" = Table.ReplaceValue(#\"Replaced value 7\", \"1\", \"true\", Replacer.ReplaceText, {\"tcbgrow_attended\"}),\r\n  #\"Replaced value 9\" = Table.ReplaceValue(#\"Replaced value 8\", \"0\", \"false\", Replacer.ReplaceText, {\"tcbgrow_attended\"})  \n  \nin  \n    #\"Replaced value 9\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Teacher Training Attendance Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoolteachertrainingattendance_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolTeacherTrainingAttendance",
+								"type": "DatasetReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_attendancedate as timestamp,",
+						"          tcbgrow_attendancedatestring as string,",
+						"          tcbgrow_attended as integer,",
+						"          tcbgrow_course as string,",
+						"          tcbgrow_dateemployed as timestamp,",
+						"          tcbgrow_position as string,",
+						"          tcbgrow_region as long,",
+						"          tcbgrow_schoolid as long,",
+						"          tcbgrow_staffid as string,",
+						"          tcbgrow_staffname as string,",
+						"          tcbgrow_teacher as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"parquetsource derive({cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
+						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
+						"          {tcbgrow_Teacher@odata.bind} = iif(    isNull(tcbgrow_teacher),    toString(null()),    concat(\"/contacts(new_staff_id='\", toString(tcbgrow_teacher), \"')\")),",
+						"          tcbgrow_attendancedate = toString(tcbgrow_attendancedate,'dd/MMM/yyyy'),",
+						"          tcbgrow_dateemployed = toString(tcbgrow_dateemployed,'dd/MMM/yyyy'),",
+						"          tcbgrow_course = replace(  \r",
+						"    replace(tcbgrow_course,'%20',' '),  \r",
+						"    '%2F','/'  \r",
+						")) ~> derivedColumn1",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_import_teacherattendance_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_attendancedate,",
+						"          tcbgrow_attendancedatestring,",
+						"          tcbgrow_attended,",
+						"          tcbgrow_course,",
+						"          tcbgrow_dateemployed,",
+						"          tcbgrow_position,",
+						"          tcbgrow_schoolid,",
+						"          tcbgrow_staffid,",
+						"          tcbgrow_staffname,",
+						"          {cog_Region@odata.bind},",
+						"          {tcbgrow_School@odata.bind},",
+						"          {tcbgrow_Teacher@odata.bind}",
+						"     )) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -328,9 +448,9 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 2,",
 						"     mapColumn(",
+						"          cog_schoolpartnername,",
 						"          {cog_School@odata.bind},",
-						"          {cog_account@odata.bind},",
-						"          cog_schoolpartnername",
+						"          {cog_account@odata.bind}",
 						"     )) ~> sink2"
 					]
 				}
@@ -1724,7 +1844,10 @@
 								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
-									"sink1": {}
+									"source1": {},
+									"checklist": {},
+									"sink1": {},
+									"sink2": {}
 								}
 							},
 							"staging": {},
@@ -4377,492 +4500,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Run hourly')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Giraffe Files",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Hour",
-						"interval": 1,
-						"startTime": "2026-02-20T04:36:00",
-						"endTime": "2026-02-21T04:36:00",
-						"timeZone": "South Africa Standard Time"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GrowECD Master')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ECD Owners",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Set WatermarkDate",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Owners",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Schools",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "ECD Owners",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Schools",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Staff",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "School Age Groups",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Staff",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Age Groups",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Schools",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Age Groups",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Learners",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Staff",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Learners",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Set WatermarkDate",
-						"type": "SetVariable",
-						"dependsOn": [],
-						"policy": {
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"variableName": "WatermarkDate",
-							"value": {
-								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
-								"type": "Expression"
-							}
-						}
-					},
-					{
-						"name": "Owner Training Attendance",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Learners Stats",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Owner Training Attendance",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Teacher Training Attendance",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Owner Training Attendance",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Teacher Training Attendance",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Staff Attendance Stats",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Teacher Training Attendance",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Staff Attendance Stats",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Compliance",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Staff Attendance Stats",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "School Compliance",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Salaries",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Compliance",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "School Salaries",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Income",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "School Salaries",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "School Income",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Fees",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "School Income",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "School Fees",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "School Expenses",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "School Fees",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "School Expenses",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					},
-					{
-						"name": "Learners Stats",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "School Learners",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "Learners Stats",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WatermarkDate": {
-									"value": "@variables('WatermarkDate')",
-									"type": "Expression"
-								}
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"variables": {
-					"WatermarkDate": {
-						"type": "String"
-					}
-				},
-				"annotations": []
-			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Owners')]",
-				"[concat(variables('factoryId'), '/pipelines/Schools')]",
-				"[concat(variables('factoryId'), '/pipelines/Staff')]",
-				"[concat(variables('factoryId'), '/pipelines/Age Groups')]",
-				"[concat(variables('factoryId'), '/pipelines/Learners')]",
-				"[concat(variables('factoryId'), '/pipelines/Owner Training Attendance')]",
-				"[concat(variables('factoryId'), '/pipelines/Teacher Training Attendance')]",
-				"[concat(variables('factoryId'), '/pipelines/Staff Attendance Stats')]",
-				"[concat(variables('factoryId'), '/pipelines/School Compliance')]",
-				"[concat(variables('factoryId'), '/pipelines/School Salaries')]",
-				"[concat(variables('factoryId'), '/pipelines/School Income')]",
-				"[concat(variables('factoryId'), '/pipelines/School Fees')]",
-				"[concat(variables('factoryId'), '/pipelines/School Expenses')]",
-				"[concat(variables('factoryId'), '/pipelines/Learners Stats')]"
+				"[concat(variables('factoryId'), '/dataflows/School Teacher Train Attendance')]",
+				"[concat(variables('factoryId'), '/dataflows/School Teacher Training Attendance Dataflow')]"
 			]
 		}
 	]

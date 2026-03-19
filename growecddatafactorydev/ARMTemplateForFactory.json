@@ -2423,7 +2423,10 @@
 								"parameters": {},
 								"datasetParameters": {
 									"parquetsource": {},
-									"sink1": {}
+									"source1": {},
+									"checklist": {},
+									"sink1": {},
+									"sink2": {}
 								}
 							},
 							"staging": {},
@@ -5151,6 +5154,29 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseChecklist')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_checklist"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseCompliance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5167,6 +5193,29 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "tcbgrow_schoolcompliance"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DataverseRegistrationStatusChecklist')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_registrationstatuschecklist"
 				}
 			},
 			"dependsOn": [
@@ -9343,6 +9392,20 @@
 								"type": "DatasetReference"
 							},
 							"name": "parquetsource"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schoolcompliance_d",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseChecklist",
+								"type": "DatasetReference"
+							},
+							"name": "checklist"
 						}
 					],
 					"sinks": [
@@ -9356,6 +9419,13 @@
 								"referenceName": "AzureDataLakeStorage1",
 								"type": "LinkedServiceReference"
 							}
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseRegistrationStatusChecklist",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
 						}
 					],
 					"transformations": [
@@ -9364,6 +9434,39 @@
 						},
 						{
 							"name": "derivedColumn1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "parse1"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "unpivot1"
+						},
+						{
+							"name": "select3"
+						},
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "select4"
+						},
+						{
+							"name": "select5"
+						},
+						{
+							"name": "alterRow2"
 						}
 					],
 					"scriptLines": [
@@ -9393,8 +9496,141 @@
 						"     inferDriftedColumnTypes: true,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
+						"source(output(",
+						"          tcbgrow_amountid as long,",
+						"          tcbgrow_appid as long,",
+						"          tcbgrow_checklistholder as string,",
+						"          tcbgrow_dsdapplicationsubmission as timestamp,",
+						"          tcbgrow_dsdgrantapproval as string,",
+						"          tcbgrow_dsdgrantpaid as string,",
+						"          tcbgrow_dsdstatus as string,",
+						"          tcbgrow_effectivedate as timestamp,",
+						"          tcbgrow_eligibleforotherstudy as string,",
+						"          tcbgrow_expirydate as timestamp,",
+						"          tcbgrow_franchisecommencementdate as timestamp,",
+						"          tcbgrow_nporegistered as string,",
+						"          tcbgrow_nporegistrationdate as timestamp,",
+						"          tcbgrow_nporegistrationnumber as string,",
+						"          tcbgrow_numberofchildrensregistration as integer,",
+						"          tcbgrow_othersubsidyenddate as timestamp,",
+						"          tcbgrow_othersubsidystartdate as timestamp,",
+						"          tcbgrow_schoolid as long,",
+						"          tcbgrow_schoolcapacity as long",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> source1",
+						"source(output(",
+						"          {@odata.etag} as string,",
+						"          cog_checklistid as string,",
+						"          cog_checklistname as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     query: '<fetch>\\n     <entity name=\"cog_checklist\">\\n          <attribute name=\"cog_checklistid\"/>\\n          <attribute name=\"cog_checklistname\"/>\\n          <order attribute=\"cog_checklistname\" descending=\"false\"/>\\n     </entity>\\n</fetch>') ~> checklist",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
+						"source1 select(mapColumn(",
+						"          tcbgrow_appid,",
+						"          tcbgrow_checklistholder",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 parse(parsed_data = tcbgrow_checklistholder ? (business_plan as boolean,",
+						"          disciplinary_policy as boolean,",
+						"          lease_agreement as boolean,",
+						"          npo_certificate as boolean,",
+						"          building_plan as boolean,",
+						"          emergency_plan as boolean,",
+						"          zoning_certificate as boolean,",
+						"          constitution as boolean,",
+						"          form29 as boolean,",
+						"          form30 as boolean,",
+						"          fire_safety as boolean,",
+						"          health_clearance as boolean,",
+						"          form16 as boolean,",
+						"          form17 as boolean,",
+						"          western_cape as boolean,",
+						"          kwa_zulu_natal as boolean),",
+						"     format: 'json',",
+						"     documentForm: 'singleDocument') ~> parse1",
+						"parse1 select(mapColumn(",
+						"          tcbgrow_appid,",
+						"          business_plan = parsed_data.business_plan,",
+						"          disciplinary_policy = parsed_data.disciplinary_policy,",
+						"          lease_agreement = parsed_data.lease_agreement,",
+						"          npo_certificate = parsed_data.npo_certificate,",
+						"          building_plan = parsed_data.building_plan,",
+						"          emergency_plan = parsed_data.emergency_plan,",
+						"          zoning_certificate = parsed_data.zoning_certificate,",
+						"          constitution = parsed_data.constitution,",
+						"          form29 = parsed_data.form29,",
+						"          form30 = parsed_data.form30,",
+						"          fire_safety = parsed_data.fire_safety,",
+						"          health_clearance = parsed_data.health_clearance,",
+						"          form16 = parsed_data.form16,",
+						"          form17 = parsed_data.form17,",
+						"          western_cape = parsed_data.western_cape,",
+						"          kwa_zulu_natal = parsed_data.kwa_zulu_natal",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 unpivot(output(",
+						"          checklist_item as string,",
+						"          business_plan as boolean,",
+						"          disciplinary_policy as boolean,",
+						"          lease_agreement as boolean,",
+						"          npo_certificate as boolean,",
+						"          building_plan as boolean,",
+						"          emergency_plan as boolean,",
+						"          zoning_certificate as boolean,",
+						"          constitution as boolean,",
+						"          form29 as boolean,",
+						"          form30 as boolean,",
+						"          fire_safety as boolean,",
+						"          health_clearance as boolean,",
+						"          form16 as boolean,",
+						"          form17 as boolean,",
+						"          western_cape as boolean,",
+						"          kwa_zulu_natal as boolean",
+						"     ),",
+						"     ungroupBy(tcbgrow_appid),",
+						"     lateral: true,",
+						"     ignoreNullPivots: false) ~> unpivot1",
+						"unpivot1 select(mapColumn(",
+						"          tcbgrow_appid,",
+						"          checklist_item,",
+						"          checklist_complete = business_plan",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"select3 filter(checklist_complete == true()) ~> filter1",
+						"filter1, checklist join(checklist_item == cog_checklistname,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_registrationstatuses(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+						"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
+						"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)),",
+						"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",
+						"join1 select(mapColumn(",
+						"          tcbgrow_appid,",
+						"          cog_checklist = cog_checklistid,",
+						"          cog_checklistname",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select4",
+						"derivedColumn2 select(mapColumn(",
+						"          {cog_RegistrationStatus@odata.bind},",
+						"          {cog_Checklist@odata.bind},",
+						"          cog_name,",
+						"          cog_registrationstatusappid",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select5",
+						"select5 alterRow(upsertIf(true())) ~> alterRow2",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -9428,14 +9664,31 @@
 						"          tcbgrow_othersubsidystartdate,",
 						"          tcbgrow_schoolcapacity,",
 						"          {tcbgrow_School@odata.bind}",
-						"     )) ~> sink1"
+						"     )) ~> sink1",
+						"alterRow2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_importkey',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     mapColumn(",
+						"          cog_name,",
+						"          cog_registrationstatusappid,",
+						"          {cog_RegistrationStatus@odata.bind},",
+						"          {cog_Checklist@odata.bind}",
+						"     )) ~> sink2"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/p_schoolcompliance_d')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseChecklist')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseCompliance')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
+				"[concat(variables('factoryId'), '/datasets/DataverseRegistrationStatusChecklist')]"
 			]
 		},
 		{
@@ -9455,7 +9708,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolcompliance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolcompliance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolcompliance_s\",  \n\n    // Select required columns FIRST (better performance)  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount\",  \n            \"id\",  \n            \"registration_checklist\",  \n            \"dsd_application_submission_date\",  \n            \"dsd_grant_approved\",  \n            \"is_dsd_grant_paid\",  \n            \"dsd_status\",  \n            \"effective_date\",  \n            \"is_eligible_for_other_subsidy\",  \n            \"expiry_date\",  \n            \"grow_franchisee_commencement_date\",  \n            \"is_npo_registered\",  \n            \"npo_registration_date\",  \n            \"npo_registration_number\",  \n            \"number_of_childrens_registration\",  \n            \"other_subsidy_end_date\",  \n            \"other_subsidy_start_date\",  \n            \"school_id\",  \n            \"school_capacity\"  \n        }),  \n  \n    // Replace nulls (text + numeric in ONE step)  \n    #\"Replace Nulls\" =  \n        Table.TransformColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"npo_registration_number\", each if _ = null then \"\" else _},  \n                {\"dsd_grant_approved\", each if _ = null then \"\" else _},\n                {\"registration_checklist\", each if _ = null then \"\" else _},  \n                {\"amount\", each if _ = null then 0 else _},  \n                {\"school_capacity\", each if _ = null then 0 else _},  \n                {\"school_id\", each if _ = null then 0 else _},  \n                {\"number_of_childrens_registration\", each if _ = null then 0 else _}  \n            }  \n        ),  \n  \n    // Transform DSD Status + Boolean fields in ONE step  \n    #\"Transform Fields\" =  \n        Table.TransformColumns(  \n            #\"Replace Nulls\",  \n            {  \n                // Option set mapping  \n                {\"dsd_status\", each  \n                    if _ = \"Registered\" then \"301220002\"  \n                    else if _ = \"Gold/Full registration\" then \"301220006\"  \n                    else if _ = \"Bronze registration\" then \"301220007\"  \n                    else if _ = \"Expired\" then \"301220000\"  \n                    else if _ = \"Application Submitted\" then \"301220001\"  \n                    else if _ = \"Application Denied\" then \"301220005\"  \n                    else if _ = \"Not Registered\" then \"301220003\"  \n                    else if _ = \"Conditionally Registered\" then \"301220004\"\n                    else if _ = \"Silver/Conditional registration\" then \"301220004\"  \n                    else _  \n                },  \n  \n                // Yes/No → true/false directly (skip 0/1 conversion completely)  \n                {\"is_dsd_grant_paid\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical},  \n                {\"dsd_grant_approved\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical}  \n            }  \n        ),  \n  \n    // Rename at the END (cleaner pipeline)  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Transform Fields\",{  \n            {\"amount\", \"tcbgrow_amount\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"registration_checklist\", \"tcbgrow_checklistholder\"},  \n            {\"dsd_application_submission_date\", \"tcbgrow_dsdapplicationsubmissiondate\"},  \n            {\"dsd_grant_approved\", \"tcbgrow_dsdgrantapproval\"},  \n            {\"is_dsd_grant_paid\", \"tcbgrow_dsdgrantpaid\"},  \n            {\"dsd_status\", \"tcbgrow_dsdstatus\"},  \n            {\"effective_date\", \"tcbgrow_effectivedate\"},  \n            {\"is_eligible_for_other_subsidy\", \"tcbgrow_eligibleforotherstudy\"},  \n            {\"expiry_date\", \"tcbgrow_expirydate\"},  \n            {\"grow_franchisee_commencement_date\", \"tcbgrow_franchisecommencementdate\"},  \n            {\"is_npo_registered\", \"tcbgrow_nporegistered\"},  \n            {\"npo_registration_date\", \"tcbgrow_nporegistrationdate\"},  \n            {\"npo_registration_number\", \"tcbgrow_nporegistrationnumber\"},  \n            {\"number_of_childrens_registration\", \"tcbgrow_numberofchildrensregistration\"},  \n            {\"other_subsidy_end_date\", \"tcbgrow_othersubsidyenddate\"},  \n            {\"other_subsidy_start_date\", \"tcbgrow_othersubsidystartdate\"},  \n            {\"school_id\", \"tcbgrow_school\"},  \n            {\"school_capacity\", \"tcbgrow_schoolcapacity\"}  \n        }),  \n  \n    // Final datatype adjustments  \n    #\"Changed Column Types\" =  \n        Table.TransformColumnTypes(#\"Renamed Columns\",{  \n            {\"tcbgrow_eligibleforotherstudy\", type text},  \n            {\"tcbgrow_nporegistered\", type text},\n            {\"tcbgrow_dsdgrantapproval\", type text},\n            {\"tcbgrow_dsdgrantpaid\", type text}  \n        }),\r\n  Custom = #\"Changed Column Types\"  \n  \nin  \n    Custom;\r\n",
+					"script": "section Section1;\r\nshared p_schoolcompliance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolcompliance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolcompliance_s\",  \n    // Select required columns FIRST (better performance)  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount\",  \n            \"id\",  \n            \"registration_checklist\",  \n            \"dsd_application_submission_date\",  \n            \"dsd_grant_approved\",  \n            \"is_dsd_grant_paid\",  \n            \"dsd_status\",  \n            \"effective_date\",  \n            \"is_eligible_for_other_subsidy\",  \n            \"expiry_date\",  \n            \"grow_franchisee_commencement_date\",  \n            \"is_npo_registered\",  \n            \"npo_registration_date\",  \n            \"npo_registration_number\",  \n            \"number_of_childrens_registration\",  \n            \"other_subsidy_end_date\",  \n            \"other_subsidy_start_date\",  \n            \"school_id\",  \n            \"school_capacity\"  \n        }),  \n  \n    // Replace nulls (text + numeric in ONE step)  \n    #\"Replace Nulls\" =  \n        Table.TransformColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"npo_registration_number\", each if _ = null then \"\" else _},  \n                {\"dsd_grant_approved\", each if _ = null then \"\" else _},\n                {\"registration_checklist\", each if _ = null then \"\" else _},  \n                {\"amount\", each if _ = null then 0 else _},  \n                {\"school_capacity\", each if _ = null then 0 else _},  \n                {\"school_id\", each if _ = null then 0 else _},  \n                {\"number_of_childrens_registration\", each if _ = null then 0 else _}  \n            }  \n        ),  \n  \n    // Transform DSD Status + Boolean fields in ONE step  \n    #\"Transform Fields\" =  \n        Table.TransformColumns(  \n            #\"Replace Nulls\",  \n            {  \n                // Option set mapping  \n                {\"dsd_status\", each  \n                    if _ = \"Registered\" then \"301220002\"  \n                    else if _ = \"Gold/Full registration\" then \"301220006\"  \n                    else if _ = \"Bronze registration\" then \"301220007\"  \n                    else if _ = \"Expired\" then \"301220000\"  \n                    else if _ = \"Application Submitted\" then \"301220001\"  \n                    else if _ = \"Application Denied\" then \"301220005\"  \n                    else if _ = \"Not Registered\" then \"301220003\"  \n                    else if _ = \"Conditionally Registered\" then \"301220004\"\n                    else if _ = \"Silver/Conditional registration\" then \"301220004\"  \n                    else _  \n                },  \n  \n                // Yes/No → true/false directly (skip 0/1 conversion completely)  \n                {\"is_dsd_grant_paid\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical},  \n                {\"dsd_grant_approved\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical}  \n            }  \n        ),  \n  \n    // Rename at the END (cleaner pipeline)  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Transform Fields\",{  \n            {\"amount\", \"tcbgrow_amount\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"registration_checklist\", \"tcbgrow_checklistholder\"},  \n            {\"dsd_application_submission_date\", \"tcbgrow_dsdapplicationsubmissiondate\"},  \n            {\"dsd_grant_approved\", \"tcbgrow_dsdgrantapproval\"},  \n            {\"is_dsd_grant_paid\", \"tcbgrow_dsdgrantpaid\"},  \n            {\"dsd_status\", \"tcbgrow_dsdstatus\"},  \n            {\"effective_date\", \"tcbgrow_effectivedate\"},  \n            {\"is_eligible_for_other_subsidy\", \"tcbgrow_eligibleforotherstudy\"},  \n            {\"expiry_date\", \"tcbgrow_expirydate\"},  \n            {\"grow_franchisee_commencement_date\", \"tcbgrow_franchisecommencementdate\"},  \n            {\"is_npo_registered\", \"tcbgrow_nporegistered\"},  \n            {\"npo_registration_date\", \"tcbgrow_nporegistrationdate\"},  \n            {\"npo_registration_number\", \"tcbgrow_nporegistrationnumber\"},  \n            {\"number_of_childrens_registration\", \"tcbgrow_numberofchildrensregistration\"},  \n            {\"other_subsidy_end_date\", \"tcbgrow_othersubsidyenddate\"},  \n            {\"other_subsidy_start_date\", \"tcbgrow_othersubsidystartdate\"},  \n            {\"school_id\", \"tcbgrow_school\"},  \n            {\"school_capacity\", \"tcbgrow_schoolcapacity\"}  \n        }),  \n  \n    // Final datatype adjustments  \n    #\"Changed Column Types\" =  \n        Table.TransformColumnTypes(#\"Renamed Columns\",{  \n            {\"tcbgrow_eligibleforotherstudy\", type text},  \n            {\"tcbgrow_nporegistered\", type text},\n            {\"tcbgrow_dsdgrantapproval\", type text},\n            {\"tcbgrow_dsdgrantpaid\", type text}  \n        })  \n  \nin  \n    #\"Changed Column Types\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -10784,9 +11037,9 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 2,",
 						"     mapColumn(",
+						"          cog_schoolpartnername,",
 						"          {cog_School@odata.bind},",
-						"          {cog_account@odata.bind},",
-						"          cog_schoolpartnername",
+						"          {cog_account@odata.bind}",
 						"     )) ~> sink2"
 					]
 				}

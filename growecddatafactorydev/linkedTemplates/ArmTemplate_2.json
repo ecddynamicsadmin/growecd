@@ -13,6 +13,121 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolexpenses_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolexpenses_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "fin_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "school",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "amount_paid",
+						"type": "INT64"
+					},
+					{
+						"name": "date_paid",
+						"type": "INT96"
+					},
+					{
+						"name": "detail",
+						"type": "UTF8"
+					},
+					{
+						"name": "fin_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "recordid",
+						"type": "INT64"
+					},
+					{
+						"name": "discount",
+						"type": "INT32"
+					},
+					{
+						"name": "month",
+						"type": "INT32"
+					},
+					{
+						"name": "year",
+						"type": "INT32"
+					},
+					{
+						"name": "region",
+						"type": "INT64"
+					},
+					{
+						"name": "running_total",
+						"type": "INT64"
+					},
+					{
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "id",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolfees_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolfees_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolfees_s')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1886,118 +2001,6 @@
 					},
 					{
 						"name": "tcbgrow_statsday",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolstaffattendancestats_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolstaffattendancestats_s.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "attendance_day",
-						"type": "INT96"
-					},
-					{
-						"name": "daily_count",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolteachertrainingattendance_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolteachertrainingattendance_d.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_attendancedate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_attendancedatestring",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_attended",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_course",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_dateemployed",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_position",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_staffid",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_staffname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_teacher",
 						"type": "UTF8"
 					}
 				]
