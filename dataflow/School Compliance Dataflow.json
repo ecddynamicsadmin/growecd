@@ -17,6 +17,9 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"name": "source2"
 				}
 			],
 			"sinks": [
@@ -50,6 +53,12 @@
 				},
 				{
 					"name": "unpivot1"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -104,6 +113,8 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> source1",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source2",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
 				"source1 select(mapColumn(",
@@ -173,6 +184,14 @@
 				"     ungroupBy(tcbgrow_appid),",
 				"     lateral: true,",
 				"     ignoreNullPivots: false) ~> unpivot1",
+				"unpivot1 select(mapColumn(",
+				"          tcbgrow_appid,",
+				"          checklist_item,",
+				"          checklist_complete = business_plan",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select3 filter(checklist_complete == true()) ~> filter1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
