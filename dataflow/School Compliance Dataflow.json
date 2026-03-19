@@ -46,13 +46,7 @@
 					"name": "parse1"
 				},
 				{
-					"name": "unpivot1"
-				},
-				{
 					"name": "select2"
-				},
-				{
-					"name": "flatten1"
 				}
 			],
 			"scriptLines": [
@@ -133,16 +127,6 @@
 				"          kwa_zulu_natal as boolean),",
 				"     format: 'json',",
 				"     documentForm: 'singleDocument') ~> parse1",
-				"flatten1 unpivot(output(",
-				"          key as boolean,",
-				"          business_plan as boolean,",
-				"          disciplinary_policy as boolean,",
-				"          lease_agreement as boolean,",
-				"          npo_certificate as boolean",
-				"     ),",
-				"     ungroupBy(tcbgrow_appid),",
-				"     lateral: false,",
-				"     ignoreNullPivots: false) ~> unpivot1",
 				"parse1 select(mapColumn(",
 				"          tcbgrow_appid,",
 				"          business_plan = parsed_data.business_plan,",
@@ -152,16 +136,6 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select2 foldDown(unroll(),",
-				"     mapColumn(",
-				"          tcbgrow_appid,",
-				"          business_plan,",
-				"          disciplinary_policy,",
-				"          lease_agreement,",
-				"          npo_certificate",
-				"     ),",
-				"     skipDuplicateMapInputs: false,",
-				"     skipDuplicateMapOutputs: false) ~> flatten1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
