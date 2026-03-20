@@ -214,7 +214,7 @@
 								"referenceName": "DataverseSchool",
 								"type": "DatasetReference"
 							},
-							"name": "sink1",
+							"name": "School",
 							"rejectedDataLinkedService": {
 								"referenceName": "AzureDataLakeStorage1",
 								"type": "LinkedServiceReference"
@@ -225,7 +225,7 @@
 								"referenceName": "DataverseSchoolPartner",
 								"type": "DatasetReference"
 							},
-							"name": "sink2"
+							"name": "Partner"
 						}
 					],
 					"transformations": [
@@ -258,6 +258,9 @@
 						},
 						{
 							"name": "join1"
+						},
+						{
+							"name": "select3"
 						}
 					],
 					"scriptLines": [
@@ -389,8 +392,10 @@
 						"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
 						"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 						"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\")),",
-						"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \"-\",partnercode)) ~> derivedColumn4",
-						"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
+						"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \" - \",partnercode),",
+						"          cog_schoolappid = tcbgrow_appid,",
+						"          cog_shortcode = tcbgrow_shortcode) ~> derivedColumn4",
+						"select3 alterRow(upsertIf(true())) ~> alterRow2",
 						"account select(mapColumn(",
 						"          accountid,",
 						"          name,",
@@ -403,6 +408,15 @@
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> join1",
+						"derivedColumn4 select(mapColumn(",
+						"          {cog_School@odata.bind},",
+						"          {cog_account@odata.bind},",
+						"          cog_schoolpartnername,",
+						"          cog_schoolappid,",
+						"          cog_shortcode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -436,22 +450,24 @@
 						"          {tcbgrow_ECDOwner@odata.bind},",
 						"          {tcbgrow_SchoolSegment@odata.bind},",
 						"          {cog_Region@odata.bind}",
-						"     )) ~> sink1",
+						"     )) ~> School",
 						"alterRow2 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:false,",
 						"     updateable:false,",
 						"     upsertable:true,",
-						"     alternateKeyName: 'cog_name',",
+						"     alternateKeyName: 'cog_importkey',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 2,",
 						"     mapColumn(",
 						"          cog_schoolpartnername,",
 						"          {cog_School@odata.bind},",
-						"          {cog_account@odata.bind}",
-						"     )) ~> sink2"
+						"          {cog_account@odata.bind},",
+						"          cog_schoolappid,",
+						"          cog_shortcode",
+						"     )) ~> Partner"
 					]
 				}
 			},
@@ -982,7 +998,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-07 16:45:28'"
+						"defaultValue": "2026-03-07 16:45:28"
 					}
 				},
 				"annotations": []
@@ -1306,7 +1322,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-05 16:45:28'"
+						"defaultValue": "2026-03-05 16:45:28"
 					}
 				},
 				"annotations": []
@@ -1698,7 +1714,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-06 16:45:28'"
+						"defaultValue": "2026-03-06 16:45:28"
 					}
 				},
 				"annotations": []
@@ -1716,8 +1732,6 @@
 					{
 						"name": "Compliance from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -1731,7 +1745,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '2026-01-29 00.00.00'",
+									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '@{pipeline().parameters.WatermarkDate}' AND effective_date < CURDATE();",
 									"type": "Expression"
 								}
 							},
@@ -1772,8 +1786,6 @@
 					{
 						"name": "School Compliance Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance from Maria",
@@ -1869,7 +1881,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-01-29 16:45:28'"
+						"defaultValue": "2026-01-29 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2031,7 +2043,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-12 16:45:28'"
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2193,7 +2205,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-12 16:45:28'"
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2355,7 +2367,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-12 16:45:28'"
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2517,7 +2529,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-12 16:45:28'"
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
@@ -2533,8 +2545,6 @@
 					{
 						"name": "Schools from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -3155,8 +3165,6 @@
 					{
 						"name": "Schools Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools from Maria",
@@ -3233,8 +3241,8 @@
 									"parquetsource": {},
 									"source1": {},
 									"account": {},
-									"sink1": {},
-									"sink2": {}
+									"School": {},
+									"Partner": {}
 								}
 							},
 							"staging": {},
@@ -3252,7 +3260,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-12 16:45:28'"
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
@@ -3417,7 +3425,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-05 16:45:28'"
+						"defaultValue": "2026-03-05 16:45:28"
 					}
 				},
 				"annotations": []
@@ -4147,7 +4155,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-07 16:45:28'"
+						"defaultValue": "2026-03-07 16:45:28"
 					}
 				},
 				"variables": {
@@ -4499,7 +4507,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-05 16:45:28'"
+						"defaultValue": "2026-03-05 16:45:28"
 					}
 				},
 				"annotations": []
