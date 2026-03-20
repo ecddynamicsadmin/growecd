@@ -2295,6 +2295,8 @@
 					{
 						"name": "Compliance from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2308,7 +2310,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= pipeline().parameters.WatermarkDate'",
+									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '2026-01-29 00.00.00'",
 									"type": "Expression"
 								}
 							},
@@ -2349,6 +2351,8 @@
 					{
 						"name": "School Compliance Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance from Maria",
@@ -9611,7 +9615,7 @@
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> join1",
-						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_registrationstatuses(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schoolcompliances(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 						"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
 						"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)),",
 						"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",

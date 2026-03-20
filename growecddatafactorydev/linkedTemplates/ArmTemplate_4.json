@@ -345,7 +345,7 @@
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> join1",
-						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_registrationstatuses(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schoolcompliances(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 						"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
 						"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)),",
 						"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",
