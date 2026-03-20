@@ -32,7 +32,7 @@
 						"referenceName": "DataverseSchool",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
+					"name": "School",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureDataLakeStorage1",
 						"type": "LinkedServiceReference"
@@ -43,7 +43,7 @@
 						"referenceName": "DataverseSchoolPartner",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "Partner"
 				}
 			],
 			"transformations": [
@@ -254,7 +254,7 @@
 				"          {tcbgrow_ECDOwner@odata.bind},",
 				"          {tcbgrow_SchoolSegment@odata.bind},",
 				"          {cog_Region@odata.bind}",
-				"     )) ~> sink1",
+				"     )) ~> School",
 				"alterRow2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -269,7 +269,7 @@
 				"          cog_schoolpartnername,",
 				"          {cog_School@odata.bind},",
 				"          {cog_account@odata.bind}",
-				"     )) ~> sink2"
+				"     )) ~> Partner"
 			]
 		}
 	}
