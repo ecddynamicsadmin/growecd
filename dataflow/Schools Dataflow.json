@@ -76,6 +76,9 @@
 				},
 				{
 					"name": "join1"
+				},
+				{
+					"name": "select3"
 				}
 			],
 			"scriptLines": [
@@ -207,8 +210,10 @@
 				"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
 				"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 				"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\")),",
-				"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \"-\",partnercode)) ~> derivedColumn4",
-				"derivedColumn4 alterRow(upsertIf(true())) ~> alterRow2",
+				"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \" - \",partnercode),",
+				"          cog_schoolappid = tcbgrow_appid,",
+				"          cog_shortcode = tcbgrow_shortcode) ~> derivedColumn4",
+				"select3 alterRow(upsertIf(true())) ~> alterRow2",
 				"account select(mapColumn(",
 				"          accountid,",
 				"          name,",
@@ -221,6 +226,15 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
+				"derivedColumn4 select(mapColumn(",
+				"          {cog_School@odata.bind},",
+				"          {cog_account@odata.bind},",
+				"          cog_schoolpartnername,",
+				"          cog_schoolappid,",
+				"          cog_shortcode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -261,14 +275,16 @@
 				"     insertable:false,",
 				"     updateable:false,",
 				"     upsertable:true,",
-				"     alternateKeyName: 'cog_name',",
+				"     alternateKeyName: 'cog_importkey',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 2,",
 				"     mapColumn(",
 				"          cog_schoolpartnername,",
 				"          {cog_School@odata.bind},",
-				"          {cog_account@odata.bind}",
+				"          {cog_account@odata.bind},",
+				"          cog_schoolappid,",
+				"          cog_shortcode",
 				"     )) ~> Partner"
 			]
 		}
