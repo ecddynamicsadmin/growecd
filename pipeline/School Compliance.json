@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM school_government_compliences WHERE effective_date >= pipeline().parameters.WatermarkDate'",
+							"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '2026-01-29 00.00.00'",
 							"type": "Expression"
 						}
 					},
