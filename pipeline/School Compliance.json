@@ -20,7 +20,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '2026-01-29 00.00.00'",
+							"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '@{pipeline().parameters.WatermarkDate}' AND effective_date < CURDATE();",
 							"type": "Expression"
 						}
 					},
@@ -138,7 +138,7 @@
 		"parameters": {
 			"WatermarkDate": {
 				"type": "string",
-				"defaultValue": "'2026-01-29 16:45:28'"
+				"defaultValue": "2026-01-29 16:45:28"
 			}
 		},
 		"annotations": []
