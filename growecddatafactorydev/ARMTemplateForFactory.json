@@ -2308,7 +2308,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT * FROM school_government_compliences\n",
+									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= pipeline().parameters.WatermarkDate'",
 									"type": "Expression"
 								}
 							},
@@ -2444,7 +2444,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "'2026-03-05 16:45:28'"
+						"defaultValue": "'2026-01-29 16:45:28'"
 					}
 				},
 				"annotations": []
@@ -9626,7 +9626,8 @@
 						"          {cog_RegistrationStatus@odata.bind},",
 						"          {cog_Checklist@odata.bind},",
 						"          cog_name,",
-						"          cog_registrationstatusappid",
+						"          cog_registrationstatusappid,",
+						"          cog_checklist",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select5",
@@ -9678,7 +9679,8 @@
 						"          cog_name,",
 						"          cog_registrationstatusappid,",
 						"          {cog_RegistrationStatus@odata.bind},",
-						"          {cog_Checklist@odata.bind}",
+						"          {cog_Checklist@odata.bind},",
+						"          cog_checklist",
 						"     )) ~> sink2"
 					]
 				}

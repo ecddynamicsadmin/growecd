@@ -360,7 +360,8 @@
 						"          {cog_RegistrationStatus@odata.bind},",
 						"          {cog_Checklist@odata.bind},",
 						"          cog_name,",
-						"          cog_registrationstatusappid",
+						"          cog_registrationstatusappid,",
+						"          cog_checklist",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select5",
@@ -412,7 +413,8 @@
 						"          cog_name,",
 						"          cog_registrationstatusappid,",
 						"          {cog_RegistrationStatus@odata.bind},",
-						"          {cog_Checklist@odata.bind}",
+						"          {cog_Checklist@odata.bind},",
+						"          cog_checklist",
 						"     )) ~> sink2"
 					]
 				}
