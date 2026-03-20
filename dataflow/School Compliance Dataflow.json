@@ -225,7 +225,7 @@
 				"     skipDuplicateMapOutputs: true) ~> select3",
 				"select3 filter(checklist_complete == true()) ~> filter1",
 				"filter1, checklist join(checklist_item == cog_checklistname,",
-				"     joinType:'left',",
+				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
