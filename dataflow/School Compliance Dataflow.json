@@ -231,7 +231,7 @@
 				"     broadcast: 'auto')~> join1",
 				"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_registrationstatuses(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
 				"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
-				"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)) ,",
+				"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)),",
 				"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",
 				"join1 select(mapColumn(",
 				"          tcbgrow_appid,",
@@ -244,7 +244,8 @@
 				"          {cog_RegistrationStatus@odata.bind},",
 				"          {cog_Checklist@odata.bind},",
 				"          cog_name,",
-				"          cog_registrationstatusappid",
+				"          cog_registrationstatusappid,",
+				"          cog_checklist",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select5",
@@ -296,7 +297,8 @@
 				"          cog_name,",
 				"          cog_registrationstatusappid,",
 				"          {cog_RegistrationStatus@odata.bind},",
-				"          {cog_Checklist@odata.bind}",
+				"          {cog_Checklist@odata.bind},",
+				"          cog_checklist",
 				"     )) ~> sink2"
 			]
 		}
