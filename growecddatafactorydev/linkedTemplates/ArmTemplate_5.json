@@ -413,7 +413,7 @@
 						"          {cog_account@odata.bind},",
 						"          cog_schoolpartnername,",
 						"          cog_schoolappid,",
-						"          cog_shortcode = cog_partnershortcode",
+						"          cog_partnershortcode",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select3",
@@ -466,7 +466,7 @@
 						"          {cog_School@odata.bind},",
 						"          {cog_account@odata.bind},",
 						"          cog_schoolappid,",
-						"          cog_shortcode",
+						"          cog_partnershortcode",
 						"     )) ~> Partner"
 					]
 				}
