@@ -50,6 +50,8 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
