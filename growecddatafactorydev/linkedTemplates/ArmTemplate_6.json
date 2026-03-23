@@ -81,6 +81,8 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
@@ -110,6 +112,8 @@
 					{
 						"name": "Staff",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Groups",
@@ -139,6 +143,8 @@
 					{
 						"name": "School Age Groups",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools",
@@ -168,6 +174,8 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -214,6 +222,8 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -446,6 +456,8 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
