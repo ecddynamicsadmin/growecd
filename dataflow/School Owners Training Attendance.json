@@ -31,6 +31,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "schoolidisnotnull"
 				}
 			],
 			"scriptLines": [
@@ -56,13 +59,14 @@
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> parquetsource",
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-				"parquetsource derive({cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
+				"schoolidisnotnull derive({cog_Region@odata.bind} = iif(    isNull(tcbgrow_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(tcbgrow_region), \")\")),",
 				"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 				"          {tcbgrow_ECDOwner@odata.bind} = iif(    isNull(tcbgrow_ecdowner),    toString(null()),    concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\")),",
 				"          tcbgrow_attended = case(  \r",
 				"    tcbgrow_attended == 1, 'true',\r",
 				"    tcbgrow_attended == 0, 'false',  \r",
 				"    '')) ~> derivedColumn1",
+				"parquetsource filter(not(isNull(tcbgrow_schoolid))) ~> schoolidisnotnull",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
