@@ -1139,8 +1139,6 @@
 					{
 						"name": "Teacher Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Owner Training Attendance",
@@ -1170,6 +1168,8 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
@@ -1199,6 +1199,8 @@
 					{
 						"name": "Compliance",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats",
@@ -1228,6 +1230,8 @@
 					{
 						"name": "School Salaries",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance",
@@ -1257,6 +1261,8 @@
 					{
 						"name": "School Income",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries",
@@ -1286,6 +1292,8 @@
 					{
 						"name": "School Fees",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Income",
@@ -1315,6 +1323,8 @@
 					{
 						"name": "School Expenses",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees",
@@ -10626,7 +10636,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolteachertrainingattendance_s\",  \n  \n    // Duplicate required columns  \n    #\"Duplicated attendance_date\" = Table.DuplicateColumn(Source, \"attendance_date\", \"meetingdatestring\"),  \n    #\"Duplicated teacher_id\" = Table.DuplicateColumn(#\"Duplicated attendance_date\", \"teacher_id\", \"teacher_id_copy\"),  \n  \n    // Replace values  \n    #\"Replaced value 1\" = Table.ReplaceValue(  \n        #\"Duplicated teacher_id\",  \n        \"not_required\",  \n        \"absent\",  \n        Replacer.ReplaceText,  \n        {\"status\"}  \n    ),  \n  \n    // Keep only required source columns  \n    #\"Selected Columns\" = Table.SelectColumns(#\"Replaced value 1\",{  \n        \"attendance_date\",  \n        \"meetingdatestring\",  \n        \"attended\",  \n        \"course\",  \n        \"date_employed\",  \n        \"position\",  \n        \"region\",  \n        \"school_id\",  \n        \"teacher_id\",  \n        \"staff\",  \n        \"teacher_id_copy\"  \n    }),  \n  \n    // Rename to destination schema  \n    #\"Renamed Columns\" = Table.RenameColumns(#\"Selected Columns\",{  \n        {\"attendance_date\",\"tcbgrow_attendancedate\"},  \n        {\"meetingdatestring\",\"tcbgrow_attendancedatestring\"},  \n        {\"attended\",\"tcbgrow_attended\"},  \n        {\"course\",\"tcbgrow_course\"},  \n        {\"date_employed\",\"tcbgrow_dateemployed\"},  \n        {\"position\",\"tcbgrow_position\"},  \n        {\"region\",\"tcbgrow_region\"},  \n        {\"school_id\",\"tcbgrow_schoolid\"},  \n        {\"teacher_id\",\"tcbgrow_staffid\"},  \n        {\"staff\",\"tcbgrow_staffname\"},  \n        {\"teacher_id_copy\",\"tcbgrow_teacher\"}  \n    }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_attendancedatestring\", type date}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_attendancedatestring\", type text}}),\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_attendancedatestring\"}),\r\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Replaced value\", \"  \", \" \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 6\", \":\", \"-\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \" \", \"_\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\r\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 5\", {{\"tcbgrow_attended\", type text}}),\r\n  #\"Replaced value 7\" = Table.ReplaceValue(#\"Changed column type 2\", null, \"0\", Replacer.ReplaceValue, {\"tcbgrow_attended\"}),\r\n  #\"Replaced value 8\" = Table.ReplaceValue(#\"Replaced value 7\", \"1\", \"true\", Replacer.ReplaceText, {\"tcbgrow_attended\"}),\r\n  #\"Replaced value 9\" = Table.ReplaceValue(#\"Replaced value 8\", \"0\", \"false\", Replacer.ReplaceText, {\"tcbgrow_attended\"})  \n  \nin  \n    #\"Replaced value 9\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolteachertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolteachertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolteachertrainingattendance_s\",  \n  \n    // Duplicate required columns  \n    #\"Duplicated attendance_date\" = Table.DuplicateColumn(Source, \"attendance_date\", \"meetingdatestring\"),  \n    #\"Duplicated teacher_id\" = Table.DuplicateColumn(#\"Duplicated attendance_date\", \"teacher_id\", \"teacher_id_copy\"),  \n  \n    // Replace values  \n    #\"Replaced value 1\" = Table.ReplaceValue(  \n        #\"Duplicated teacher_id\",  \n        \"not_required\",  \n        \"absent\",  \n        Replacer.ReplaceText,  \n        {\"status\"}  \n    ),  \n  \n    // Keep only required source columns  \n    #\"Selected Columns\" = Table.SelectColumns(#\"Replaced value 1\",{  \n        \"attendance_date\",  \n        \"meetingdatestring\",  \n        \"attended\",  \n        \"course\",  \n        \"date_employed\",  \n        \"position\",  \n        \"region\",  \n        \"school_id\",  \n        \"teacher_id\",  \n        \"staff\",  \n        \"teacher_id_copy\"  \n    }),  \n  \n    // Rename to destination schema  \n    #\"Renamed Columns\" = Table.RenameColumns(#\"Selected Columns\",{  \n        {\"attendance_date\",\"tcbgrow_attendancedate\"},  \n        {\"meetingdatestring\",\"tcbgrow_attendancedatestring\"},  \n        {\"attended\",\"tcbgrow_attended\"},  \n        {\"course\",\"tcbgrow_course\"},  \n        {\"date_employed\",\"tcbgrow_dateemployed\"},  \n        {\"position\",\"tcbgrow_position\"},  \n        {\"region\",\"tcbgrow_region\"},  \n        {\"school_id\",\"tcbgrow_schoolid\"},  \n        {\"teacher_id\",\"tcbgrow_staffid\"},  \n        {\"staff\",\"tcbgrow_staffname\"},  \n        {\"teacher_id_copy\",\"tcbgrow_teacher\"}  \n    }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_attendancedatestring\", type date}}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_attendancedatestring\", type text}}),\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_attendancedatestring\"}),\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Replaced value\", \"  \", \" \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 6\", \":\", \"-\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \" \", \"_\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Replaced value 51\" = Table.ReplaceValue(#\"Replaced value 4\", \"&\", \"and\", Replacer.ReplaceText, {\"tcbgrow_course\"}),\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 51\", {{\"tcbgrow_attended\", type text}}),\n  #\"Replaced value 7\" = Table.ReplaceValue(#\"Changed column type 2\", null, \"0\", Replacer.ReplaceValue, {\"tcbgrow_attended\"}),\n  #\"Replaced value 8\" = Table.ReplaceValue(#\"Replaced value 7\", \"1\", \"true\", Replacer.ReplaceText, {\"tcbgrow_attended\"}),\n  #\"Replaced value 9\" = Table.ReplaceValue(#\"Replaced value 8\", \"0\", \"false\", Replacer.ReplaceText, {\"tcbgrow_attended\"})  \n  \nin  \n    #\"Replaced value 9\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
