@@ -2,11 +2,17 @@
 	"name": "Run hourly",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
 					"referenceName": "Giraffe Files",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "GrowECD Master",
 					"type": "PipelineReference"
 				}
 			}
