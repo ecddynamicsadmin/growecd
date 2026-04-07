@@ -1,8 +1,8 @@
 {
-	"name": "Grow ECD ONe",
+	"name": "Grow ECD Master Pipeline Trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -17,14 +17,14 @@
 				"frequency": "Day",
 				"interval": 1,
 				"startTime": "2026-04-07T10:00:00",
-				"endTime": "2026-04-08T07:57:00",
+				"endTime": "2026-04-10T06:00:00",
 				"timeZone": "South Africa Standard Time",
 				"schedule": {
 					"minutes": [
-						5
+						0
 					],
 					"hours": [
-						10
+						2
 					]
 				}
 			}
