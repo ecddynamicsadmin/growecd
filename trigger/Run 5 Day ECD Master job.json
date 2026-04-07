@@ -1,0 +1,25 @@
+{
+	"name": "Run 5 Day ECD Master job",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2026-04-07T09:53:00",
+				"timeZone": "South Africa Standard Time",
+				"schedule": {
+					"minutes": [
+						54
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}
