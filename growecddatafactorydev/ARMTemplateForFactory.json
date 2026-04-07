@@ -9003,7 +9003,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Grow ECD ONe')]",
+			"name": "[concat(parameters('factoryName'), '/Grow ECD Master Pipeline Trigger')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -9024,14 +9024,14 @@
 						"frequency": "Day",
 						"interval": 1,
 						"startTime": "2026-04-07T10:00:00",
-						"endTime": "2026-04-08T07:57:00",
+						"endTime": "2026-04-10T06:00:00",
 						"timeZone": "South Africa Standard Time",
 						"schedule": {
 							"minutes": [
-								5
+								0
 							],
 							"hours": [
-								10
+								2
 							]
 						}
 					}
