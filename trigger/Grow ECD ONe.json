@@ -1,0 +1,33 @@
+{
+	"name": "Grow ECD ONe",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "GrowECD Master",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2026-04-07T10:00:00",
+				"endTime": "2026-04-08T07:57:00",
+				"timeZone": "South Africa Standard Time",
+				"schedule": {
+					"minutes": [
+						5
+					],
+					"hours": [
+						10
+					]
+				}
+			}
+		}
+	}
+}
