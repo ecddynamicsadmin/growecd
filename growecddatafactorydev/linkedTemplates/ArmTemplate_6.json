@@ -21,6 +21,8 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
@@ -50,6 +52,8 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
