@@ -5,6 +5,8 @@
 			{
 				"name": "School Income from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -102,6 +104,8 @@
 			{
 				"name": "School Income Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income Query",
@@ -134,7 +138,7 @@
 		"parameters": {
 			"WatermarkDate": {
 				"type": "string",
-				"defaultValue": "2026-03-12 16:45:28"
+				"defaultValue": "2026-01-01 16:45:28"
 			}
 		},
 		"annotations": []
