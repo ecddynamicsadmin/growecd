@@ -297,6 +297,8 @@
 			{
 				"name": "School Salaries",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Compliance",
@@ -355,6 +357,8 @@
 			{
 				"name": "School Fees",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income",
@@ -384,6 +388,8 @@
 			{
 				"name": "School Expenses",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Fees",
