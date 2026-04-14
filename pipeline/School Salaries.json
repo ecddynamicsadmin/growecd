@@ -102,6 +102,8 @@
 			{
 				"name": "School Salaries Update",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Salaries Query",
