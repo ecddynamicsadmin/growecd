@@ -5,6 +5,8 @@
 			{
 				"name": "Schools from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -668,6 +670,8 @@
 			{
 				"name": "Dataverse Schools",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Schools Query",
@@ -700,7 +704,7 @@
 		"parameters": {
 			"WatermarkDate": {
 				"type": "string",
-				"defaultValue": "2026-04-10 16:45:28"
+				"defaultValue": "2026-04-05 16:45:28"
 			}
 		},
 		"annotations": []
