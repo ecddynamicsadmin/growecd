@@ -31,6 +31,9 @@
 				},
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -52,7 +55,8 @@
 				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 				"          tcbgrow_importincomeid = toInteger(tcbgrow_importincomeid)) ~> derivedColumn1",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"alterRow1 filter(tcbgrow_schoolid==600) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
