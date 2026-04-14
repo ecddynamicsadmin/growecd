@@ -698,6 +698,9 @@
 						},
 						{
 							"name": "derivedColumn1"
+						},
+						{
+							"name": "filter1"
 						}
 					],
 					"scriptLines": [
@@ -707,6 +710,7 @@
 						"          tcbgrow_description as string,",
 						"          tcbgrow_schoolid as long,",
 						"          tcbgrow_importincomeid as decimal(38,9),",
+						"          tcbgrow_transactiontype as integer,",
 						"          tcbgrow_month as integer,",
 						"          tcbgrow_source as string",
 						"     ),",
@@ -718,7 +722,8 @@
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 						"          tcbgrow_importincomeid = toInteger(tcbgrow_importincomeid)) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
+						"alterRow1 filter(tcbgrow_schoolid==600) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:false,",
@@ -737,7 +742,8 @@
 						"          tcbgrow_importincomeid,",
 						"          tcbgrow_month,",
 						"          tcbgrow_source,",
-						"          {tcbgrow_School@odata.bind}",
+						"          {tcbgrow_School@odata.bind},",
+						"          tcbgrow_transactiontype",
 						"     )) ~> sink1"
 					]
 				}
@@ -761,7 +767,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolincome_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolincome_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolincome_s\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"id\", Int64.Type}}),  \n  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Changed column type\",  \n            \"tcbgrow_trantype\",  \n            each Int64.From(301220000)  \n        ),  \n\n    #\"Added custom\" = Table.TransformColumnTypes(Table.AddColumn(#\"Added TranType\", \"TranDescription\", each [income_type] & \"-\" & [descriptions]), {{\"TranDescription\", type text}}),\n\n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Added custom\",  \n            {  \n                \"amount_received\",  \n                \"received_on_date\",  \n                \"TranDescription\",  \n                \"school_id\",  \n                \"id\",  \n                \"month\",  \n                \"source\"  \n            }  \n        ),  \n  \n\n\n    #\"Renamed Columns\" =  \n        Table.RenameColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"amount_received\", \"tcbgrow_amount\"},  \n                {\"received_on_date\", \"tcbgrow_asofdate\"},  \n                {\"id\", \"tcbgrow_importincomeid\"},  \n                {\"school_id\", \"tcbgrow_schoolid\"},  \n                {\"month\", \"tcbgrow_month\"},  \n                {\"source\", \"tcbgrow_source\"},  \n                {\"TranDescription\", \"tcbgrow_description\"}  \n            }  \n        )  \n  \nin  \n    #\"Renamed Columns\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolincome_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolincome_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolincome_s\",\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"id\", Int64.Type}}),  \n  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Changed column type\",  \n            \"tcbgrow_transtype\",  \n            each Int64.From(301220000)  \n        ),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Added TranType\", {{\"tcbgrow_transtype\", Int64.Type}}),  \n\n    #\"Added custom\" = Table.TransformColumnTypes(Table.AddColumn(#\"Changed column type 1\", \"TranDescription\", each [income_type] & \"-\" & [descriptions]), {{\"TranDescription\", type text}}),\n\n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Added custom\",  \n            {  \n                \"amount_received\",  \n                \"received_on_date\",  \n                \"TranDescription\",  \n                \"school_id\",  \n                \"id\",\n                \"tcbgrow_transtype\",\n                \"month\",  \n                \"source\"  \n            }  \n        ),  \n  \n\n\n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Selected Columns\", {{\"amount_received\", \"tcbgrow_amount\"}, {\"received_on_date\", \"tcbgrow_asofdate\"}, {\"id\", \"tcbgrow_importincomeid\"}, {\"school_id\", \"tcbgrow_schoolid\"}, {\"month\", \"tcbgrow_month\"}, {\"source\", \"tcbgrow_source\"}, {\"TranDescription\", \"tcbgrow_description\"}, {\"tcbgrow_transtype\", \"tcbgrow_transactiontype\"}})  \n  \nin  \n    #\"Renamed Columns\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},

@@ -2818,6 +2818,8 @@
 					{
 						"name": "School Income from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2913,7 +2915,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_importincomeid as decimal(38,9),\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_source as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolincome_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolincomed"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_importincomeid as decimal(38,9),\n\t\ttcbgrow_transactiontype as integer,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_source as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolincome_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolincomed"
 										}
 									]
 								}
@@ -2964,7 +2966,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "2026-03-12 16:45:28"
+						"defaultValue": "2026-01-01 16:45:28"
 					}
 				},
 				"annotations": []
@@ -3154,6 +3156,8 @@
 					{
 						"name": "Schools from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -3774,6 +3778,8 @@
 					{
 						"name": "Schools Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools from Maria",
@@ -3815,7 +3821,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schools_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_programmestatus as string,\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schools_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
 										}
 									]
 								}
@@ -3869,7 +3875,7 @@
 				"parameters": {
 					"WatermarkDate": {
 						"type": "string",
-						"defaultValue": "2026-03-12 16:45:28"
+						"defaultValue": "2026-04-05 16:45:28"
 					}
 				},
 				"annotations": []
@@ -6465,6 +6471,10 @@
 						"scale": 9
 					},
 					{
+						"name": "tcbgrow_transactiontype",
+						"type": "INT32"
+					},
+					{
 						"name": "tcbgrow_month",
 						"type": "INT32"
 					},
@@ -7372,6 +7382,10 @@
 					"compressionCodec": "snappy"
 				},
 				"schema": [
+					{
+						"name": "tcbgrow_programmestatus",
+						"type": "UTF8"
+					},
 					{
 						"name": "tcbgrow_breakeven",
 						"type": "INT32"
@@ -10004,6 +10018,9 @@
 						},
 						{
 							"name": "derivedColumn1"
+						},
+						{
+							"name": "filter1"
 						}
 					],
 					"scriptLines": [
@@ -10013,6 +10030,7 @@
 						"          tcbgrow_description as string,",
 						"          tcbgrow_schoolid as long,",
 						"          tcbgrow_importincomeid as decimal(38,9),",
+						"          tcbgrow_transactiontype as integer,",
 						"          tcbgrow_month as integer,",
 						"          tcbgrow_source as string",
 						"     ),",
@@ -10024,7 +10042,8 @@
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\")),",
 						"          tcbgrow_importincomeid = toInteger(tcbgrow_importincomeid)) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
+						"alterRow1 filter(tcbgrow_schoolid==600) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:false,",
@@ -10043,7 +10062,8 @@
 						"          tcbgrow_importincomeid,",
 						"          tcbgrow_month,",
 						"          tcbgrow_source,",
-						"          {tcbgrow_School@odata.bind}",
+						"          {tcbgrow_School@odata.bind},",
+						"          tcbgrow_transactiontype",
 						"     )) ~> sink1"
 					]
 				}
@@ -10071,7 +10091,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolincome_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolincome_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolincome_s\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"id\", Int64.Type}}),  \n  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Changed column type\",  \n            \"tcbgrow_trantype\",  \n            each Int64.From(301220000)  \n        ),  \n\n    #\"Added custom\" = Table.TransformColumnTypes(Table.AddColumn(#\"Added TranType\", \"TranDescription\", each [income_type] & \"-\" & [descriptions]), {{\"TranDescription\", type text}}),\n\n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Added custom\",  \n            {  \n                \"amount_received\",  \n                \"received_on_date\",  \n                \"TranDescription\",  \n                \"school_id\",  \n                \"id\",  \n                \"month\",  \n                \"source\"  \n            }  \n        ),  \n  \n\n\n    #\"Renamed Columns\" =  \n        Table.RenameColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"amount_received\", \"tcbgrow_amount\"},  \n                {\"received_on_date\", \"tcbgrow_asofdate\"},  \n                {\"id\", \"tcbgrow_importincomeid\"},  \n                {\"school_id\", \"tcbgrow_schoolid\"},  \n                {\"month\", \"tcbgrow_month\"},  \n                {\"source\", \"tcbgrow_source\"},  \n                {\"TranDescription\", \"tcbgrow_description\"}  \n            }  \n        )  \n  \nin  \n    #\"Renamed Columns\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolincome_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolincome_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolincome_s\",\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"id\", Int64.Type}}),  \n  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Changed column type\",  \n            \"tcbgrow_transtype\",  \n            each Int64.From(301220000)  \n        ),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Added TranType\", {{\"tcbgrow_transtype\", Int64.Type}}),  \n\n    #\"Added custom\" = Table.TransformColumnTypes(Table.AddColumn(#\"Changed column type 1\", \"TranDescription\", each [income_type] & \"-\" & [descriptions]), {{\"TranDescription\", type text}}),\n\n    #\"Selected Columns\" =  \n        Table.SelectColumns(  \n            #\"Added custom\",  \n            {  \n                \"amount_received\",  \n                \"received_on_date\",  \n                \"TranDescription\",  \n                \"school_id\",  \n                \"id\",\n                \"tcbgrow_transtype\",\n                \"month\",  \n                \"source\"  \n            }  \n        ),  \n  \n\n\n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Selected Columns\", {{\"amount_received\", \"tcbgrow_amount\"}, {\"received_on_date\", \"tcbgrow_asofdate\"}, {\"id\", \"tcbgrow_importincomeid\"}, {\"school_id\", \"tcbgrow_schoolid\"}, {\"month\", \"tcbgrow_month\"}, {\"source\", \"tcbgrow_source\"}, {\"TranDescription\", \"tcbgrow_description\"}, {\"tcbgrow_transtype\", \"tcbgrow_transactiontype\"}})  \n  \nin  \n    #\"Renamed Columns\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -10764,7 +10784,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schools_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schools_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schools_s\",\n\nCleanText = (txt as nullable text) =>  \n    if txt = null then null else  \n    Text.Remove(  \n        txt,  \n        List.Transform({0..31}, each Character.FromNumber(_))  \n    ),  \n  #\"Cleaned address\" = Table.TransformColumns(  \n    Source,  \n    {{\"address\", CleanText, type text}}  \n  ),    \n  #\"Removed other columns\" = Table.SelectColumns(#\"Cleaned address\", {\"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed other columns\", {{\"number_of_classrooms\", Int64.Type}}),\n  #\"Removed columns\" = Table.RemoveColumns(#\"Changed column type 1\", {\"created_at\"}),\n  Replace_Status_Active = Table.ReplaceValue(#\"Removed columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, 0, Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n  Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Renamed columns\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", type number}, {\"tcbgrow_schoolstatus\", Int64.Type}}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Changed column type\", \"Programme\", \"2\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"Platform\", \"1\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"Non-2\", \"5\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_schoolsegment\"}),\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 4\", {{\"tcbgrow_schoolsegment\", Int64.Type}})  \n\nin\n  #\"Changed column type 2\";\r\n",
+					"script": "section Section1;\r\nshared p_schools_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schools_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schools_s\",\n\nCleanText = (txt as nullable text) =>  \n    if txt = null then null else  \n    Text.Remove(  \n        txt,  \n        List.Transform({0..31}, each Character.FromNumber(_))  \n    ),  \n  #\"Cleaned address\" = Table.TransformColumns(  \n    Source,  \n    {{\"address\", CleanText, type text}}  \n  ),    \n  #\"Removed other columns\" = Table.SelectColumns(#\"Cleaned address\", {\"program_status\", \"break_even_fee\", \"owner_id\", \"agreement_type\", \"segment\", \"monthly_salaries\", \"school_status\", \"updated_at\", \"created_at\", \"contract_start_date\", \"ecd_code\", \"school_commencement_date\", \"address\", \"number_of_classrooms\", \"name\", \"city_id\", \"region_id\", \"school_id\", \"id\", \"capacity\"}),\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Removed other columns\", {{\"number_of_classrooms\", Int64.Type}}),\n  #\"Removed columns\" = Table.RemoveColumns(#\"Changed column type 1\", {\"created_at\"}),\n  Replace_Status_Active = Table.ReplaceValue(#\"Removed columns\", \"Active\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_NotActive = Table.ReplaceValue(Replace_Status_Active, \"Not 301220000\", \"301220000\", Replacer.ReplaceText, {\"school_status\"}),\n  Replace_Status_Duplicated = Table.ReplaceValue(Replace_Status_NotActive, \"{\"\"id\"\":5,\"\"name\"\":\"\"Duplicated or created in error\"\",\"\"c\", \"301220004\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_Status_ExitedYr1 = Table.ReplaceValue(Replace_Status_Duplicated, \"{\"\"id\"\":2,\"\"name\"\":\"\"Exited During Year 1\"\",\"\"created_at\"\"\", \"301220001\", Replacer.ReplaceValue, {\"school_status\"}),\n  Replace_BreakEvenFee = Table.ReplaceValue(Replace_Status_ExitedYr1, null, 0, Replacer.ReplaceValue, {\"break_even_fee\"}),\n  Replace_NumClassrooms = Table.ReplaceValue(Replace_BreakEvenFee, null, 0, Replacer.ReplaceValue, {\"number_of_classrooms\"}),\n  Replace_AgreementType_Empty = Table.ReplaceValue(Replace_NumClassrooms, null, \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  #\"Replaced value\" = Table.ReplaceValue(Replace_AgreementType_Empty, \"\", \"None\", Replacer.ReplaceValue, {\"agreement_type\"}),\n  Add_CountryId = Table.AddColumn(#\"Replaced value\", \"tcbgrow_country\", each 710),\n  #\"Renamed columns\" = Table.RenameColumns(Add_CountryId, {{\"address\", \"tcbgrow_address\"}, {\"agreement_type\", \"tcbgrow_paymenttype\"}, {\"break_even_fee\", \"tcbgrow_breakeven\"}, {\"capacity\", \"tcbgrow_capacity\"}, {\"city_id\", \"cog_city\"}, {\"region_id\", \"cog_region\"}, {\"contract_start_date\", \"tcbgrow_contractdate\"}, {\"ecd_code\", \"tcbgrow_ecdcode\"}, {\"id\", \"tcbgrow_appid\"}, {\"monthly_salaries\", \"tcbgrow_monthlysalaries\"}, {\"name\", \"tcbgrow_name\"}, {\"number_of_classrooms\", \"tcbgrow_numberofclassrooms\"}, {\"owner_id\", \"tcbgrow_ecdowner\"}, {\"school_commencement_date\", \"tcbgrow_commencementdate\"}, {\"school_id\", \"tcbgrow_growid\"}, {\"school_status\", \"tcbgrow_schoolstatus\"}, {\"segment\", \"tcbgrow_schoolsegment\"}, {\"program_status\", \"tcbgrow_programmestatus\"}}),\r\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Renamed columns\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_programmestatus\"}),\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Replaced value 5\", \"tcbgrow_contractdate\", \"tcbgrow_appaccountcreationdate\"),\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Duplicated column\", \"tcbgrow_commencementdate\", \"tcbgrow_centrestartdate\"),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column 1\", {{\"tcbgrow_monthlysalaries\", type number}, {\"tcbgrow_schoolstatus\", Int64.Type}}),\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Changed column type\", \"Programme\", \"2\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 1\", \"Platform\", \"1\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \"Non-2\", \"5\", Replacer.ReplaceText, {\"tcbgrow_schoolsegment\"}),\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 3\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_schoolsegment\"}),\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 4\", {{\"tcbgrow_schoolsegment\", Int64.Type}})  \n\nin\n  #\"Changed column type 2\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -10884,6 +10904,7 @@
 					],
 					"scriptLines": [
 						"source(output(",
+						"          tcbgrow_programmestatus as string,",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",
 						"          tcbgrow_paymenttype as string,",
@@ -10912,6 +10933,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> parquetsource",
 						"source(output(",
+						"          tcbgrow_programmestatus as string,",
 						"          tcbgrow_breakeven as integer,",
 						"          tcbgrow_ecdowner as long,",
 						"          tcbgrow_paymenttype as string,",
@@ -10948,7 +10970,7 @@
 						"     validateSchema: false,",
 						"     query: '<fetch>\\n  <entity name=\"account\">\\n    <attribute name=\"accountid\" />\\n    <attribute name=\"tcbgrow_shortcode\" />\\n    <attribute name=\"name\" />\\n    <filter>\\n      <condition attribute=\"tcbgrow_shortcode\" operator=\"not-null\" />\\n    </filter>\\n  </entity>\\n</fetch>') ~> account",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive(tcbgrow_paymenttypechoice = case(  \r",
+						"parquetsource derive(tcbgrow_paymenttype = case(  \r",
 						"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
 						"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
 						"    trim(tcbgrow_paymenttype) == 'Grant Only', 301220011,  \r",
@@ -10991,7 +11013,14 @@
 						"    toString(null()),\r",
 						"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
 						"),",
-						"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms)) ~> derivedColumn1",
+						"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms),",
+						"          tcbgrow_programmestatus = case(\r",
+						"     trim(tcbgrow_programmestatus) == 'Active', 1,\r",
+						"     trim(tcbgrow_programmestatus) == 'Graduated', 2,\r",
+						"     trim(tcbgrow_programmestatus) == 'Exited', 3,\r",
+						"     trim(tcbgrow_programmestatus) == 'None', 4,\r",
+						"     toInteger(null())\r",
+						")) ~> derivedColumn1",
 						"select1 derive(splitCodes = split(tcbgrow_ecdcode,'/')) ~> derivedColumn2",
 						"derivedColumn2 foldDown(unroll(splitCodes),",
 						"     mapColumn(",
@@ -11051,7 +11080,8 @@
 						"     assertFailure_folderPath: 'errors',",
 						"     mapColumn(",
 						"          tcbgrow_breakeven,",
-						"          tcbgrow_paymenttype = tcbgrow_paymenttypechoice,",
+						"          tcbgrow_programmestatus,",
+						"          tcbgrow_paymenttype,",
 						"          tcbgrow_monthlysalaries,",
 						"          tcbgrow_schoolstatus,",
 						"          tcbgrow_contractdate,",

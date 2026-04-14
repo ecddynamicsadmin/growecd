@@ -252,6 +252,10 @@
 						"scale": 9
 					},
 					{
+						"name": "tcbgrow_transactiontype",
+						"type": "INT32"
+					},
+					{
 						"name": "tcbgrow_month",
 						"type": "INT32"
 					},
@@ -1139,6 +1143,10 @@
 					"compressionCodec": "snappy"
 				},
 				"schema": [
+					{
+						"name": "tcbgrow_programmestatus",
+						"type": "UTF8"
+					},
 					{
 						"name": "tcbgrow_breakeven",
 						"type": "INT32"
