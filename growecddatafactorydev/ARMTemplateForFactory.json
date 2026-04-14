@@ -1228,6 +1228,8 @@
 					{
 						"name": "School Salaries",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance",
@@ -1286,6 +1288,8 @@
 					{
 						"name": "School Fees",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Income",
@@ -1315,6 +1319,8 @@
 					{
 						"name": "School Expenses",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees",
@@ -2818,8 +2824,6 @@
 					{
 						"name": "School Income from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -11260,7 +11264,12 @@
 						"    trim(gendercode) == 'Female', 2,\r",
 						"    trim(gendercode) == 'TBC', 3,\r",
 						"    toInteger(null())\r",
-						"    )) ~> derivedColumn1",
+						"    ),",
+						"          statecode = case(\r",
+						"     statecode == 0, 1,\r",
+						"     statecode == 1, 0,\r",
+						"     toInteger(null())\r",
+						")) ~> derivedColumn1",
 						"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
