@@ -491,7 +491,8 @@
 						"          tcbgrow_source as string,",
 						"          tcbgrow_month as integer,",
 						"          tcbgrow_year as string,",
-						"          tcbgrow_transactiontype as long",
+						"          tcbgrow_transactiontype as long,",
+						"          tcbgrow_transactiondate as timestamp",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -515,6 +516,7 @@
 						"     assertFailure_folderPath: 'errors',",
 						"     mapColumn(",
 						"          tcbgrow_amount,",
+						"          tcbgrow_transactiondate,",
 						"          tcbgrow_asofdate,",
 						"          tcbgrow_description,",
 						"          tcbgrow_importexpenseid,",
@@ -547,7 +549,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolexpenses_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolexpenses_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolexpenses_s\",\n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount_paid\",  \n            \"date_paid\",\n            \"fin_type\",  \n            \"recordid\",  \n            \"school_id\",\n            \"fin_code\",  \n            \"month\", \n            \"year\"\n        }),  \n  \n    // ✅ Add column WITHOUT declaring type  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Selected Columns\",  \n            \"TranType\",  \n            each 301220002  \n        ),  \n  \n    // ✅ Set type in separate step (Spark safe)  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added TranType\",  \n            {{\"TranType\", Int64.Type}}  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Changed Type\",{  \n            {\"amount_paid\", \"tcbgrow_amount\"},  \n            {\"date_paid\", \"tcbgrow_asofdate\"},\n            {\"fin_type\", \"tcbgrow_description\"},  \n            {\"fin_code\", \"tcbgrow_source\"},\n            {\"recordid\", \"tcbgrow_importexpenseid\"},  \n            {\"school_id\", \"tcbgrow_importschoolid\"},  \n            {\"month\", \"tcbgrow_month\"},  \n            {\"year\", \"tcbgrow_year\"},  \n            {\"TranType\", \"tcbgrow_transactiontype\"}  \n        }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}})  \n  \nin  \n    #\"Changed column type\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolexpenses_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolexpenses_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolexpenses_s\",\n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount_paid\",  \n            \"date_paid\",\n            \"fin_type\",  \n            \"recordid\",  \n            \"school_id\",\n            \"fin_code\",  \n            \"month\", \n            \"year\"\n        }),  \n  \n    // ✅ Add column WITHOUT declaring type  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Selected Columns\",  \n            \"TranType\",  \n            each 301220002  \n        ),  \n  \n    // ✅ Set type in separate step (Spark safe)  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added TranType\",  \n            {{\"TranType\", Int64.Type}}  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Changed Type\",{  \n            {\"amount_paid\", \"tcbgrow_amount\"},  \n            {\"date_paid\", \"tcbgrow_asofdate\"},\n            {\"fin_type\", \"tcbgrow_description\"},  \n            {\"fin_code\", \"tcbgrow_source\"},\n            {\"recordid\", \"tcbgrow_importexpenseid\"},  \n            {\"school_id\", \"tcbgrow_importschoolid\"},  \n            {\"month\", \"tcbgrow_month\"},  \n            {\"year\", \"tcbgrow_year\"},  \n            {\"TranType\", \"tcbgrow_transactiontype\"}  \n        }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Changed column type\", \"tcbgrow_asofdate\", \"tcbgrow_transactiondate\")  \n  \nin  \n    #\"Duplicated column\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
@@ -1095,7 +1097,8 @@
 						"          tcbgrow_month as integer,",
 						"          tcbgrow_year as integer,",
 						"          tcbgrow_description as string,",
-						"          tcbgrow_transactiontype as long",
+						"          tcbgrow_transactiontype as long,",
+						"          tcbgrow_transactiondate as timestamp",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -1119,6 +1122,7 @@
 						"     assertFailure_folderPath: 'errors',",
 						"     mapColumn(",
 						"          tcbgrow_amount,",
+						"          tcbgrow_transactiondate,",
 						"          tcbgrow_asofdate,",
 						"          tcbgrow_importsalaryid,",
 						"          tcbgrow_importschoolid,",
@@ -1150,7 +1154,7 @@
 							}
 						}
 					],
-					"script": "section Section1;\r\nshared p_schoolsalaries_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolsalaries_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \r\n    Source = #\"p_schoolsalaries_s\",  \r\n  \r\n    #\"Selected Columns\" =  \r\n        Table.SelectColumns(Source,{  \r\n            \"amount_paid\",  \r\n            \"date_paid\",  \r\n            \"recordid\",  \r\n            \"school_id\",  \r\n            \"month\",  \r\n            \"year\",  \r\n            \"first_name\",  \r\n            \"last_name\"  \r\n        }),  \r\n  \r\n    #\"Added Description\" =  \r\n        Table.AddColumn(  \r\n            #\"Selected Columns\",  \r\n            \"description\",  \r\n            each   \r\n                (if [first_name] = null then \"\" else Text.From([first_name]))   \r\n                & \" \" &   \r\n                (if [last_name] = null then \"\" else Text.From([last_name])),  \r\n            type text  \r\n        ),  \r\n  \r\n    // ✅ Add column WITHOUT declaring type  \r\n    #\"Added TranType\" =  \r\n        Table.AddColumn(  \r\n            #\"Added Description\",  \r\n            \"TranType\",  \r\n            each 301220001  \r\n        ),  \r\n  \r\n    // ✅ Set type in separate step (Spark safe)  \r\n    #\"Changed Type\" =  \r\n        Table.TransformColumnTypes(  \r\n            #\"Added TranType\",  \r\n            {{\"TranType\", Int64.Type}}  \r\n        ),  \r\n  \r\n    #\"Removed Unnecessary Columns\" =  \r\n        Table.RemoveColumns(#\"Changed Type\",{\"first_name\",\"last_name\"}),  \r\n  \r\n    #\"Renamed Columns\" =  \r\n        Table.RenameColumns(#\"Removed Unnecessary Columns\",{  \r\n            {\"amount_paid\", \"tcbgrow_amount\"},  \r\n            {\"date_paid\", \"tcbgrow_asofdate\"},  \r\n            {\"recordid\", \"tcbgrow_importsalaryid\"},  \r\n            {\"school_id\", \"tcbgrow_importschoolid\"},  \r\n            {\"month\", \"tcbgrow_month\"},  \r\n            {\"year\", \"tcbgrow_year\"},  \r\n            {\"description\", \"tcbgrow_description\"},  \r\n            {\"TranType\", \"tcbgrow_transactiontype\"}  \r\n        }),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}})  \r\n  \r\nin  \r\n    #\"Changed column type\";\r\n",
+					"script": "section Section1;\r\nshared p_schoolsalaries_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolsalaries_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \r\n    Source = #\"p_schoolsalaries_s\",  \r\n  \r\n    #\"Selected Columns\" =  \r\n        Table.SelectColumns(Source,{  \r\n            \"amount_paid\",  \r\n            \"date_paid\",  \r\n            \"recordid\",  \r\n            \"school_id\",  \r\n            \"month\",  \r\n            \"year\",  \r\n            \"first_name\",  \r\n            \"last_name\"  \r\n        }),  \r\n  \r\n    #\"Added Description\" =  \r\n        Table.AddColumn(  \r\n            #\"Selected Columns\",  \r\n            \"description\",  \r\n            each   \r\n                (if [first_name] = null then \"\" else Text.From([first_name]))   \r\n                & \" \" &   \r\n                (if [last_name] = null then \"\" else Text.From([last_name])),  \r\n            type text  \r\n        ),  \r\n  \r\n    // ✅ Add column WITHOUT declaring type  \r\n    #\"Added TranType\" =  \r\n        Table.AddColumn(  \r\n            #\"Added Description\",  \r\n            \"TranType\",  \r\n            each 301220001  \r\n        ),  \r\n  \r\n    // ✅ Set type in separate step (Spark safe)  \r\n    #\"Changed Type\" =  \r\n        Table.TransformColumnTypes(  \r\n            #\"Added TranType\",  \r\n            {{\"TranType\", Int64.Type}}  \r\n        ),  \r\n  \r\n    #\"Removed Unnecessary Columns\" =  \r\n        Table.RemoveColumns(#\"Changed Type\",{\"first_name\",\"last_name\"}),  \r\n  \r\n    #\"Renamed Columns\" =  \r\n        Table.RenameColumns(#\"Removed Unnecessary Columns\",{  \r\n            {\"amount_paid\", \"tcbgrow_amount\"},  \r\n            {\"date_paid\", \"tcbgrow_asofdate\"},  \r\n            {\"recordid\", \"tcbgrow_importsalaryid\"},  \r\n            {\"school_id\", \"tcbgrow_importschoolid\"},  \r\n            {\"month\", \"tcbgrow_month\"},  \r\n            {\"year\", \"tcbgrow_year\"},  \r\n            {\"description\", \"tcbgrow_description\"},  \r\n            {\"TranType\", \"tcbgrow_transactiontype\"}  \r\n        }),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Changed column type\", \"tcbgrow_asofdate\", \"tcbgrow_transactiondate\")  \r\n  \r\nin  \r\n    #\"Duplicated column\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},
