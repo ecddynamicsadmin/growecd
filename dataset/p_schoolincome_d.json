@@ -43,6 +43,10 @@
 				"scale": 9
 			},
 			{
+				"name": "tcbgrow_transactiontype",
+				"type": "INT32"
+			},
+			{
 				"name": "tcbgrow_month",
 				"type": "INT32"
 			},
