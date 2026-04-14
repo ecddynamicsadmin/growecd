@@ -21,6 +21,10 @@
 		},
 		"schema": [
 			{
+				"name": "tcbgrow_programmestatus",
+				"type": "UTF8"
+			},
+			{
 				"name": "tcbgrow_breakeven",
 				"type": "INT32"
 			},
