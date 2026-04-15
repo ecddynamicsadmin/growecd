@@ -59,8 +59,6 @@
 			{
 				"name": "School Income Query",
 				"type": "ExecuteWranglingDataflow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Income from Maria",
