@@ -226,7 +226,6 @@
 				"          gendercode,",
 				"          new_staff_id,",
 				"          tcbgrow_idnumber,",
-				"          statecode,",
 				"          tcbgrow_nextofkincontactnumber,",
 				"          tcbgrow_nextofkinemail,",
 				"          tcbgrow_nextofkinname,",
