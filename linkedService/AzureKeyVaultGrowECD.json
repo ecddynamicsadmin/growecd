@@ -1,0 +1,10 @@
+{
+	"name": "AzureKeyVaultGrowECD",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://GrowECDKeyVault.vault.azure.net/"
+		}
+	}
+}
