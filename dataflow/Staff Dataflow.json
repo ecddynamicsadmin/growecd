@@ -296,6 +296,7 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 3,",
 				"     partitionBy('hash', 1)) ~> staffinactiveparquet"
 			]
 		}
