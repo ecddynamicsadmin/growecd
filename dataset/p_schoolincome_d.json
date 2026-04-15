@@ -51,6 +51,10 @@
 				"type": "INT32"
 			},
 			{
+				"name": "tcbgrow_year",
+				"type": "INT32"
+			},
+			{
 				"name": "tcbgrow_source",
 				"type": "UTF8"
 			}

@@ -42,6 +42,7 @@
 				"          tcbgrow_importincomeid as decimal(38,9),",
 				"          tcbgrow_transactiontype as integer,",
 				"          tcbgrow_month as integer,",
+				"          tcbgrow_year as integer,",
 				"          tcbgrow_source as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
