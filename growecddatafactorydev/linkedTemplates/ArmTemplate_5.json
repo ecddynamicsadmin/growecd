@@ -13,6 +13,29 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/School Staff')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolstaff_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolstaff_s",
+							"dataset": {
+								"referenceName": "p_schoolstaff_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolstaff_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolstaff_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolstaff_s\",  \n  \n    FixKinRelationship =  \n        Table.ReplaceValue(Source, 12, 10, Replacer.ReplaceValue, {\"kin_relationship_id\"}),  \n  \n    AddSchoolStaff =  \n        Table.TransformColumnTypes(Table.AddColumn(FixKinRelationship, \"schoolStaff\", each \"301220000\"), {{\"schoolStaff\", type text}}),  \n  \n    DuplicateContact =  \n        Table.DuplicateColumn(AddSchoolStaff, \"contact_no\", \"contact_no_telephone\"),  \n  \n    DuplicateStartDate =  \n        Table.DuplicateColumn(DuplicateContact, \"start_date\", \"start_date_import\"),  \n  \n    SelectColumns =  \n        Table.SelectColumns(  \n            DuplicateStartDate,  \n            {  \n                \"alternative_number\",\"city_id\",\"contact_no\",\"contact_no_telephone\",  \n                \"country_of_birth_id\",\"date_of_birth\",\"email\",\"employee_type_id\",  \n                \"first_name\",\"gender\",\"id\",\"id_number\", \"updated_at\", \n                \"is_active\",\"kin_contact_no\",\"kin_email\",\"kin_name\",  \n                \"kin_relationship_id\",\"last_name\",\"middle_name\",\"position_id\",\"region_id\",\"qualification_type_id\",\"race_type_id\",\"school_id\",  \n                \"schoolStaff\",\"start_date\",\"start_date_import\",\"street_address\"  \n            }  \n        ),  \n  \n    RenameColumns =  \n        Table.RenameColumns(  \n            SelectColumns,  \n            {  \n                {\"alternative_number\", \"tcbgrow_alternativenumber\"},  \n                {\"city_id\", \"cog_city\"},  \n                {\"contact_no\", \"mobilephone\"},  \n                {\"contact_no_telephone\", \"telephone1\"},  \n                {\"country_of_birth_id\", \"tcbgrow_countryofbirth\"},  \n                {\"date_of_birth\", \"birthdate\"},  \n                {\"email\", \"emailaddress1\"},  \n                {\"employee_type_id\", \"tcbgrow_employeetype\"},  \n                {\"first_name\", \"firstname\"},  \n                {\"gender\", \"gendercode\"},  \n                {\"id\", \"new_staff_id\"},  \n                {\"id_number\", \"tcbgrow_idnumber\"},  \n                {\"is_active\", \"statecode\"},  \n                {\"kin_contact_no\", \"tcbgrow_nextofkincontactnumber\"},  \n                {\"kin_email\", \"tcbgrow_nextofkinemail\"},  \n                {\"kin_name\", \"tcbgrow_nextofkinname\"},  \n                {\"kin_relationship_id\", \"tcbgrow_nextofkinrelationship\"},  \n                {\"last_name\", \"lastname\"},  \n                {\"middle_name\", \"middlename\"},  \n                {\"position_id\", \"tcbgrow_staffrole\"},  \n                {\"region_id\", \"cog_region\"},  \n                {\"qualification_type_id\", \"tcbgrow_qualification\"},  \n                {\"race_type_id\", \"tcbgrow_race\"},  \n                {\"school_id\", \"tcbgrow_schoolappid\"},  \n                {\"schoolStaff\", \"tcbgrow_schoolstaff\"},  \n                {\"start_date\", \"new_start_date\"},  \n                {\"start_date_import\", \"tcbgrow_startdate\"},  \n                {\"street_address\", \"tcbgrow_address1\"}  \n            }  \n        ),\n  #\"Replaced value\" = Table.ReplaceValue(RenameColumns, null, \"\", Replacer.ReplaceValue, {\"tcbgrow_alternativenumber\", \"mobilephone\", \"telephone1\", \"emailaddress1\", \"firstname\", \"gendercode\", \"new_staff_id\", \"tcbgrow_idnumber\", \"tcbgrow_nextofkincontactnumber\", \"tcbgrow_nextofkinemail\", \"tcbgrow_nextofkinname\", \"lastname\", \"middlename\", \"tcbgrow_schoolstaff\", \"tcbgrow_address1\"}),\n#\"Calculated date\" =  \n    Table.TransformColumns(  \n        #\"Replaced value\",  \n        {  \n            {\"tcbgrow_startdate\", each Date.From(_), type nullable date},  \n            {\"new_start_date\", each Date.From(_), type nullable date},  \n            {\"birthdate\", each Date.From(_), type nullable date}  \n        }  \n    )    \n  \nin  \n    #\"Calculated date\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Teacher Train Attendance')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -504,6 +527,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "dataverseschools"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
 						}
 					],
 					"sinks": [
@@ -524,6 +554,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d_inactive",
+								"type": "DatasetReference"
+							},
+							"name": "staffinactiveparquet"
 						}
 					],
 					"transformations": [
@@ -547,6 +584,9 @@
 						},
 						{
 							"name": "staffroleprinciple"
+						},
+						{
+							"name": "inactiveonly"
 						}
 					],
 					"scriptLines": [
@@ -595,6 +635,41 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
+						"source(output(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> source1",
 						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive({cog_City@odata.bind} = iif(\r",
 						"    isNull(cog_city),\r",
@@ -636,6 +711,7 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
 						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+						"source1 filter(statecode==1) ~> inactiveonly",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -660,7 +736,6 @@
 						"          gendercode,",
 						"          new_staff_id,",
 						"          tcbgrow_idnumber,",
-						"          statecode,",
 						"          tcbgrow_nextofkincontactnumber,",
 						"          tcbgrow_nextofkinemail,",
 						"          tcbgrow_nextofkinname,",
@@ -690,7 +765,48 @@
 						"     mapColumn(",
 						"          {tcbgrow_SchoolPrinciple@odata.bind},",
 						"          tcbgrow_schoolid",
-						"     )) ~> sink2"
+						"     )) ~> sink2",
+						"inactiveonly sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     format: 'parquet',",
+						"     partitionFileNames:['p_schoolstaff_d_inactive.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> staffinactiveparquet"
 					]
 				}
 			},
@@ -2331,7 +2447,7 @@
 												"type": "DatasetReference",
 												"parameters": {}
 											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_importincomeid as decimal(38,9),\n\t\ttcbgrow_transactiontype as integer,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_source as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolincome_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolincomed"
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_importincomeid as decimal(38,9),\n\t\ttcbgrow_transactiontype as integer,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_year as integer,\n\t\ttcbgrow_source as string,\n\t\ttcbgrow_transactiondate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolincome_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolincomed"
 										}
 									]
 								}
@@ -3460,6 +3576,8 @@
 					{
 						"name": "School Staff from Maria",
 						"type": "Copy",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -4080,6 +4198,8 @@
 					{
 						"name": "School Staff Query",
 						"type": "ExecuteWranglingDataflow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff from Maria",
@@ -4155,8 +4275,10 @@
 								"datasetParameters": {
 									"parquetsource": {},
 									"dataverseschools": {},
+									"source1": {},
 									"sink1": {},
-									"sink2": {}
+									"sink2": {},
+									"staffinactiveparquet": {}
 								}
 							},
 							"staging": {},
@@ -4186,354 +4308,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
 				"[concat(variables('factoryId'), '/dataflows/Staff Dataflow')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Teacher Training Attendance')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Teacher Training Attendance from Maria",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MariaDBSource",
-								"query": {
-									"value": "SELECT * FROM teacher_training_attendance\n WHERE attendance_date >= '@{pipeline().parameters.WatermarkDate}' AND attendance_date < CURDATE();",
-									"type": "Expression"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "staff",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "staff",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "school",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "school",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "region",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "region",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "ecd_code",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "ecd_code",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "position",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "position",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "date_employed",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "date_employed",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "ecd_start_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "ecd_start_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "attendance_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "attendance_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "attended",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "attended",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "status",
-											"type": "String",
-											"physicalType": "Enum"
-										},
-										"sink": {
-											"name": "status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "reason",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "reason",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "course",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "course",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "school_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "school_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "course_type",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "course_type",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "teacher_id",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "teacher_id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "MariaSchoolTeacherTrainingAttendance",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "p_schoolteachertrainingattendance_s",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Teacher Training Attendance Query",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [
-							{
-								"activity": "Teacher Training Attendance from Maria",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "School Teacher Train Attendance",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"p_schoolteachertrainingattendance_s": {},
-									"UserQuerypschoolteachertrainingattendanced": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"queries": [
-								{
-									"queryName": "UserQuery",
-									"dataflowSinks": [
-										{
-											"name": "UserQuerypschoolteachertrainingattendanced",
-											"dataset": {
-												"referenceName": "p_schoolteachertrainingattendance_d",
-												"type": "DatasetReference",
-												"parameters": {}
-											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_attendancedate as timestamp,\n\t\ttcbgrow_attendancedatestring as string,\n\t\ttcbgrow_attended as integer,\n\t\ttcbgrow_course as string,\n\t\ttcbgrow_dateemployed as timestamp,\n\t\ttcbgrow_position as string,\n\t\ttcbgrow_region as long,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_staffid as string,\n\t\ttcbgrow_staffname as string,\n\t\ttcbgrow_teacher as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolteachertrainingattendance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolteachertrainingattendanced"
-										}
-									]
-								}
-							]
-						}
-					},
-					{
-						"name": "Teacher Training Attendance Update",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [
-							{
-								"activity": "Teacher Training Attendance Query",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "School Teacher Training Attendance Dataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"parquetsource": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"WatermarkDate": {
-						"type": "string",
-						"defaultValue": "2026-03-05 16:45:28"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/School Teacher Train Attendance')]",
-				"[concat(variables('factoryId'), '/dataflows/School Teacher Training Attendance Dataflow')]"
 			]
 		}
 	]
