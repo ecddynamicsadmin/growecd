@@ -291,7 +291,7 @@
 				"          tcbgrow_address1 as string",
 				"     ),",
 				"     format: 'parquet',",
-				"     partitionFileNames:['p_schoolstaff_d_inactive'],",
+				"     partitionFileNames:['p_schoolstaff_d_inactive.parquet'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
