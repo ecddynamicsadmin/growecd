@@ -67,6 +67,8 @@
 			{
 				"name": "Staff",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Age Groups",
