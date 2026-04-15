@@ -57,6 +57,10 @@
 			{
 				"name": "tcbgrow_source",
 				"type": "UTF8"
+			},
+			{
+				"name": "tcbgrow_transactiondate",
+				"type": "INT96"
 			}
 		]
 	}
