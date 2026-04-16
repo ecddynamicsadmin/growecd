@@ -750,7 +750,10 @@
 									"statuscode": 2
 								},
 								"authentication": {
-									"type": "ServicePrincipal",
+									"credential": {
+										"referenceName": "SPcredentialTCBApp",
+										"type": "CredentialReference"
+									},
 									"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
 									"username": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 								}
