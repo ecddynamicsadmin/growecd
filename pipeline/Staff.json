@@ -719,7 +719,8 @@
 						"value": "@activity('lookupinactiverecords').output.value",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 15,
 					"activities": [
 						{
 							"name": "deactiverecord",
