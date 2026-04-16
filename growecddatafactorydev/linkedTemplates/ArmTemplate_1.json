@@ -13,6 +13,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolStaffAttendanceStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "tcbgrow_staffattendancestat"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchoolTeacherTrainingAttendance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -658,70 +679,6 @@
 					{
 						"name": "registration_checklist",
 						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolexpenses_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolexpenses_d.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_amount",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_asofdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_description",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_importexpenseid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_importschoolid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_source",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_month",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_year",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_transactiontype",
-						"type": "INT64"
 					}
 				]
 			},

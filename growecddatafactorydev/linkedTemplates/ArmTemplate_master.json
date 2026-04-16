@@ -87,6 +87,10 @@
 			"type": "string",
 			"defaultValue": "cognate"
 		},
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -173,6 +177,9 @@
 					},
 					"mysql_growecd_properties_typeProperties_username": {
 						"value": "[parameters('mysql_growecd_properties_typeProperties_username')]"
+					},
+					"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
 					}
 				}
 			},

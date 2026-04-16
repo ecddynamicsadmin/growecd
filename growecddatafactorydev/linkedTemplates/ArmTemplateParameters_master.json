@@ -65,6 +65,9 @@
 		"mysql_growecd_properties_typeProperties_username": {
 			"value": "cognate"
 		},
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://GrowECDKeyVault.vault.azure.net/"
+		},
 		"containerUri": {
 			"value": ""
 		},

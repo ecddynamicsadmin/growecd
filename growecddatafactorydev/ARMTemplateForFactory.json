@@ -86,6 +86,10 @@
 		"mysql_growecd_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "cognate"
+		},
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -4748,6 +4752,8 @@
 					{
 						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
@@ -4785,6 +4791,105 @@
 							},
 							"traceLevel": "Fine"
 						}
+					},
+					{
+						"name": "loopinactiverecords",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "lookupinactiverecords",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('lookupinactiverecords').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "deactiverecord",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"Content-Type": "application/json",
+											"OData-MaxVersion": "4.0",
+											"OData-Version": "4.0",
+											"If-Match": "*"
+										},
+										"url": {
+											"value": "@concat(variables('EnvironementURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
+											"type": "Expression"
+										},
+										"body": {
+											"statecode": 1,
+											"statuscode": 2
+										},
+										"authentication": {
+											"credential": {
+												"referenceName": "SPcredentialTCBApp",
+												"type": "CredentialReference"
+											},
+											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
+											"username": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "lookupinactiverecords",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Dataverse Staff Update",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "p_schoolstaff_d_inactive",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
 					}
 				],
 				"policy": {
@@ -4800,6 +4905,10 @@
 					"updated_at": {
 						"type": "String",
 						"defaultValue": "2000-02-01"
+					},
+					"EnvironementURL": {
+						"type": "String",
+						"defaultValue": "https://growecddev.crm4.dynamics.com/"
 					}
 				},
 				"annotations": []
@@ -4809,7 +4918,9 @@
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
 				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
 				"[concat(variables('factoryId'), '/dataflows/Staff Dataflow')]",
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]"
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d_inactive')]",
+				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
+				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
 			]
 		},
 		{
@@ -11597,6 +11708,7 @@
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 3,",
 						"     partitionBy('hash', 1)) ~> staffinactiveparquet"
 					]
 				}
@@ -11607,6 +11719,42 @@
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d_inactive')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GrowAzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SPcredentialTCBApp')]",
+			"type": "Microsoft.DataFactory/factories/credentials",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "ServicePrincipal",
+				"typeProperties": {
+					"tenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
+					"servicePrincipalId": "95c7af2f-65e4-41fe-af67-f83d437175e4",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "GrowAzureKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "DataverseSPN"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
 			]
 		}
 	]
