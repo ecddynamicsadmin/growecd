@@ -742,7 +742,7 @@
 									"If-Match": "*"
 								},
 								"url": {
-									"value": "@concat(variables('EnvironementURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
+									"value": "@concat(variables('EnvironmentURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
 									"type": "Expression"
 								},
 								"body": {
@@ -750,6 +750,10 @@
 									"statuscode": 2
 								},
 								"authentication": {
+									"resource": {
+										"value": "@variables('EnvironmentURL')",
+										"type": "Expression"
+									},
 									"credential": {
 										"referenceName": "SPcredentialTCBApp",
 										"type": "CredentialReference"
@@ -812,9 +816,9 @@
 				"type": "String",
 				"defaultValue": "2000-02-01"
 			},
-			"EnvironementURL": {
+			"EnvironmentURL": {
 				"type": "String",
-				"defaultValue": "https://growecddev.crm4.dynamics.com/"
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
 			}
 		},
 		"annotations": []
