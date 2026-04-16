@@ -29,6 +29,9 @@
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"value": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://GrowECDKeyVault.vault.azure.net/"
+		},
 		"MariaDBCRM_properties_typeProperties_server": {
 			"value": "102.130.112.164"
 		},
@@ -64,9 +67,6 @@
 		},
 		"mysql_growecd_properties_typeProperties_username": {
 			"value": "cognate"
-		},
-		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
-			"value": "https://GrowECDKeyVault.vault.azure.net/"
 		},
 		"containerUri": {
 			"value": ""

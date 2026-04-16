@@ -39,6 +39,10 @@
 			"type": "string",
 			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
+		},
 		"MariaDBCRM_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "102.130.112.164"
@@ -86,10 +90,6 @@
 		"mysql_growecd_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "cognate"
-		},
-		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -130,6 +130,19 @@
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
 					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GrowAzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -220,19 +233,6 @@
 						"value": "[parameters('mysql_growecd_password')]"
 					},
 					"driverVersion": "v2"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GrowAzureKeyVault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []

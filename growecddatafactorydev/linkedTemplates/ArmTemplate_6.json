@@ -183,8 +183,6 @@
 					{
 						"name": "School Staff from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -805,8 +803,6 @@
 					{
 						"name": "School Staff Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff from Maria",
@@ -858,8 +854,6 @@
 					{
 						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
@@ -915,7 +909,8 @@
 								"value": "@activity('lookupinactiverecords').output.value",
 								"type": "Expression"
 							},
-							"isSequential": true,
+							"isSequential": false,
+							"batchCount": 15,
 							"activities": [
 								{
 									"name": "deactiverecord",
@@ -938,7 +933,7 @@
 											"If-Match": "*"
 										},
 										"url": {
-											"value": "@concat(variables('EnvironementURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
+											"value": "@concat(variables('EnvironmentURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
 											"type": "Expression"
 										},
 										"body": {
@@ -946,6 +941,10 @@
 											"statuscode": 2
 										},
 										"authentication": {
+											"resource": {
+												"value": "@variables('EnvironmentURL')",
+												"type": "Expression"
+											},
 											"credential": {
 												"referenceName": "SPcredentialTCBApp",
 												"type": "CredentialReference"
@@ -1012,9 +1011,9 @@
 						"type": "String",
 						"defaultValue": "2000-02-01"
 					},
-					"EnvironementURL": {
+					"EnvironmentURL": {
 						"type": "String",
-						"defaultValue": "https://growecddev.crm4.dynamics.com/"
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
 					}
 				},
 				"annotations": []
@@ -1436,8 +1435,6 @@
 					{
 						"name": "Staff",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Age Groups",
@@ -1538,7 +1535,7 @@
 						"typeProperties": {
 							"variableName": "WatermarkDate",
 							"value": {
-								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-120),'yyyy-MM-dd HH:mm:ss'))",
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3650),'yyyy-MM-dd HH:mm:ss'))",
 								"type": "Expression"
 							}
 						}
@@ -1701,6 +1698,8 @@
 					{
 						"name": "School Income",
 						"type": "ExecutePipeline",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries",
