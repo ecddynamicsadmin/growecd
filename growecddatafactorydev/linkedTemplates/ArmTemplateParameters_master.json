@@ -33,7 +33,7 @@
 			"value": "https://GrowECDKeyVault.vault.azure.net/"
 		},
 		"GrowRestService_properties_typeProperties_url": {
-			"value": "https://growecddev.crm4.dynamics.com/api/data/v9.2"
+			"value": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
 		},
 		"GrowRestService_properties_typeProperties_clientId": {
 			"value": "95c7af2f-65e4-41fe-af67-f83d437175e4"
