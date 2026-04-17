@@ -1,0 +1,21 @@
+{
+	"name": "Contacts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GrowRestService",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"Rest Base URL": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+			}
+		},
+		"folder": {
+			"name": "REST"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "contacts"
+		},
+		"schema": []
+	}
+}
