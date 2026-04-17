@@ -65,7 +65,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> inactive",
-				"inactive derive(restUrl = ERROR_FUNCTION('concat(__SINGLE_QUOTE__contacts(new_staff_id=__SINGLE_QUOTE__,__SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE__,new_staff_id,__SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE__,__SINGLE_QUOTE__)__SINGLE_QUOTE__)'),",
+				"inactive derive(restUrl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\"),",
 				"          statecode = 1,",
 				"          statuscode = 2) ~> derivedColumn1",
 				"derivedColumn1 sink(allowSchemaDrift: true,",
