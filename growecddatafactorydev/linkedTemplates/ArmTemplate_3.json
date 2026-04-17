@@ -6,6 +6,14 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "growecddatafactorydev"
+		},
+		"GrowRestService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+		},
+		"GrowRestService_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		}
 	},
 	"variables": {
@@ -877,22 +885,32 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SPcredentialTCBApp')]",
-			"type": "Microsoft.DataFactory/factories/credentials",
+			"name": "[concat(parameters('factoryName'), '/GrowRestService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "ServicePrincipal",
+				"parameters": {
+					"Rest Base URL": {
+						"type": "String",
+						"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
 				"typeProperties": {
-					"tenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
-					"servicePrincipalId": "95c7af2f-65e4-41fe-af67-f83d437175e4",
-					"servicePrincipalKey": {
+					"url": "[parameters('GrowRestService_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "OAuth2ClientCredential",
+					"clientId": "[parameters('GrowRestService_properties_typeProperties_clientId')]",
+					"clientSecret": {
 						"type": "AzureKeyVaultSecret",
 						"store": {
 							"referenceName": "GrowAzureKeyVault",
 							"type": "LinkedServiceReference"
 						},
 						"secretName": "DataverseSPN"
-					}
+					},
+					"tokenEndpoint": "https://login.microsoftonline.com/8f0d8756-b8a7-4f68-b7cc-13ca06cda82a/oauth2/token"
 				}
 			},
 			"dependsOn": []

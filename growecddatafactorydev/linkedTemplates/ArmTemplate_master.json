@@ -43,6 +43,14 @@
 			"type": "string",
 			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
 		},
+		"GrowRestService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+		},
+		"GrowRestService_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+		},
 		"MariaDBCRM_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "102.130.112.164"
@@ -238,6 +246,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"GrowRestService_properties_typeProperties_url": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_url')]"
+					},
+					"GrowRestService_properties_typeProperties_clientId": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_clientId')]"
 					}
 				}
 			},
