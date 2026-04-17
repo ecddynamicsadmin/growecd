@@ -101,8 +101,7 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
 				"          statecode,",
-				"          statuscode,",
-				"          RestURL",
+				"          statuscode",
 				"     ),",
 				"     partitionBy('roundRobin', 10)) ~> sink1"
 			]
