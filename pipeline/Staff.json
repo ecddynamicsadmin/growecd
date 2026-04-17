@@ -728,6 +728,18 @@
 								"value": "'@{pipeline().parameters.EnvironmentURL}'",
 								"type": "Expression"
 							}
+						},
+						"datasetParameters": {
+							"sink1": {
+								"RestBaseURL": "v"
+							}
+						},
+						"linkedServiceParameters": {
+							"sink1": {
+								"schemaLinkedService": {
+									"RestBaseURL": "v"
+								}
+							}
 						}
 					},
 					"compute": {
@@ -745,7 +757,7 @@
 			},
 			"EnvironmentURL": {
 				"type": "string",
-				"defaultValue": "\"https://growecddev.crm4.dynamics.com\""
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
 			}
 		},
 		"variables": {
