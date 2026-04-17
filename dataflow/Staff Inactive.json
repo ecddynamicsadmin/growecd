@@ -88,7 +88,6 @@
 				"     insertable:false,",
 				"     updateable:true,",
 				"     upsertable:false,",
-				"     rowRelativeUrl: '/restUrl',",
 				"     updateHttpMethod: 'PATCH',",
 				"     timeout: 30,",
 				"     batchSize: 1,",
