@@ -93,7 +93,7 @@
 				"          statecode,",
 				"          statuscode",
 				"     ),",
-				"     partitionBy('roundRobin', 16)) ~> sink1"
+				"     partitionBy('roundRobin', 10)) ~> sink1"
 			]
 		}
 	}
