@@ -14,7 +14,7 @@
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
-			"relativeUrl": ""
+			"relativeUrl": "contacts"
 		},
 		"schema": []
 	}
