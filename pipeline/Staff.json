@@ -5,6 +5,8 @@
 			{
 				"name": "School Staff from Maria",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -623,6 +625,8 @@
 			{
 				"name": "School Staff Query",
 				"type": "ExecuteWranglingDataflow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff from Maria",
@@ -697,73 +701,8 @@
 				}
 			},
 			{
-				"name": "loopinactiverecords",
-				"type": "ForEach",
-				"dependsOn": [
-					{
-						"activity": "lookupinactiverecords",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('lookupinactiverecords').output.value",
-						"type": "Expression"
-					},
-					"isSequential": false,
-					"batchCount": 15,
-					"activities": [
-						{
-							"name": "deactiverecord",
-							"type": "WebActivity",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "PATCH",
-								"headers": {
-									"Content-Type": "application/json",
-									"OData-MaxVersion": "4.0",
-									"OData-Version": "4.0",
-									"If-Match": "*"
-								},
-								"url": {
-									"value": "@concat(variables('EnvironmentURL'),\n  '/api/data/v9.2/contacts(',\n  'new_staff_id=',\n  '''',\n  item().new_staff_id,\n  '''',\n  ')'\n)",
-									"type": "Expression"
-								},
-								"body": {
-									"statecode": 1,
-									"statuscode": 2
-								},
-								"authentication": {
-									"resource": {
-										"value": "@variables('EnvironmentURL')",
-										"type": "Expression"
-									},
-									"credential": {
-										"referenceName": "SPcredentialTCBApp",
-										"type": "CredentialReference"
-									},
-									"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
-									"username": "95c7af2f-65e4-41fe-af67-f83d437175e4"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "lookupinactiverecords",
-				"type": "Lookup",
+				"name": "REST Inactive Contacts",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
 						"activity": "Dataverse Staff Update",
@@ -781,22 +720,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "ParquetSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "ParquetReadSettings"
-						}
+					"dataflow": {
+						"referenceName": "Staff Inactive",
+						"type": "DataFlowReference"
 					},
-					"dataset": {
-						"referenceName": "p_schoolstaff_d_inactive",
-						"type": "DatasetReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
-					"firstRowOnly": false
+					"traceLevel": "Fine"
 				}
 			}
 		],
@@ -804,6 +736,10 @@
 			"WatermarkDate": {
 				"type": "string",
 				"defaultValue": "2026-03-07 16:45:28"
+			},
+			"EnvironmentURL": {
+				"type": "string",
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
 			}
 		},
 		"variables": {
