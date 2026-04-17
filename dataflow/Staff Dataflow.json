@@ -60,6 +60,9 @@
 				},
 				{
 					"name": "staffroleprinciple"
+				},
+				{
+					"name": "activestaff"
 				}
 			],
 			"scriptLines": [
@@ -108,7 +111,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
-				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"activestaff alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(cog_city),\r",
 				"    toString(null()),\r",
@@ -149,6 +152,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+				"derivedColumn1 filter(statecode==1) ~> activestaff",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
