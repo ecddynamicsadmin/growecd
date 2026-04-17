@@ -77,6 +77,9 @@
 				},
 				{
 					"name": "inactiveonly"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -202,6 +205,15 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 				"source1 filter(statecode==0) ~> inactiveonly",
+				"inactiveonly select(mapColumn(",
+				"          new_staff_id,",
+				"          updated_at,",
+				"          statecode,",
+				"          lastname,",
+				"          tcbgrow_schoolappid",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -256,7 +268,7 @@
 				"          {tcbgrow_SchoolPrinciple@odata.bind},",
 				"          tcbgrow_schoolid",
 				"     )) ~> sink2",
-				"inactiveonly sink(allowSchemaDrift: true,",
+				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
 				"          tcbgrow_alternativenumber as string,",
