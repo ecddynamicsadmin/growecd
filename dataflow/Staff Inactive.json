@@ -24,11 +24,14 @@
 			"transformations": [
 				{
 					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
 				"parameters{",
-				"     EnvironmentURL as string (https://growecddev.crm4.dynamics.com)",
+				"     EnvironmentURL as string (\"https://growecddev.crm4.dynamics.com\")",
 				"}",
 				"source(output(",
 				"          tcbgrow_alternativenumber as string,",
@@ -68,7 +71,8 @@
 				"inactive derive(restUrl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\"),",
 				"          statecode = 1,",
 				"          statuscode = 2) ~> derivedColumn1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"derivedColumn1 alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:true,",
 				"     insertable:true,",
@@ -80,7 +84,7 @@
 				"     upsertHttpMethod: 'PUT',",
 				"     updateHttpMethod: 'PATCH',",
 				"     timeout: 30,",
-				"     batchSize: 100,",
+				"     batchSize: 1,",
 				"     headers: ['Content-Type' -> 'application/json', 'OData-MaxVersion' -> '4.0', 'OData-Version' -> '4.0', 'If-Match' -> '*'],",
 				"     requestFormat: ['type' -> 'json'],",
 				"     skipDuplicateMapInputs: true,",
@@ -89,7 +93,7 @@
 				"          statecode,",
 				"          statuscode",
 				"     ),",
-				"     partitionBy('hash', 1)) ~> sink1"
+				"     partitionBy('roundRobin', 16)) ~> sink1"
 			]
 		}
 	}
