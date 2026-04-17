@@ -1438,7 +1438,7 @@
 					],
 					"transformations": [
 						{
-							"name": "derivedColumn1"
+							"name": "statestatus"
 						},
 						{
 							"name": "alterRow1"
@@ -1448,6 +1448,9 @@
 						},
 						{
 							"name": "select1"
+						},
+						{
+							"name": "resturl"
 						}
 					],
 					"scriptLines": [
@@ -1486,10 +1489,9 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> inactive",
-						"select1 derive(restUrl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\"),",
-						"          statecode = 1,",
-						"          statuscode = 2) ~> derivedColumn1",
-						"derivedColumn1 alterRow(updateIf(true())) ~> alterRow1",
+						"resturl derive(statecode = 1,",
+						"          statuscode = 2) ~> statestatus",
+						"statestatus alterRow(updateIf(true())) ~> alterRow1",
 						"inactive filter(statecode==0) ~> filter1",
 						"filter1 select(mapColumn(",
 						"          new_staff_id,",
@@ -1497,12 +1499,14 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 derive(Resturl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\")) ~> resturl",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:false,",
 						"     updateable:true,",
 						"     upsertable:false,",
+						"     rowRelativeUrl: 'Resturl',",
 						"     updateHttpMethod: 'PATCH',",
 						"     timeout: 30,",
 						"     batchSize: 1,",
