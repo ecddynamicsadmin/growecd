@@ -1,0 +1,96 @@
+{
+	"name": "Staff Inactive",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "p_schoolstaff_d_inactive",
+						"type": "DatasetReference"
+					},
+					"name": "inactive"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Contacts",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     EnvironmentURL as string (https://growecddev.crm4.dynamics.com)",
+				"}",
+				"source(output(",
+				"          tcbgrow_alternativenumber as string,",
+				"          cog_city as long,",
+				"          mobilephone as string,",
+				"          telephone1 as string,",
+				"          tcbgrow_countryofbirth as long,",
+				"          birthdate as timestamp,",
+				"          emailaddress1 as string,",
+				"          tcbgrow_employeetype as long,",
+				"          firstname as string,",
+				"          gendercode as string,",
+				"          new_staff_id as string,",
+				"          tcbgrow_idnumber as string,",
+				"          updated_at as timestamp,",
+				"          statecode as integer,",
+				"          tcbgrow_nextofkincontactnumber as string,",
+				"          tcbgrow_nextofkinemail as string,",
+				"          tcbgrow_nextofkinname as string,",
+				"          tcbgrow_nextofkinrelationship as long,",
+				"          lastname as string,",
+				"          middlename as string,",
+				"          tcbgrow_staffrole as long,",
+				"          cog_region as long,",
+				"          tcbgrow_qualification as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_schoolappid as long,",
+				"          tcbgrow_schoolstaff as string,",
+				"          new_start_date as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_address1 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> inactive",
+				"inactive derive(restUrl = ERROR_FUNCTION('concat(__SINGLE_QUOTE__contacts(new_staff_id=__SINGLE_QUOTE__,__SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE__,new_staff_id,__SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE____SINGLE_QUOTE__,__SINGLE_QUOTE__)__SINGLE_QUOTE__)'),",
+				"          statecode = 1,",
+				"          statuscode = 2) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:true,",
+				"     insertable:true,",
+				"     updateable:true,",
+				"     upsertable:true,",
+				"     rowRelativeUrl: 'restUrl',",
+				"     insertHttpMethod: 'PATCH',",
+				"     deleteHttpMethod: 'DELETE',",
+				"     upsertHttpMethod: 'PUT',",
+				"     updateHttpMethod: 'PATCH',",
+				"     timeout: 30,",
+				"     batchSize: 100,",
+				"     headers: ['Content-Type' -> 'application/json', 'OData-MaxVersion' -> '4.0', 'OData-Version' -> '4.0', 'If-Match' -> '*'],",
+				"     requestFormat: ['type' -> 'json'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          statecode,",
+				"          statuscode",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}
