@@ -30,9 +30,6 @@
 				}
 			],
 			"scriptLines": [
-				"parameters{",
-				"     EnvironmentURL as string (\"https://growecddev.crm4.dynamics.com\")",
-				"}",
 				"source(output(",
 				"          tcbgrow_alternativenumber as string,",
 				"          cog_city as long,",

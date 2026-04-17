@@ -722,13 +722,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Staff Inactive",
-						"type": "DataFlowReference",
-						"parameters": {
-							"EnvironmentURL": {
-								"value": "'@{pipeline().parameters.EnvironmentURL}'",
-								"type": "Expression"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
@@ -742,10 +736,6 @@
 			"WatermarkDate": {
 				"type": "string",
 				"defaultValue": "2026-03-07 16:45:28"
-			},
-			"EnvironmentURL": {
-				"type": "string",
-				"defaultValue": "https://growecddev.crm4.dynamics.com"
 			}
 		},
 		"annotations": []
