@@ -2196,8 +2196,6 @@
 					{
 						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
