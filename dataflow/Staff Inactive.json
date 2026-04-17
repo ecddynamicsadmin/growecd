@@ -35,7 +35,7 @@
 					"name": "select1"
 				},
 				{
-					"name": "resturl"
+					"name": "Url"
 				}
 			],
 			"scriptLines": [
@@ -74,9 +74,9 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> inactive",
-				"resturl derive(statecode = 1,",
+				"select1 derive(statecode = 1,",
 				"          statuscode = 2) ~> statestatus",
-				"statestatus alterRow(updateIf(true())) ~> alterRow1",
+				"Url alterRow(updateIf(true())) ~> alterRow1",
 				"inactive filter(statecode==0) ~> filter1",
 				"filter1 select(mapColumn(",
 				"          new_staff_id,",
@@ -84,14 +84,14 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
-				"select1 derive(Resturl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\")) ~> resturl",
+				"statestatus derive(RestURL = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\")) ~> Url",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
 				"     updateable:true,",
 				"     upsertable:false,",
-				"     rowRelativeUrl: 'Resturl',",
+				"     rowRelativeUrl: 'RestURL',",
 				"     updateHttpMethod: 'PATCH',",
 				"     timeout: 30,",
 				"     batchSize: 1,",
@@ -101,7 +101,8 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     mapColumn(",
 				"          statecode,",
-				"          statuscode",
+				"          statuscode,",
+				"          RestURL",
 				"     ),",
 				"     partitionBy('roundRobin', 10)) ~> sink1"
 			]
