@@ -1480,7 +1480,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> inactive",
-						"inactive derive(restUrl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\"),",
+						"inactive derive(restUrl = concat(\"(new_staff_id='\", new_staff_id, \"')\"),",
 						"          statecode = 1,",
 						"          statuscode = 2) ~> derivedColumn1",
 						"derivedColumn1 alterRow(updateIf(true())) ~> alterRow1",

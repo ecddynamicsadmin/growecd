@@ -9,7 +9,7 @@
 		},
 		"GrowRestService_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2"
 		},
 		"GrowRestService_properties_typeProperties_clientId": {
 			"type": "string",
