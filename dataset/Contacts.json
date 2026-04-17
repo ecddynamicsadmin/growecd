@@ -5,7 +5,16 @@
 			"referenceName": "GrowRestService",
 			"type": "LinkedServiceReference",
 			"parameters": {
-				"Rest Base URL": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+				"Rest Base URL": {
+					"value": "@dataset().RestBaseURL",
+					"type": "Expression"
+				}
+			}
+		},
+		"parameters": {
+			"RestBaseURL": {
+				"type": "String",
+				"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
 			}
 		},
 		"folder": {
