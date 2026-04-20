@@ -1,0 +1,20 @@
+{
+	"name": "staff_ids_inactive_json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "staff_ids_inactive.json",
+				"folderPath": "staging",
+				"fileSystem": "giraffe"
+			}
+		},
+		"schema": {}
+	}
+}

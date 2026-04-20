@@ -1,0 +1,328 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"description": "Reads new_staff_id values from p_schoolstaf_d_inactive.parquet in ADLS Gen2, stages to JSON, then PATCHes each Contact in Dataverse (growecddev.crm4.dynamics.com) to inactive using the new_staff_id alternate key. Failed records are written individually to ADLS giraffe/errors/.",
+		"activities": [
+			{
+				"name": "SetRunTimestamp",
+				"description": "Capture pipeline run timestamp for use in error file naming",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PipelineRunTimestamp",
+					"value": {
+						"value": "@utcNow('yyyy-MM-ddTHH-mm-ss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "CopyParquetToStagingJson",
+				"description": "Reads p_schoolstaf_d_inactive.parquet from ADLS and writes new_staff_id values as a JSON array to a staging file. This avoids the Lookup 5K row limit.",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SetRunTimestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "01:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "new_staff_id",
+									"type": "String"
+								},
+								"sink": {
+									"name": "new_staff_id",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "p_schoolstaff_d_inactive",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "staff_ids_inactive_json",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "LookupStagedStaffIds",
+				"description": "Reads the staged JSON file into memory as an array of {new_staff_id} objects for ForEach iteration. Safe for up to ~100K rows at this payload size.",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "CopyParquetToStagingJson",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "00:10:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "staff_ids_inactive_json",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "IfRowsExist",
+				"description": "Guard against empty parquet file — skip ForEach if no rows staged",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "LookupStagedStaffIds",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('LookupStagedStaffIds').output.value), 0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "LogEmptyFile",
+							"description": "Parquet file contained no rows — write a warning file to errors folder",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "00:05:00",
+								"retry": 1,
+								"retryIntervalInSeconds": 30
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureBlobFSSource",
+									"recursive": true
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings",
+										"filePattern": "arrayOfObjects"
+									}
+								},
+								"enableStaging": false
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "ForEachStaffId",
+							"description": "Iterates each new_staff_id and PATCHes the matching Dataverse Contact to inactive. Parallel batch of 10. Failed records written individually to ADLS errors folder.",
+							"type": "ForEach",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('LookupStagedStaffIds').output.value",
+									"type": "Expression"
+								},
+								"isSequential": false,
+								"batchCount": {
+									"value": "@pipeline().parameters.ForEachBatchCount",
+									"type": "Expression"
+								},
+								"activities": [
+									{
+										"name": "PatchContactInactive",
+										"description": "PATCH /contacts(new_staff_id='value') with statecode=1 statuscode=2. Uses registered alternate key on Contact table in growecddev.crm4.dynamics.com.",
+										"type": "WebActivity",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "00:01:00",
+											"retry": 3,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"method": "PATCH",
+											"headers": {
+												"OData-MaxVersion": "4.0",
+												"OData-Version": "4.0",
+												"Accept": "application/json",
+												"Content-Type": "application/json; charset=utf-8",
+												"If-Match": "*"
+											},
+											"url": {
+												"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+												"type": "Expression"
+											},
+											"body": {
+												"value": "{\"statecode\": 1, \"statuscode\": 2}",
+												"type": "Expression"
+											},
+											"authentication": {
+												"resource": {
+													"value": "@pipeline().parameters.DataverseBaseUrl",
+													"type": "Expression"
+												},
+												"credential": {
+													"referenceName": "SPcredentialTCBApp",
+													"type": "CredentialReference"
+												},
+												"userTenant": "YOUR-TENANT-ID-HERE",
+												"username": "YOUR-APP-CLIENT-ID-HERE",
+												"password": {
+													"type": "AzureKeyVaultSecret",
+													"secretName": "YOUR-SECRET-NAME-HERE"
+												}
+											}
+										}
+									},
+									{
+										"name": "WriteFailedRecord",
+										"description": "On PATCH failure, writes a single JSON error file per failed staff_id to ADLS giraffe/errors/. Safe under parallelism — no shared variable race condition.",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "PatchContactInactive",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "00:05:00",
+											"retry": 1,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "AzureBlobFSSource",
+												"recursive": true
+											},
+											"enableStaging": false
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"DataverseBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
+			},
+			"SourceContainer": {
+				"type": "string",
+				"defaultValue": "giraffe"
+			},
+			"SourceFilePath": {
+				"type": "string",
+				"defaultValue": "parquet/p_schoolstaf_d_inactive.parquet"
+			},
+			"StagingFilePath": {
+				"type": "string",
+				"defaultValue": "staging/staff_ids_active.json"
+			},
+			"ErrorContainer": {
+				"type": "string",
+				"defaultValue": "giraffe"
+			},
+			"ErrorFolderPath": {
+				"type": "string",
+				"defaultValue": "errors"
+			},
+			"ForEachBatchCount": {
+				"type": "int",
+				"defaultValue": 10
+			}
+		},
+		"variables": {
+			"PipelineRunTimestamp": {
+				"type": "String"
+			}
+		},
+		"annotations": [
+			"Dataverse",
+			"Contact",
+			"Deactivation",
+			"StaffId",
+			"ADLS"
+		],
+		"lastPublishTime": "2026-04-20T00:00:00Z"
+	}
+}
