@@ -17,6 +17,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "dataverseschools"
+				},
+				{
+					"dataset": {
+						"referenceName": "p_schoolstaff_d",
+						"type": "DatasetReference"
+					},
+					"name": "schoolstaffafterquery"
 				}
 			],
 			"sinks": [
@@ -37,6 +44,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "p_schoolstaff_d_inactive",
+						"type": "DatasetReference"
+					},
+					"name": "sinkinactivecontactfile"
 				}
 			],
 			"transformations": [
@@ -63,6 +77,12 @@
 				},
 				{
 					"name": "activestaff"
+				},
+				{
+					"name": "inactivestaff"
+				},
+				{
+					"name": "select2"
 				}
 			],
 			"scriptLines": [
@@ -111,6 +131,41 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
+				"source(output(",
+				"          tcbgrow_alternativenumber as string,",
+				"          cog_city as long,",
+				"          mobilephone as string,",
+				"          telephone1 as string,",
+				"          tcbgrow_countryofbirth as long,",
+				"          birthdate as timestamp,",
+				"          emailaddress1 as string,",
+				"          tcbgrow_employeetype as long,",
+				"          firstname as string,",
+				"          gendercode as string,",
+				"          new_staff_id as string,",
+				"          tcbgrow_idnumber as string,",
+				"          updated_at as timestamp,",
+				"          statecode as integer,",
+				"          tcbgrow_nextofkincontactnumber as string,",
+				"          tcbgrow_nextofkinemail as string,",
+				"          tcbgrow_nextofkinname as string,",
+				"          tcbgrow_nextofkinrelationship as long,",
+				"          lastname as string,",
+				"          middlename as string,",
+				"          tcbgrow_staffrole as long,",
+				"          cog_region as long,",
+				"          tcbgrow_qualification as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_schoolappid as long,",
+				"          tcbgrow_schoolstaff as string,",
+				"          new_start_date as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_address1 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> schoolstaffafterquery",
 				"activestaff alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(cog_city),\r",
@@ -153,6 +208,16 @@
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
 				"derivedColumn1 filter(statecode==1) ~> activestaff",
+				"schoolstaffafterquery filter(statecode==0) ~> inactivestaff",
+				"inactivestaff select(mapColumn(",
+				"          new_staff_id,",
+				"          statecode,",
+				"          lastname,",
+				"          tcbgrow_schoolappid,",
+				"          tcbgrow_schoolstaff",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -206,7 +271,53 @@
 				"     mapColumn(",
 				"          {tcbgrow_SchoolPrinciple@odata.bind},",
 				"          tcbgrow_schoolid",
-				"     )) ~> sink2"
+				"     )) ~> sink2",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          tcbgrow_alternativenumber as string,",
+				"          cog_city as long,",
+				"          mobilephone as string,",
+				"          telephone1 as string,",
+				"          tcbgrow_countryofbirth as long,",
+				"          birthdate as timestamp,",
+				"          emailaddress1 as string,",
+				"          tcbgrow_employeetype as long,",
+				"          firstname as string,",
+				"          gendercode as string,",
+				"          new_staff_id as string,",
+				"          tcbgrow_idnumber as string,",
+				"          updated_at as timestamp,",
+				"          statecode as integer,",
+				"          tcbgrow_nextofkincontactnumber as string,",
+				"          tcbgrow_nextofkinemail as string,",
+				"          tcbgrow_nextofkinname as string,",
+				"          tcbgrow_nextofkinrelationship as long,",
+				"          lastname as string,",
+				"          middlename as string,",
+				"          tcbgrow_staffrole as long,",
+				"          cog_region as long,",
+				"          tcbgrow_qualification as long,",
+				"          tcbgrow_race as long,",
+				"          tcbgrow_schoolappid as long,",
+				"          tcbgrow_schoolstaff as string,",
+				"          new_start_date as timestamp,",
+				"          tcbgrow_startdate as timestamp,",
+				"          tcbgrow_address1 as string",
+				"     ),",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          new_staff_id,",
+				"          statecode,",
+				"          lastname,",
+				"          tcbgrow_schoolappid,",
+				"          tcbgrow_schoolstaff",
+				"     )) ~> sinkinactivecontactfile"
 			]
 		}
 	}
