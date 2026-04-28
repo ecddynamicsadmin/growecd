@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "Staff Inactive State",
 	"properties": {
 		"activities": [
 			{
@@ -34,23 +34,17 @@
 						}
 					},
 					"sink": {
-						"type": "ParquetSink",
+						"type": "JsonSink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "FlattenHierarchy"
 						},
 						"formatSettings": {
-							"type": "ParquetWriteSettings"
+							"type": "JsonWriteSettings",
+							"filePattern": "arrayOfObjects"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
@@ -60,8 +54,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "p_schoolstaff_d_inactive",
-						"type": "DatasetReference"
+						"referenceName": "Contacts_Json_InactiveChunks",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "giraffe",
+							"FolderPath": "staging/contacts_inactive_chunks"
+						}
 					}
 				]
 			},
