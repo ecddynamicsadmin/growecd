@@ -87,7 +87,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "staff_ids_inactive_json",
+						"referenceName": "Contacts_Json_InactiveChunks",
 						"type": "DatasetReference"
 					}
 				]
@@ -125,7 +125,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "staff_ids_inactive_json",
+						"referenceName": "Contacts_Json_InactiveChunks",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false

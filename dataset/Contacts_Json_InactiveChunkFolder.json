@@ -15,6 +15,9 @@
 				"defaultValue": "staging/contact_inactive_chunks"
 			}
 		},
+		"folder": {
+			"name": "Json"
+		},
 		"annotations": [],
 		"type": "Json",
 		"typeProperties": {
