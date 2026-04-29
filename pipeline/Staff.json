@@ -709,6 +709,8 @@
 			{
 				"name": "ListContactChunkFiles",
 				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dataverse Staff Update",
