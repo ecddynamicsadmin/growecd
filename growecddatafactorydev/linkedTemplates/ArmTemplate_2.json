@@ -13,6 +13,118 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolcompliance_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "id",
+						"type": "INT64"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "is_npo_registered",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "npo_registration_number",
+						"type": "UTF8"
+					},
+					{
+						"name": "npo_registration_date",
+						"type": "INT96"
+					},
+					{
+						"name": "registration_certificate",
+						"type": "UTF8"
+					},
+					{
+						"name": "amount",
+						"type": "INT64"
+					},
+					{
+						"name": "effective_date",
+						"type": "INT96"
+					},
+					{
+						"name": "school_capacity",
+						"type": "INT64"
+					},
+					{
+						"name": "expiry_date",
+						"type": "INT96"
+					},
+					{
+						"name": "dsd_status",
+						"type": "UTF8"
+					},
+					{
+						"name": "dsd_grant_approved",
+						"type": "UTF8"
+					},
+					{
+						"name": "is_dsd_grant_paid",
+						"type": "UTF8"
+					},
+					{
+						"name": "dsd_grant_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "number_of_childrens_registration",
+						"type": "INT32"
+					},
+					{
+						"name": "is_eligible_for_other_subsidy",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "other_subsidy_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "other_subsidy_end_date",
+						"type": "INT96"
+					},
+					{
+						"name": "grow_franchisee_commencement_date",
+						"type": "INT96"
+					},
+					{
+						"name": "dsd_application_submission_date",
+						"type": "INT96"
+					},
+					{
+						"name": "registration_checklist",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolexpenses_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1699,150 +1811,6 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "p_schoolstaff_d.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_alternativenumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_city",
-						"type": "INT64"
-					},
-					{
-						"name": "mobilephone",
-						"type": "UTF8"
-					},
-					{
-						"name": "telephone1",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_countryofbirth",
-						"type": "INT64"
-					},
-					{
-						"name": "birthdate",
-						"type": "INT96"
-					},
-					{
-						"name": "emailaddress1",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_employeetype",
-						"type": "INT64"
-					},
-					{
-						"name": "firstname",
-						"type": "UTF8"
-					},
-					{
-						"name": "gendercode",
-						"type": "UTF8"
-					},
-					{
-						"name": "new_staff_id",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_idnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "statecode",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_nextofkincontactnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinemail",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinrelationship",
-						"type": "INT64"
-					},
-					{
-						"name": "lastname",
-						"type": "UTF8"
-					},
-					{
-						"name": "middlename",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_staffrole",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_qualification",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_race",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolappid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolstaff",
-						"type": "UTF8"
-					},
-					{
-						"name": "new_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_startdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_address1",
-						"type": "UTF8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_d_inactive')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolstaff_d_inactive.parquet",
 						"folderPath": "parquet",
 						"fileSystem": "giraffe"
 					},

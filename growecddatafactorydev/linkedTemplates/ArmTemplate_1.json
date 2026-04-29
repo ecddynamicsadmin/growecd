@@ -13,6 +13,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/DataverseSchoolStaff')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Dataverse1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "contact"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DataverseSchoolStaffAttendanceStats')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -567,118 +588,6 @@
 					{
 						"name": "tcbgrow_schoolcapacity",
 						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolcompliance_s.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "is_npo_registered",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "npo_registration_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "npo_registration_date",
-						"type": "INT96"
-					},
-					{
-						"name": "registration_certificate",
-						"type": "UTF8"
-					},
-					{
-						"name": "amount",
-						"type": "INT64"
-					},
-					{
-						"name": "effective_date",
-						"type": "INT96"
-					},
-					{
-						"name": "school_capacity",
-						"type": "INT64"
-					},
-					{
-						"name": "expiry_date",
-						"type": "INT96"
-					},
-					{
-						"name": "dsd_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "dsd_grant_approved",
-						"type": "UTF8"
-					},
-					{
-						"name": "is_dsd_grant_paid",
-						"type": "UTF8"
-					},
-					{
-						"name": "dsd_grant_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "number_of_childrens_registration",
-						"type": "INT32"
-					},
-					{
-						"name": "is_eligible_for_other_subsidy",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "other_subsidy_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "other_subsidy_end_date",
-						"type": "INT96"
-					},
-					{
-						"name": "grow_franchisee_commencement_date",
-						"type": "INT96"
-					},
-					{
-						"name": "dsd_application_submission_date",
-						"type": "INT96"
-					},
-					{
-						"name": "registration_checklist",
-						"type": "UTF8"
 					}
 				]
 			},

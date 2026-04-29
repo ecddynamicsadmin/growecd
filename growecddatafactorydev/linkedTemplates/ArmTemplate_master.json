@@ -246,12 +246,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"GrowRestService_properties_typeProperties_url": {
-						"value": "[parameters('GrowRestService_properties_typeProperties_url')]"
-					},
-					"GrowRestService_properties_typeProperties_clientId": {
-						"value": "[parameters('GrowRestService_properties_typeProperties_clientId')]"
 					}
 				}
 			},
@@ -272,6 +266,12 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"GrowRestService_properties_typeProperties_url": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_url')]"
+					},
+					"GrowRestService_properties_typeProperties_clientId": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_clientId')]"
 					}
 				}
 			},

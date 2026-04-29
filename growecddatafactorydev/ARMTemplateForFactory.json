@@ -4782,8 +4782,13 @@
 								"datasetParameters": {
 									"parquetsource": {},
 									"dataverseschools": {},
+									"schoolstaffafterquery": {},
 									"sink1": {},
-									"sink2": {}
+									"sink2": {},
+									"sinkinactivecontactfile": {
+										"Container": "giraffe",
+										"FolderPath": "staging/contacts_inactive_chunks"
+									}
 								}
 							},
 							"staging": {},
@@ -4795,8 +4800,8 @@
 						}
 					},
 					{
-						"name": "REST Inactive Contacts",
-						"type": "ExecuteDataFlow",
+						"name": "ListContactChunkFiles",
+						"type": "GetMetadata",
 						"dependsOn": [
 							{
 								"activity": "Dataverse Staff Update",
@@ -4807,28 +4812,37 @@
 						],
 						"policy": {
 							"timeout": "0.12:00:00",
-							"retry": 0,
+							"retry": 1,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Staff Inactive",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"inactive": {},
-									"sink1": {}
+							"dataset": {
+								"referenceName": "Contacts_Parquet_InactiveChunkFolder",
+								"type": "DatasetReference",
+								"parameters": {
+									"Container": {
+										"value": "@pipeline().parameters.ChunkContainer",
+										"type": "Expression"
+									},
+									"FolderPath": {
+										"value": "@pipeline().parameters.ChunkFolderPath",
+										"type": "Expression"
+									}
 								}
 							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"enablePartitionDiscovery": false
 							},
-							"traceLevel": "Fine"
+							"formatSettings": {
+								"type": "ParquetReadSettings"
+							}
 						}
 					}
 				],
@@ -4839,6 +4853,14 @@
 					"WatermarkDate": {
 						"type": "string",
 						"defaultValue": "2026-03-07 16:45:28"
+					},
+					"ChunkContainer": {
+						"type": "string",
+						"defaultValue": "giraffe"
+					},
+					"ChunkfolderPath": {
+						"type": "string",
+						"defaultValue": "staging/contacts_inactive_chunks"
 					}
 				},
 				"annotations": []
@@ -4848,7 +4870,7 @@
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
 				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
 				"[concat(variables('factoryId'), '/dataflows/Staff Dataflow')]",
-				"[concat(variables('factoryId'), '/dataflows/Staff Inactive')]",
+				"[concat(variables('factoryId'), '/datasets/Contacts_Parquet_InactiveChunkFolder')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]"
 			]
 		},
@@ -5226,6 +5248,50 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowRestService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFolder')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "giraffe"
+					},
+					"FolderPath": {
+						"type": "string",
+						"defaultValue": "staging/contacts_inactive_chunks"
+					}
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().FolderPath",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
@@ -11430,6 +11496,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "dataverseschools"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d",
+								"type": "DatasetReference"
+							},
+							"name": "schoolstaffafterquery"
 						}
 					],
 					"sinks": [
@@ -11450,6 +11523,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "Contacts_Parquet_InactiveChunkFolder",
+								"type": "DatasetReference"
+							},
+							"name": "sinkinactivecontactfile"
 						}
 					],
 					"transformations": [
@@ -11473,6 +11553,15 @@
 						},
 						{
 							"name": "staffroleprinciple"
+						},
+						{
+							"name": "activestaff"
+						},
+						{
+							"name": "inactivestaff"
+						},
+						{
+							"name": "select2"
 						}
 					],
 					"scriptLines": [
@@ -11521,7 +11610,42 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"source(output(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> schoolstaffafterquery",
+						"activestaff alterRow(upsertIf(true())) ~> alterRow1",
 						"parquetsource derive({cog_City@odata.bind} = iif(\r",
 						"    isNull(cog_city),\r",
 						"    toString(null()),\r",
@@ -11562,6 +11686,17 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select1",
 						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+						"derivedColumn1 filter(statecode==1) ~> activestaff",
+						"schoolstaffafterquery filter(statecode==0) ~> inactivestaff",
+						"inactivestaff select(mapColumn(",
+						"          new_staff_id,",
+						"          statecode,",
+						"          lastname,",
+						"          tcbgrow_schoolappid,",
+						"          tcbgrow_schoolstaff",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
 						"alterRow1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -11615,7 +11750,19 @@
 						"     mapColumn(",
 						"          {tcbgrow_SchoolPrinciple@odata.bind},",
 						"          tcbgrow_schoolid",
-						"     )) ~> sink2"
+						"     )) ~> sink2",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     filePattern:'contact_inactive_chunk_[n].parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     partitionBy('roundRobin', 10)) ~> sinkinactivecontactfile"
 					]
 				}
 			},
@@ -11623,123 +11770,8 @@
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchool')]",
 				"[concat(variables('factoryId'), '/datasets/DataverseSchoolStaff')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Staff Inactive')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoolstaff_d",
-								"type": "DatasetReference"
-							},
-							"name": "inactive"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "Contacts",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "statestatus"
-						},
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "filter1"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "resturl"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_alternativenumber as string,",
-						"          cog_city as long,",
-						"          mobilephone as string,",
-						"          telephone1 as string,",
-						"          tcbgrow_countryofbirth as long,",
-						"          birthdate as timestamp,",
-						"          emailaddress1 as string,",
-						"          tcbgrow_employeetype as long,",
-						"          firstname as string,",
-						"          gendercode as string,",
-						"          new_staff_id as string,",
-						"          tcbgrow_idnumber as string,",
-						"          updated_at as timestamp,",
-						"          statecode as integer,",
-						"          tcbgrow_nextofkincontactnumber as string,",
-						"          tcbgrow_nextofkinemail as string,",
-						"          tcbgrow_nextofkinname as string,",
-						"          tcbgrow_nextofkinrelationship as long,",
-						"          lastname as string,",
-						"          middlename as string,",
-						"          tcbgrow_staffrole as long,",
-						"          cog_region as long,",
-						"          tcbgrow_qualification as long,",
-						"          tcbgrow_race as long,",
-						"          tcbgrow_schoolappid as long,",
-						"          tcbgrow_schoolstaff as string,",
-						"          new_start_date as timestamp,",
-						"          tcbgrow_startdate as timestamp,",
-						"          tcbgrow_address1 as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> inactive",
-						"resturl derive(statecode = 1,",
-						"          statuscode = 2) ~> statestatus",
-						"statestatus alterRow(updateIf(true())) ~> alterRow1",
-						"inactive filter(statecode==0) ~> filter1",
-						"filter1 select(mapColumn(",
-						"          new_staff_id,",
-						"          lastname",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 derive(Resturl = concat(\"contacts(new_staff_id='\", new_staff_id, \"')\")) ~> resturl",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:true,",
-						"     upsertable:false,",
-						"     rowRelativeUrl: 'Resturl',",
-						"     updateHttpMethod: 'PATCH',",
-						"     timeout: 30,",
-						"     batchSize: 1,",
-						"     headers: ['Content-Type' -> 'application/json', 'OData-MaxVersion' -> '4.0', 'OData-Version' -> '4.0', 'If-Match' -> '*'],",
-						"     requestFormat: ['type' -> 'json'],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     mapColumn(",
-						"          statecode,",
-						"          statuscode",
-						"     ),",
-						"     partitionBy('roundRobin', 10)) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
-				"[concat(variables('factoryId'), '/datasets/Contacts')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]",
+				"[concat(variables('factoryId'), '/datasets/Contacts_Parquet_InactiveChunkFolder')]"
 			]
 		},
 		{
@@ -11763,6 +11795,135 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "giraffe"
+					},
+					"FolderPath": {
+						"type": "string",
+						"defaultValue": "staging/contacts_inactive_chunks"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FolderPath",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Staff_Deactivate_OneChunk')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachStaffChunkfile",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.ChunkData",
+								"type": "Expression"
+							},
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "PatchContactInactive",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"OData-MaxVersion": "4.0",
+											"OData-Version": "4.0",
+											"Accept": "application/json",
+											"Content-Type": "application/json; charset=utf-8",
+											"If-Match": "*"
+										},
+										"url": {
+											"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"statecode\": 1, \"statuscode\": 2}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"credential": {
+												"referenceName": "SPcredentialTCBApp",
+												"type": "CredentialReference"
+											},
+											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ChunkData": {
+						"type": "array"
+					},
+					"DataverseBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
 			]
 		}
 	]

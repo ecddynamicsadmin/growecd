@@ -6,20 +6,156 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "growecddatafactorydev"
-		},
-		"GrowRestService_properties_typeProperties_url": {
-			"type": "string",
-			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
-		},
-		"GrowRestService_properties_typeProperties_clientId": {
-			"type": "string",
-			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_d_inactive')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolstaff_d_inactive.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_alternativenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "mobilephone",
+						"type": "UTF8"
+					},
+					{
+						"name": "telephone1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "birthdate",
+						"type": "INT96"
+					},
+					{
+						"name": "emailaddress1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_employeetype",
+						"type": "INT64"
+					},
+					{
+						"name": "firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "gendercode",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_staff_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_idnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "statecode",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_nextofkincontactnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinrelationship",
+						"type": "INT64"
+					},
+					{
+						"name": "lastname",
+						"type": "UTF8"
+					},
+					{
+						"name": "middlename",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_staffrole",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_qualification",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolappid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolstaff",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address1",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_s')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
@@ -881,37 +1017,6 @@
 					"quoteChar": "\""
 				},
 				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/GrowRestService')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"parameters": {
-					"Rest Base URL": {
-						"type": "String",
-						"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
-					}
-				},
-				"annotations": [],
-				"type": "RestService",
-				"typeProperties": {
-					"url": "[parameters('GrowRestService_properties_typeProperties_url')]",
-					"enableServerCertificateValidation": true,
-					"authenticationType": "OAuth2ClientCredential",
-					"clientId": "[parameters('GrowRestService_properties_typeProperties_clientId')]",
-					"clientSecret": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "GrowAzureKeyVault",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "DataverseSPN"
-					},
-					"tokenEndpoint": "https://login.microsoftonline.com/8f0d8756-b8a7-4f68-b7cc-13ca06cda82a/oauth2/token"
-				}
 			},
 			"dependsOn": []
 		}
