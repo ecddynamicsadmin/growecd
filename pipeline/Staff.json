@@ -697,14 +697,6 @@
 								"Container": "giraffe",
 								"FolderPath": "staging/contacts_inactive_chunks"
 							}
-						},
-						"linkedServiceParameters": {
-							"sinkinactivecontactfile": {
-								"schemaLinkedService": {
-									"Container": "giraffe",
-									"FolderPath": "staging/contacts_inactive_chunks"
-								}
-							}
 						}
 					},
 					"compute": {
