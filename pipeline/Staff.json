@@ -753,26 +753,6 @@
 						"type": "ParquetReadSettings"
 					}
 				}
-			},
-			{
-				"name": "IfChunkExist",
-				"description": "Guards against empty chunks",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "ListContactChunkFiles",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@greater(length(activity('ListContactChunkFiles').output.childItems), 0)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {

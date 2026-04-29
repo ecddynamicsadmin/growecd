@@ -12,7 +12,7 @@
 						"value": "@pipeline().parameters.ChunkData",
 						"type": "Expression"
 					},
-					"batchCount": 1,
+					"batchCount": 5,
 					"activities": [
 						{
 							"name": "PatchContactInactive",
@@ -25,7 +25,32 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"method": "PATCH",
+								"headers": {
+									"OData-MaxVersion": "4.0",
+									"OData-Version": "4.0",
+									"Accept": "application/json",
+									"Content-Type": "application/json; charset=utf-8",
+									"If-Match": "*"
+								},
+								"url": {
+									"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+									"type": "Expression"
+								},
+								"body": {
+									"value": "{\"statecode\": 1, \"statuscode\": 2}",
+									"type": "Expression"
+								},
+								"authentication": {
+									"credential": {
+										"referenceName": "SPcredentialTCBApp",
+										"type": "CredentialReference"
+									},
+									"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+								}
+							}
 						}
 					]
 				}
@@ -38,10 +63,6 @@
 			"DataverseBaseUrl": {
 				"type": "string",
 				"defaultValue": "https://growecddev.crm4.dynamics.com"
-			},
-			"InnerBatchCount": {
-				"type": "int",
-				"defaultValue": 5
 			}
 		},
 		"annotations": []
