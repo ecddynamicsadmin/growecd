@@ -693,7 +693,13 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Staff Dataflow",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sinkinactivecontactfile": {
+								"Container": "giraffe",
+								"FolderPath": "staging/contacts_inactive_chunks"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -703,8 +709,8 @@
 				}
 			},
 			{
-				"name": "REST Inactive Contacts",
-				"type": "ExecuteDataFlow",
+				"name": "ListContactChunkFiles",
+				"type": "GetMetadata",
 				"dependsOn": [
 					{
 						"activity": "Dataverse Staff Update",
@@ -715,25 +721,73 @@
 				],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 0,
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"dataset": {
+						"referenceName": "Contacts_Parquet_InactiveChunkFolder",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": {
+								"value": "@pipeline().parameters.ChunkContainer",
+								"type": "Expression"
+							},
+							"FolderPath": {
+								"value": "@pipeline().parameters.ChunkFolderPath",
+								"type": "Expression"
+							}
+						}
 					},
-					"traceLevel": "Fine"
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "ParquetReadSettings"
+					}
 				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "ListContactChunkFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
 			"WatermarkDate": {
 				"type": "string",
 				"defaultValue": "2026-03-07 16:45:28"
+			},
+			"ChunkContainer": {
+				"type": "string",
+				"defaultValue": "giraffe"
+			},
+			"ChunkfolderPath": {
+				"type": "string",
+				"defaultValue": "staging/contacts_inactive_chunks"
+			},
+			"DataverseBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
+			},
+			"InnerBatchCount": {
+				"type": "int",
+				"defaultValue": 5
 			}
 		},
 		"annotations": []
