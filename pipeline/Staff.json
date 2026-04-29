@@ -690,7 +690,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Staff Dataflow",
+						"referenceName": "Staff_Dataflow",
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"sinkinactivecontactfile": {
