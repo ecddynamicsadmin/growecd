@@ -32,7 +32,7 @@
 						"referenceName": "DataverseSchoolStaff",
 						"type": "DatasetReference"
 					},
-					"name": "sink1",
+					"name": "sinkSchoolStaff",
 					"rejectedDataLinkedService": {
 						"referenceName": "AzureDataLakeStorage1",
 						"type": "LinkedServiceReference"
@@ -43,7 +43,7 @@
 						"referenceName": "DataverseSchool",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "sinkSchoolPrinciple"
 				},
 				{
 					"dataset": {
@@ -227,7 +227,7 @@
 				"     alternateKeyName: 'tcbgrow_school_staff_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1,",
+				"     saveOrder: 3,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
 				"     assertFailure_folderPath: 'errors',",
@@ -258,7 +258,7 @@
 				"          {tcbgrow_Qualification@odata.bind},",
 				"          {tcbgrow_CountryOfBirth@odata.bind},",
 				"          {tcbgrow_School@odata.bind}",
-				"     )) ~> sink1",
+				"     )) ~> sinkSchoolStaff",
 				"alterRow2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -271,7 +271,7 @@
 				"     mapColumn(",
 				"          {tcbgrow_SchoolPrinciple@odata.bind},",
 				"          tcbgrow_schoolid",
-				"     )) ~> sink2",
+				"     )) ~> sinkSchoolPrinciple",
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
