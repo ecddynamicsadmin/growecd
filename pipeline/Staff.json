@@ -672,8 +672,6 @@
 			{
 				"name": "Dataverse Staff Update",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "School Staff Query",
@@ -711,6 +709,8 @@
 			{
 				"name": "ListContactChunkFiles",
 				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Dataverse Staff Update",
@@ -758,6 +758,8 @@
 			{
 				"name": "ForEachChunkFile",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ListContactChunkFiles",
