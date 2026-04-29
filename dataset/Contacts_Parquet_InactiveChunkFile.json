@@ -1,5 +1,5 @@
 {
-	"name": "Contact_Parquet_InactiveChunkFile",
+	"name": "Contacts_Parquet_InactiveChunkFile",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
