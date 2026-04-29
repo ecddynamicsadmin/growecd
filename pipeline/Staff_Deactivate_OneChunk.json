@@ -44,6 +44,10 @@
 									"type": "Expression"
 								},
 								"authentication": {
+									"resource": {
+										"value": "@pipeline().parameters.DataverseBaseUrl",
+										"type": "Expression"
+									},
 									"credential": {
 										"referenceName": "SPcredentialTCBApp",
 										"type": "CredentialReference"
