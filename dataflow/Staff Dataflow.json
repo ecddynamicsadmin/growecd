@@ -47,7 +47,7 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "Contacts_Parquet_ChunkFolder",
+						"referenceName": "Contacts_Parquet_InactiveChunkFolder",
 						"type": "DatasetReference"
 					},
 					"name": "sinkinactivecontactfile"
