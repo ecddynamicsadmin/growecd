@@ -2293,7 +2293,7 @@
 						],
 						"policy": {
 							"timeout": "0.12:00:00",
-							"retry": 1,
+							"retry": 2,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
@@ -2325,6 +2325,106 @@
 								"type": "ParquetReadSettings"
 							}
 						}
+					},
+					{
+						"name": "ForEachChunkFile",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ListContactChunkFiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('ListContactChunkFiles').output.childItems",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "LookupChunkContents",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 2,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ParquetSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "ParquetReadSettings"
+											}
+										},
+										"dataset": {
+											"referenceName": "Contacts_Parquet_InactiveChunkFile",
+											"type": "DatasetReference",
+											"parameters": {
+												"Container": {
+													"value": "@pipeline().parameters.ChunkContainer",
+													"type": "Expression"
+												},
+												"FolderPath": {
+													"value": "@pipeline().parameters.ChunkfolderPath",
+													"type": "Expression"
+												},
+												"FileName": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										},
+										"firstRowOnly": false
+									}
+								},
+								{
+									"name": "InvokeChildStaffPipeline",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "LookupChunkContents",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "Staff_Deactivate_OneChunk",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"ChunkData": {
+												"value": "@activity('LookupChunkContents').output.value",
+												"type": "Expression"
+											},
+											"DataverseBaseUrl": {
+												"value": "@pipeline().parameters.DataverseBaseUrl",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
 					}
 				],
 				"policy": {
@@ -2342,6 +2442,10 @@
 					"ChunkfolderPath": {
 						"type": "string",
 						"defaultValue": "staging/contacts_inactive_chunks"
+					},
+					"DataverseBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
 					}
 				},
 				"annotations": []
