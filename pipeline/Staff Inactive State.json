@@ -1,47 +1,6 @@
 {
 	"name": "Staff Inactive State",
 	"properties": {
-		"activities": [
-			{
-				"name": "ListContactChunkFiles",
-				"type": "GetMetadata",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 1,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "Contacts_Parquet_InactiveChunkFolder",
-						"type": "DatasetReference",
-						"parameters": {
-							"Container": {
-								"value": "@pipeline().parameters.ChunkContainer",
-								"type": "Expression"
-							},
-							"FolderPath": {
-								"value": "@pipeline().parameters.ChunkFolderPath",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "ParquetReadSettings"
-					}
-				}
-			}
-		],
 		"parameters": {
 			"ChunkContainer": {
 				"type": "string",
