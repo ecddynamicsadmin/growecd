@@ -1,0 +1,49 @@
+{
+	"name": "Staff_Deactivate_OneChunk",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachStaffChunkfile",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.ChunkData",
+						"type": "Expression"
+					},
+					"batchCount": 1,
+					"activities": [
+						{
+							"name": "PatchContactInactive",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 3,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"ChunkData": {
+				"type": "array"
+			},
+			"DataverseBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
+			},
+			"InnerBatchCount": {
+				"type": "int",
+				"defaultValue": 5
+			}
+		},
+		"annotations": []
+	}
+}

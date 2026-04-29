@@ -755,7 +755,8 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "IfChunkExist",
+				"description": "Guards against empty chunks",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -765,7 +766,13 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('ListContactChunkFiles').output.childItems), 0)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -780,14 +787,6 @@
 			"ChunkfolderPath": {
 				"type": "string",
 				"defaultValue": "staging/contacts_inactive_chunks"
-			},
-			"DataverseBaseUrl": {
-				"type": "string",
-				"defaultValue": "https://growecddev.crm4.dynamics.com"
-			},
-			"InnerBatchCount": {
-				"type": "int",
-				"defaultValue": 5
 			}
 		},
 		"annotations": []
