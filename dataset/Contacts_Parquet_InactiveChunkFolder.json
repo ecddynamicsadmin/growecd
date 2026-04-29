@@ -1,9 +1,19 @@
 {
-	"name": "Contacts_Parquet_ChunkFolder",
+	"name": "Contacts_Parquet_InactiveChunkFolder",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container": {
+				"type": "string",
+				"defaultValue": "giraffe"
+			},
+			"FolderPath": {
+				"type": "string",
+				"defaultValue": "staging/contacts_inactive_chunks"
+			}
 		},
 		"folder": {
 			"name": "Parquet"
@@ -13,8 +23,14 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "staging/contacts_inactive_chunks",
-				"fileSystem": "giraffe"
+				"folderPath": {
+					"value": "@dataset().FolderPath",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().Container",
+					"type": "Expression"
+				}
 			},
 			"compressionCodec": "snappy"
 		},
