@@ -3,73 +3,12 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "CopyInactiveStaffIdsToChunks",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "DeleteOldContactChunks",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "ParquetSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "ParquetReadSettings"
-						}
-					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "FlattenHierarchy"
-						},
-						"formatSettings": {
-							"type": "JsonWriteSettings",
-							"filePattern": "arrayOfObjects"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "p_schoolstaff_d",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Contacts_Json_InactiveChunks",
-						"type": "DatasetReference",
-						"parameters": {
-							"Container": "giraffe",
-							"FolderPath": "staging/contacts_inactive_chunks"
-						}
-					}
-				]
-			},
-			{
-				"name": "DeleteOldContactChunks",
-				"type": "Delete",
+				"name": "ListContactChunkFiles",
+				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 0,
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -77,23 +16,50 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Contacts_Json_InactiveChunkFolder",
+						"referenceName": "Contacts_Parquet_InactiveChunkFolder",
 						"type": "DatasetReference",
 						"parameters": {
-							"Container": "giraffe",
-							"FolderPath": "staging/contact_inactive_chunks"
+							"Container": {
+								"value": "@pipeline().parameters.ChunkContainer",
+								"type": "Expression"
+							},
+							"FolderPath": {
+								"value": "@pipeline().parameters.ChunkFolderPath",
+								"type": "Expression"
+							}
 						}
 					},
-					"enableLogging": false,
+					"fieldList": [
+						"childItems"
+					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"wildcardFileName": "*.json",
 						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "ParquetReadSettings"
 					}
 				}
 			}
 		],
+		"parameters": {
+			"ChunkContainer": {
+				"type": "string",
+				"defaultValue": "giraffe"
+			},
+			"ChunkFolderPath": {
+				"type": "string",
+				"defaultValue": "stagin/contacts_inactive_chunks"
+			},
+			"DataverseBaseUrl": {
+				"type": "string",
+				"defaultValue": "https://growecddev.crm4.dynamics.com"
+			},
+			"InnerBatchCount": {
+				"type": "string",
+				"defaultValue": "5"
+			}
+		},
 		"annotations": []
 	}
 }
