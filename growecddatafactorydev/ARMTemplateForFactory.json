@@ -4774,7 +4774,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "Staff Dataflow",
+								"referenceName": "Staff_Dataflow",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
@@ -4976,7 +4976,7 @@
 				"[concat(variables('factoryId'), '/datasets/MariaSchoolStaff')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_s')]",
 				"[concat(variables('factoryId'), '/dataflows/School Staff')]",
-				"[concat(variables('factoryId'), '/dataflows/Staff Dataflow')]",
+				"[concat(variables('factoryId'), '/dataflows/Staff_Dataflow')]",
 				"[concat(variables('factoryId'), '/datasets/Contacts_Parquet_InactiveChunkFolder')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
 				"[concat(variables('factoryId'), '/datasets/Contacts_Parquet_InactiveChunkFile')]",
@@ -11718,7 +11718,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Staff Dataflow')]",
+			"name": "[concat(parameters('factoryName'), '/Staff_Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
