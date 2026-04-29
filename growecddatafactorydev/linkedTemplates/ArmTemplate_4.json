@@ -21,6 +21,35 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/storage_SchoolCompliance_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "school_government_compliences.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/GrowRestService')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -69,55 +98,6 @@
 						"secretName": "DataverseSPN"
 					}
 				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Container": {
-						"type": "string",
-						"defaultValue": "giraffe"
-					},
-					"FolderPath": {
-						"type": "string",
-						"defaultValue": "staging/contacts_inactive_chunks"
-					},
-					"FileName": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().FileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().FolderPath",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().Container",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
 			},
 			"dependsOn": []
 		},
@@ -762,7 +742,91 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/storage_SchoolCompliance_AUTO')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Staff_Deactivate_OneChunk')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachStaffChunkfile",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.ChunkData",
+								"type": "Expression"
+							},
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "PatchContactInactive",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"OData-MaxVersion": "4.0",
+											"OData-Version": "4.0",
+											"Accept": "application/json",
+											"Content-Type": "application/json; charset=utf-8",
+											"If-Match": "*"
+										},
+										"url": {
+											"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"statecode\": 1, \"statuscode\": 2}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"resource": {
+												"value": "@pipeline().parameters.DataverseBaseUrl",
+												"type": "Expression"
+											},
+											"credential": {
+												"referenceName": "SPcredentialTCBApp",
+												"type": "CredentialReference"
+											},
+											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ChunkData": {
+						"type": "array"
+					},
+					"DataverseBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Contacts')]",
@@ -1820,29 +1884,6 @@
 						}
 					],
 					"script": "section Section1;\r\nshared p_schoollearner_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoollearner_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoollearner_s\",\n  #\"Removed columns\" = Table.RemoveColumns(Source, {\"class_id\", \"fee\", \"is_confirmed\", \"is_standard_fee_applied\", \"zip_code\", \"other_country_of_birth_id\", \"doctors_name\", \"doctors_contact_no\", \"known_allergies\", \"created_by\", \"updated_by\", \"parent_id\", \"is_dormant\", \"profile_completed\", \"created_at\", \"special_need_description\", \"sassa_status\"}),  \n  \n    // Create Full Name first  \n    AddFullName = Table.AddColumn(  \n        #\"Removed columns\",  \n        \"FullName\",  \n        each Text.Trim([first_name] & \" \" & [last_name]),  \n        type text  \n    ),  \n  \n    // Rename columns to Dataverse schema names  \n    RenamedColumns = Table.RenameColumns(AddFullName, {\n        {\"address\", \"tcbgrow_address\"}, \n        {\"age_group_id\", \"tcbgrow_schoolagegroup\"}, \n        {\"id\", \"tcbgrow_appid\"},  \n        {\"city_id\", \"tcbgrow_city\"},  \n        {\"country_of_birth_id\", \"tcbgrow_country\"},  \n        {\"date_of_birth\", \"tcbgrow_dateofbirth\"},  \n        {\"enroll_date\", \"tcbgrow_enrolldate\"},  \n        {\"first_name\", \"tcbgrow_firstname\"},  \n        {\"gender\", \"tcbgrow_gender\"},  \n        {\"id_number\", \"tcbgrow_idnumber\"},  \n        {\"import\", \"tcbgrow_import\"},  \n        {\"last_name\", \"tcbgrow_lastname\"},  \n        {\"is_active\", \"tcbgrow_leaneractive\"},  \n        {\"school_age_group_id\", \"tcbgrow_leanerage\"},  \n        {\"is_special\", \"tcbgrow_leanerspecial\"},  \n        {\"is_graduated\", \"tcbgrow_learnergraduated\"},  \n        {\"middle_name\", \"tcbgrow_middlename\"},  \n        {\"FullName\", \"tcbgrow_name\"},  \n        {\"race_type_id\", \"tcbgrow_race\"},  \n        {\"province_id\", \"cog_region\"},  \n        {\"school_id\", \"tcbgrow_school\"},  \n        {\"start_date\", \"tcbgrow_startdate\"},  \n        {\"is_temporary\", \"tcbgrow_temporary\"}  \n    }, MissingField.Ignore),\n  #\"Capitalized each word\" = Table.TransformColumns(RenamedColumns, {{\"tcbgrow_gender\", each Text.Proper(_), type nullable text}}),\n  #\"Trimmed text\" = Table.TransformColumns(#\"Capitalized each word\", {{\"tcbgrow_gender\", each Text.Trim(_), type nullable text}}),\n  #\"Replaced value\" = Table.ReplaceValue(#\"Trimmed text\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_name\", \"tcbgrow_idnumber\", \"tcbgrow_address\", \"tcbgrow_middlename\", \"tcbgrow_lastname\", \"tcbgrow_firstname\"})  \n  \nin  \n    #\"Replaced value\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Owner Training Attendance')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolownertrainingattendance_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolownertrainingattendance_s",
-							"dataset": {
-								"referenceName": "p_schoolownertrainingattendance_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolownertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolownertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolownertrainingattendance_s\",\n\n  \n    // Keep only required source columns  \n    SelectedColumns = Table.SelectColumns(Source,{  \n        \"attended\",  \n        \"course_type\",  \n        \"person_id\",  \n        \"franch_no\",  \n        \"group_name\",  \n        \"group_train\",  \n        \"meeting\",  \n        \"meeting_date\",  \n        \"mentor\",  \n        \"owner\",  \n        \"region\",  \n        \"school_id\"  \n    }),  \n  \n    // Rename to destination schema names  \n    RenamedColumns = Table.RenameColumns(SelectedColumns,{  \n        {\"attended\",\"tcbgrow_attended\"},  \n        {\"course_type\",\"tcbgrow_coursetype\"},  \n        {\"person_id\",\"tcbgrow_ecdowner\"},  \n        {\"franch_no\",\"tcbgrow_franchiseenumber\"},  \n        {\"group_name\",\"tcbgrow_groupname\"},  \n        {\"group_train\",\"tcbgrow_grouptrain\"},  \n        {\"meeting\",\"tcbgrow_meeting\"},  \n        {\"meeting_date\",\"tcbgrow_meetingdate\"},  \n        {\"mentor\",\"tcbgrow_mentor\"},  \n        {\"owner\",\"tcbgrow_ownername\"},  \n        {\"region\",\"tcbgrow_region\"},  \n        {\"school_id\",\"tcbgrow_schoolid\"}  \n    }),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(RenamedColumns, \"tcbgrow_meetingdate\", \"tcbgrow_meetingdatestring\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"tcbgrow_meetingdatestring\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_meetingdatestring\", type text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_meetingdatestring\"}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \":\", \"-\", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 1\", \"&\", \" and \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 5\", \"  \", \" \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \" \", \"_\", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Replaced value 3\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_grouptrain\"}),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Replaced value 6\", \"tcbgrow_ecdowner\", \"tcbgrow_ownerid\")  \n  \nin  \n    #\"Duplicated column 1\";\r\n",
 					"documentLocale": "en-us"
 				}
 			},

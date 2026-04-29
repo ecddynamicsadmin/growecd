@@ -4838,6 +4838,7 @@
 							],
 							"storeSettings": {
 								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
 								"enablePartitionDiscovery": false
 							},
 							"formatSettings": {
@@ -4978,6 +4979,88 @@
 				"[concat(variables('factoryId'), '/datasets/p_schoolstaff_d')]",
 				"[concat(variables('factoryId'), '/datasets/Contacts_Parquet_InactiveChunkFile')]",
 				"[concat(variables('factoryId'), '/pipelines/Staff_Deactivate_OneChunk')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Staff_Deactivate_OneChunk')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachStaffChunkfile",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.ChunkData",
+								"type": "Expression"
+							},
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "PatchContactInactive",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"OData-MaxVersion": "4.0",
+											"OData-Version": "4.0",
+											"Accept": "application/json",
+											"Content-Type": "application/json; charset=utf-8",
+											"If-Match": "*"
+										},
+										"url": {
+											"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"statecode\": 1, \"statuscode\": 2}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"resource": {
+												"value": "@pipeline().parameters.DataverseBaseUrl",
+												"type": "Expression"
+											},
+											"credential": {
+												"referenceName": "SPcredentialTCBApp",
+												"type": "CredentialReference"
+											},
+											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ChunkData": {
+						"type": "array"
+					},
+					"DataverseBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
 			]
 		},
 		{
@@ -5354,6 +5437,57 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowRestService')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"Container": {
+						"type": "string",
+						"defaultValue": "giraffe"
+					},
+					"FolderPath": {
+						"type": "string",
+						"defaultValue": "staging/contacts_inactive_chunks"
+					},
+					"FileName": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().FileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().FolderPath",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().Container",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
 			]
 		},
 		{
@@ -11901,135 +12035,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"Container": {
-						"type": "string",
-						"defaultValue": "giraffe"
-					},
-					"FolderPath": {
-						"type": "string",
-						"defaultValue": "staging/contacts_inactive_chunks"
-					},
-					"FileName": {
-						"type": "string"
-					}
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().FileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().FolderPath",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().Container",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Staff_Deactivate_OneChunk')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "ForEachStaffChunkfile",
-						"type": "ForEach",
-						"dependsOn": [],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@pipeline().parameters.ChunkData",
-								"type": "Expression"
-							},
-							"batchCount": 5,
-							"activities": [
-								{
-									"name": "PatchContactInactive",
-									"type": "WebActivity",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 3,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"method": "PATCH",
-										"headers": {
-											"OData-MaxVersion": "4.0",
-											"OData-Version": "4.0",
-											"Accept": "application/json",
-											"Content-Type": "application/json; charset=utf-8",
-											"If-Match": "*"
-										},
-										"url": {
-											"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
-											"type": "Expression"
-										},
-										"body": {
-											"value": "{\"statecode\": 1, \"statuscode\": 2}",
-											"type": "Expression"
-										},
-										"authentication": {
-											"credential": {
-												"referenceName": "SPcredentialTCBApp",
-												"type": "CredentialReference"
-											},
-											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
-										}
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"ChunkData": {
-						"type": "array"
-					},
-					"DataverseBaseUrl": {
-						"type": "string",
-						"defaultValue": "https://growecddev.crm4.dynamics.com"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
 			]
 		}
 	]

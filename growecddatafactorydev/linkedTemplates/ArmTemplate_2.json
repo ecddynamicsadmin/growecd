@@ -13,6 +13,110 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolcompliance_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_amountid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_appid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_checklistholder",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_dsdapplicationsubmission",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_dsdgrantapproval",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_dsdgrantpaid",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_dsdstatus",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_effectivedate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_eligibleforotherstudy",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_expirydate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_franchisecommencementdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_nporegistered",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nporegistrationdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_nporegistrationnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_numberofchildrensregistration",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_othersubsidyenddate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_othersubsidystartdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_schoolid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolcapacity",
+						"type": "INT64"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolcompliance_s')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1788,150 +1892,6 @@
 					{
 						"name": "id",
 						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolstaff_d.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "tcbgrow_alternativenumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_city",
-						"type": "INT64"
-					},
-					{
-						"name": "mobilephone",
-						"type": "UTF8"
-					},
-					{
-						"name": "telephone1",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_countryofbirth",
-						"type": "INT64"
-					},
-					{
-						"name": "birthdate",
-						"type": "INT96"
-					},
-					{
-						"name": "emailaddress1",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_employeetype",
-						"type": "INT64"
-					},
-					{
-						"name": "firstname",
-						"type": "UTF8"
-					},
-					{
-						"name": "gendercode",
-						"type": "UTF8"
-					},
-					{
-						"name": "new_staff_id",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_idnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "statecode",
-						"type": "INT32"
-					},
-					{
-						"name": "tcbgrow_nextofkincontactnumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinemail",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinname",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_nextofkinrelationship",
-						"type": "INT64"
-					},
-					{
-						"name": "lastname",
-						"type": "UTF8"
-					},
-					{
-						"name": "middlename",
-						"type": "UTF8"
-					},
-					{
-						"name": "tcbgrow_staffrole",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_region",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_qualification",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_race",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolappid",
-						"type": "INT64"
-					},
-					{
-						"name": "tcbgrow_schoolstaff",
-						"type": "UTF8"
-					},
-					{
-						"name": "new_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_startdate",
-						"type": "INT96"
-					},
-					{
-						"name": "tcbgrow_address1",
-						"type": "UTF8"
 					}
 				]
 			},

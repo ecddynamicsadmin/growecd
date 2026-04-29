@@ -13,6 +13,150 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_d')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolstaff_d.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "tcbgrow_alternativenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_city",
+						"type": "INT64"
+					},
+					{
+						"name": "mobilephone",
+						"type": "UTF8"
+					},
+					{
+						"name": "telephone1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_countryofbirth",
+						"type": "INT64"
+					},
+					{
+						"name": "birthdate",
+						"type": "INT96"
+					},
+					{
+						"name": "emailaddress1",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_employeetype",
+						"type": "INT64"
+					},
+					{
+						"name": "firstname",
+						"type": "UTF8"
+					},
+					{
+						"name": "gendercode",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_staff_id",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_idnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "updated_at",
+						"type": "INT96"
+					},
+					{
+						"name": "statecode",
+						"type": "INT32"
+					},
+					{
+						"name": "tcbgrow_nextofkincontactnumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinname",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_nextofkinrelationship",
+						"type": "INT64"
+					},
+					{
+						"name": "lastname",
+						"type": "UTF8"
+					},
+					{
+						"name": "middlename",
+						"type": "UTF8"
+					},
+					{
+						"name": "tcbgrow_staffrole",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_region",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_qualification",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_race",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolappid",
+						"type": "INT64"
+					},
+					{
+						"name": "tcbgrow_schoolstaff",
+						"type": "UTF8"
+					},
+					{
+						"name": "new_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_startdate",
+						"type": "INT96"
+					},
+					{
+						"name": "tcbgrow_address1",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolstaff_d_inactive')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -980,35 +1124,6 @@
 					"location": {
 						"type": "AzureBlobFSLocation",
 						"fileName": "vw_staff_attendance_stats_3months.csv",
-						"folderPath": "giraffe"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/storage_SchoolCompliance_AUTO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Storage"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "school_government_compliences.csv",
 						"folderPath": "giraffe"
 					},
 					"columnDelimiter": ",",
