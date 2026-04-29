@@ -2262,19 +2262,11 @@
 									"parquetsource": {},
 									"dataverseschools": {},
 									"schoolstaffafterquery": {},
-									"sink1": {},
-									"sink2": {},
+									"sinkSchoolStaff": {},
+									"sinkSchoolPrinciple": {},
 									"sinkinactivecontactfile": {
 										"Container": "giraffe",
 										"FolderPath": "staging/contacts_inactive_chunks"
-									}
-								},
-								"linkedServiceParameters": {
-									"sinkinactivecontactfile": {
-										"schemaLinkedService": {
-											"Container": "giraffe",
-											"FolderPath": "staging/contacts_inactive_chunks"
-										}
 									}
 								}
 							},
