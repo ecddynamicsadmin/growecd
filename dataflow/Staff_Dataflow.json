@@ -227,7 +227,7 @@
 				"     alternateKeyName: 'tcbgrow_school_staff_key',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 2,",
+				"     saveOrder: 1,",
 				"     outputAssertFailedRows: true,",
 				"     assertFailure_fileSystem: 'giraffe',",
 				"     assertFailure_folderPath: 'errors',",
@@ -282,7 +282,7 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     saveOrder: 1,",
+				"     saveOrder: 2,",
 				"     partitionBy('roundRobin', 10)) ~> sinkinactivecontactfile"
 			]
 		}
