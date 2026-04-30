@@ -4756,6 +4756,8 @@
 					{
 						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
@@ -4800,8 +4802,6 @@
 					{
 						"name": "ListContactChunkFiles",
 						"type": "GetMetadata",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Dataverse Staff Update",
@@ -4849,8 +4849,6 @@
 					{
 						"name": "ForEachChunkFile",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ListContactChunkFiles",
@@ -5413,32 +5411,6 @@
 				"[concat(variables('factoryId'), '/dataflows/School Teacher Train Attendance')]",
 				"[concat(variables('factoryId'), '/dataflows/School Teacher Training Attendance Dataflow')]",
 				"[concat(variables('factoryId'), '/datasets/p_schoolteachertrainingattendance_d')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Contacts')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "GrowRestService",
-					"type": "LinkedServiceReference",
-					"parameters": {
-						"Rest Base URL": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
-					}
-				},
-				"folder": {
-					"name": "REST"
-				},
-				"annotations": [],
-				"type": "RestResource",
-				"typeProperties": {
-					"relativeUrl": ""
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/GrowRestService')]"
 			]
 		},
 		{

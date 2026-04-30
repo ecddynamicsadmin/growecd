@@ -13,29 +13,6 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/School Owner Training Attendance')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolownertrainingattendance_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolownertrainingattendance_s",
-							"dataset": {
-								"referenceName": "p_schoolownertrainingattendance_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolownertrainingattendance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolownertrainingattendance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolownertrainingattendance_s\",\n\n  \n    // Keep only required source columns  \n    SelectedColumns = Table.SelectColumns(Source,{  \n        \"attended\",  \n        \"course_type\",  \n        \"person_id\",  \n        \"franch_no\",  \n        \"group_name\",  \n        \"group_train\",  \n        \"meeting\",  \n        \"meeting_date\",  \n        \"mentor\",  \n        \"owner\",  \n        \"region\",  \n        \"school_id\"  \n    }),  \n  \n    // Rename to destination schema names  \n    RenamedColumns = Table.RenameColumns(SelectedColumns,{  \n        {\"attended\",\"tcbgrow_attended\"},  \n        {\"course_type\",\"tcbgrow_coursetype\"},  \n        {\"person_id\",\"tcbgrow_ecdowner\"},  \n        {\"franch_no\",\"tcbgrow_franchiseenumber\"},  \n        {\"group_name\",\"tcbgrow_groupname\"},  \n        {\"group_train\",\"tcbgrow_grouptrain\"},  \n        {\"meeting\",\"tcbgrow_meeting\"},  \n        {\"meeting_date\",\"tcbgrow_meetingdate\"},  \n        {\"mentor\",\"tcbgrow_mentor\"},  \n        {\"owner\",\"tcbgrow_ownername\"},  \n        {\"region\",\"tcbgrow_region\"},  \n        {\"school_id\",\"tcbgrow_schoolid\"}  \n    }),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(RenamedColumns, \"tcbgrow_meetingdate\", \"tcbgrow_meetingdatestring\"),\r\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Duplicated column\", {{\"tcbgrow_meetingdatestring\", type date}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"tcbgrow_meetingdatestring\", type text}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"/\", \"\", Replacer.ReplaceText, {\"tcbgrow_meetingdatestring\"}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \":\", \"-\", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 4\" = Table.ReplaceValue(#\"Replaced value 1\", \"&\", \" and \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 5\" = Table.ReplaceValue(#\"Replaced value 4\", \"/\", \" and \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 2\" = Table.ReplaceValue(#\"Replaced value 5\", \"  \", \" \", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 3\" = Table.ReplaceValue(#\"Replaced value 2\", \" \", \"_\", Replacer.ReplaceText, {\"tcbgrow_grouptrain\"}),\r\n  #\"Replaced value 6\" = Table.ReplaceValue(#\"Replaced value 3\", null, \"\", Replacer.ReplaceValue, {\"tcbgrow_grouptrain\"}),\r\n  #\"Duplicated column 1\" = Table.DuplicateColumn(#\"Replaced value 6\", \"tcbgrow_ecdowner\", \"tcbgrow_ownerid\")  \n  \nin  \n    #\"Duplicated column 1\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/School Owners Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1891,7 +1868,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/School Owner Training Attendance')]",
 				"[concat(variables('factoryId'), '/dataflows/School Owners Training Attendance')]"
 			]
 		},
@@ -2449,6 +2425,168 @@
 					"WatermarkDate": {
 						"type": "string",
 						"defaultValue": "2026-01-29 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Expenses')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Expenses from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolExpenses",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolexpenses_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Expenses Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Expenses from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Expenses",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolexpenses_s": {},
+									"UserQuerypschoolexpensesd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolexpensesd",
+											"dataset": {
+												"referenceName": "p_schoolexpenses_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_importexpenseid as long,\n\t\ttcbgrow_importschoolid as long,\n\t\ttcbgrow_source as string,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_year as string,\n\t\ttcbgrow_transactiontype as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolexpenses_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolexpensesd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "School Expenses Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Expenses Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Expenses Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-12 16:45:28"
 					}
 				},
 				"annotations": []
