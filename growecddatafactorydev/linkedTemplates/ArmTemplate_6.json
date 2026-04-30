@@ -1400,8 +1400,6 @@
 					{
 						"name": "School Staff from Maria",
 						"type": "Copy",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "0.12:00:00",
@@ -2022,8 +2020,6 @@
 					{
 						"name": "School Staff Query",
 						"type": "ExecuteWranglingDataflow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff from Maria",
@@ -2075,8 +2071,6 @@
 					{
 						"name": "Dataverse Staff Update",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Staff Query",
@@ -2644,8 +2638,6 @@
 					{
 						"name": "ECD Owners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set WatermarkDate",
@@ -2675,8 +2667,6 @@
 					{
 						"name": "Schools",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "ECD Owners",
@@ -2735,8 +2725,6 @@
 					{
 						"name": "School Age Groups",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Schools",
@@ -2766,8 +2754,6 @@
 					{
 						"name": "School Learners",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff",
@@ -2806,7 +2792,7 @@
 						"typeProperties": {
 							"variableName": "WatermarkDate",
 							"value": {
-								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3650),'yyyy-MM-dd HH:mm:ss'))",
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-16),'yyyy-MM-dd HH:mm:ss'))",
 								"type": "Expression"
 							}
 						}
@@ -2814,8 +2800,6 @@
 					{
 						"name": "Owner Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learners Stats",
@@ -2845,8 +2829,6 @@
 					{
 						"name": "Teacher Training Attendance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Owner Training Attendance",
@@ -2876,8 +2858,6 @@
 					{
 						"name": "Staff Attendance Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Teacher Training Attendance",
@@ -2907,8 +2887,6 @@
 					{
 						"name": "Compliance",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Staff Attendance Stats",
@@ -2938,8 +2916,6 @@
 					{
 						"name": "School Salaries",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Compliance",
@@ -2969,8 +2945,6 @@
 					{
 						"name": "School Income",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Salaries",
@@ -3000,8 +2974,6 @@
 					{
 						"name": "School Fees",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Income",
@@ -3031,8 +3003,6 @@
 					{
 						"name": "School Expenses",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Fees",
@@ -3062,8 +3032,6 @@
 					{
 						"name": "Learners Stats",
 						"type": "ExecutePipeline",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "School Learners",
