@@ -76,9 +76,6 @@
 					"name": "staffroleprinciple"
 				},
 				{
-					"name": "activestaff"
-				},
-				{
 					"name": "inactivestaff"
 				},
 				{
@@ -166,7 +163,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> schoolstaffafterquery",
-				"activestaff alterRow(upsertIf(true())) ~> alterRow1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
 				"parquetsource derive({cog_City@odata.bind} = iif(\r",
 				"    isNull(cog_city),\r",
 				"    toString(null()),\r",
@@ -207,7 +204,6 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select1",
 				"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
-				"derivedColumn1 filter(statecode==1) ~> activestaff",
 				"schoolstaffafterquery filter(statecode==0) ~> inactivestaff",
 				"inactivestaff select(mapColumn(",
 				"          new_staff_id,",
