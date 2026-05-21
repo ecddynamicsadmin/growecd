@@ -159,7 +159,7 @@
 				"typeProperties": {
 					"variableName": "WatermarkDate",
 					"value": {
-						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-16),'yyyy-MM-dd HH:mm:ss'))",
+						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-22),'yyyy-MM-dd HH:mm:ss'))",
 						"type": "Expression"
 					}
 				}
