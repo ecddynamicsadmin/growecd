@@ -1,0 +1,17 @@
+{
+	"name": "MariaDB1",
+	"properties": {
+		"type": "MariaDB",
+		"annotations": [],
+		"typeProperties": {
+			"server": "102.130.112.164",
+			"port": 3306,
+			"database": "growecd_growecd",
+			"username": "cognate",
+			"driverVersion": "v2",
+			"sslMode": 0,
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDI5RDUyQUVBLTc3NzYtNDZGMC1BMUQ4LTIwNDhCMjNFN0RBRF9kZWY0MWMyOC1mYjBhLTQ1ZjAtYTdiZS04YjhiNjMwNDI4M2IiDQp9"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}
