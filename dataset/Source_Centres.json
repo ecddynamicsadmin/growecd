@@ -1,12 +1,12 @@
 {
-	"name": "Giraffe_Centres",
+	"name": "Source_Centres",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "Giraffe",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Maria Db"
+			"name": "G2 Source Tables"
 		},
 		"annotations": [],
 		"type": "MariaDBTable",

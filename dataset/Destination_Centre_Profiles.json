@@ -1,12 +1,13 @@
 {
-	"name": "centre_profiles",
+	"name": "Destination_Centre_Profiles",
 	"properties": {
+		"description": "Centre Profiles in the Dataverse",
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "G2 - Parquet"
+			"name": "G2 Parquet"
 		},
 		"annotations": [],
 		"type": "Parquet",

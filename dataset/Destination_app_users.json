@@ -1,12 +1,13 @@
 {
-	"name": "app_users",
+	"name": "Destination_app_users",
 	"properties": {
+		"description": "Contacts in the Dataverse",
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "G2 - Parquet"
+			"name": "G2 Parquet"
 		},
 		"annotations": [],
 		"type": "Parquet",
