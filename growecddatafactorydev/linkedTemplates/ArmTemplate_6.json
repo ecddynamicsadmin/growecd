@@ -13,6 +13,2655 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Schools Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schools_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schools_d",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseAccount",
+								"type": "DatasetReference"
+							},
+							"name": "account"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchool",
+								"type": "DatasetReference"
+							},
+							"name": "School",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolPartner",
+								"type": "DatasetReference"
+							},
+							"name": "Partner"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "flatten1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn3"
+						},
+						{
+							"name": "derivedColumn4"
+						},
+						{
+							"name": "alterRow2"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select3"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_programmestatus as string,",
+						"          tcbgrow_breakeven as integer,",
+						"          tcbgrow_ecdowner as long,",
+						"          tcbgrow_paymenttype as string,",
+						"          tcbgrow_schoolsegment as string,",
+						"          tcbgrow_monthlysalaries as decimal(38,9),",
+						"          tcbgrow_schoolstatus as string,",
+						"          updated_at as timestamp,",
+						"          tcbgrow_contractdate as timestamp,",
+						"          tcbgrow_ecdcode as string,",
+						"          tcbgrow_commencementdate as timestamp,",
+						"          tcbgrow_address as string,",
+						"          tcbgrow_numberofclassrooms as string,",
+						"          tcbgrow_name as string,",
+						"          cog_city as long,",
+						"          cog_region as long,",
+						"          tcbgrow_growid as string,",
+						"          tcbgrow_appid as long,",
+						"          tcbgrow_capacity as integer,",
+						"          tcbgrow_country as integer,",
+						"          tcbgrow_appaccountcreationdate as timestamp,",
+						"          tcbgrow_centrestartdate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"source(output(",
+						"          tcbgrow_programmestatus as string,",
+						"          tcbgrow_breakeven as integer,",
+						"          tcbgrow_ecdowner as long,",
+						"          tcbgrow_paymenttype as string,",
+						"          tcbgrow_schoolsegment as string,",
+						"          tcbgrow_monthlysalaries as decimal(38,9),",
+						"          tcbgrow_schoolstatus as string,",
+						"          updated_at as timestamp,",
+						"          tcbgrow_contractdate as timestamp,",
+						"          tcbgrow_ecdcode as string,",
+						"          tcbgrow_commencementdate as timestamp,",
+						"          tcbgrow_address as string,",
+						"          tcbgrow_numberofclassrooms as string,",
+						"          tcbgrow_name as string,",
+						"          cog_city as long,",
+						"          cog_region as long,",
+						"          tcbgrow_growid as string,",
+						"          tcbgrow_appid as long,",
+						"          tcbgrow_capacity as integer,",
+						"          tcbgrow_country as integer,",
+						"          tcbgrow_appaccountcreationdate as timestamp,",
+						"          tcbgrow_centrestartdate as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> source1",
+						"source(output(",
+						"          {@odata.etag} as string,",
+						"          accountid as string,",
+						"          name as string,",
+						"          tcbgrow_shortcode as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     query: '<fetch>\\n  <entity name=\"account\">\\n    <attribute name=\"accountid\" />\\n    <attribute name=\"tcbgrow_shortcode\" />\\n    <attribute name=\"name\" />\\n    <filter>\\n      <condition attribute=\"tcbgrow_shortcode\" operator=\"not-null\" />\\n    </filter>\\n  </entity>\\n</fetch>') ~> account",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"parquetsource derive(tcbgrow_paymenttype = case(  \r",
+						"    trim(tcbgrow_paymenttype) == 'Loan Only', 301220005,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Cash Only', 301220000,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Grant Only', 301220011,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Partner Funded', 301220006,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Loan/Cash', 301220002,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Grant/Cash', 301220001,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Cash', 301220003,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Grant/Partner Funded', 301220007,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Loan/Grant/Partner Funded', 301220008,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Cash/Grant/Partner Funded', 301220009,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Cash/Loan/Grant/Partner Funded', 301220010,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Loan/Partner Funded', 301220012,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Cash/Partner Funded', 523930001,  \r",
+						"    trim(tcbgrow_paymenttype) == 'None', 301220013,  \r",
+						"    trim(tcbgrow_paymenttype) == 'Former Partner Centre', 301220014,  \r",
+						"    toInteger(null())  \r",
+						"),",
+						"          {cog_City@odata.bind} = iif(\r",
+						"    isNull(cog_city),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_cities(tcbgrow_appid=\",toString(cog_city),\")\")\r",
+						"),",
+						"          {tcbgrow_Country@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_country),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
+						"),",
+						"          {tcbgrow_ECDOwner@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_ecdowner),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_ecdowners(tcbgrow_appid=\", toString(tcbgrow_ecdowner), \")\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")\r",
+						"),",
+						"          {tcbgrow_SchoolSegment@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_schoolsegment),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_customersegments(tcbgrow_appid=\", toString(tcbgrow_schoolsegment), \")\")\r",
+						"),",
+						"          tcbgrow_numberofclassrooms = toInteger(tcbgrow_numberofclassrooms),",
+						"          tcbgrow_programmestatus = case(\r",
+						"     trim(tcbgrow_programmestatus) == 'Active', 1,\r",
+						"     trim(tcbgrow_programmestatus) == 'Graduated', 2,\r",
+						"     trim(tcbgrow_programmestatus) == 'Exited', 3,\r",
+						"     trim(tcbgrow_programmestatus) == 'None', 4,\r",
+						"     toInteger(null())\r",
+						")) ~> derivedColumn1",
+						"select1 derive(splitCodes = split(tcbgrow_ecdcode,'/')) ~> derivedColumn2",
+						"derivedColumn2 foldDown(unroll(splitCodes),",
+						"     mapColumn(",
+						"          partnercode = splitCodes,",
+						"          tcbgrow_appid,",
+						"          tcbgrow_name",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flatten1",
+						"source1 select(mapColumn(",
+						"          tcbgrow_ecdcode,",
+						"          tcbgrow_appid,",
+						"          tcbgrow_name",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"flatten1 derive(partnercode = trim(toString(partnercode))) ~> derivedColumn3",
+						"join1 derive({cog_School@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
+						"          {cog_account@odata.bind} = iif(isNull(accountid),toString(null()),concat(\"/accounts(\", toString(accountid), \")\")),",
+						"          cog_schoolpartnername = concat(replace(tcbgrow_name,' ','_'), \" - \",partnercode),",
+						"          cog_schoolappid = tcbgrow_appid,",
+						"          cog_partnershortcode = tcbgrow_shortcode) ~> derivedColumn4",
+						"select3 alterRow(upsertIf(true())) ~> alterRow2",
+						"account select(mapColumn(",
+						"          accountid,",
+						"          name,",
+						"          tcbgrow_shortcode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"derivedColumn3, select2 join(partnercode == tcbgrow_shortcode,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"derivedColumn4 select(mapColumn(",
+						"          {cog_School@odata.bind},",
+						"          {cog_account@odata.bind},",
+						"          cog_schoolpartnername,",
+						"          cog_schoolappid,",
+						"          cog_partnershortcode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_import_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_breakeven,",
+						"          tcbgrow_programmestatus,",
+						"          tcbgrow_paymenttype,",
+						"          tcbgrow_monthlysalaries,",
+						"          tcbgrow_schoolstatus,",
+						"          tcbgrow_contractdate,",
+						"          tcbgrow_commencementdate,",
+						"          tcbgrow_address,",
+						"          tcbgrow_numberofclassrooms,",
+						"          tcbgrow_name,",
+						"          tcbgrow_growid,",
+						"          tcbgrow_appid,",
+						"          tcbgrow_capacity,",
+						"          tcbgrow_appaccountcreationdate,",
+						"          tcbgrow_centrestartdate,",
+						"          {cog_City@odata.bind},",
+						"          {tcbgrow_Country@odata.bind},",
+						"          {tcbgrow_ECDOwner@odata.bind},",
+						"          {tcbgrow_SchoolSegment@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          tcbgrow_ecdcode",
+						"     )) ~> School",
+						"alterRow2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_importkey',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 2,",
+						"     mapColumn(",
+						"          cog_schoolpartnername,",
+						"          {cog_School@odata.bind},",
+						"          {cog_account@odata.bind},",
+						"          cog_schoolappid,",
+						"          cog_partnershortcode",
+						"     )) ~> Partner"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Staff_Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d",
+								"type": "DatasetReference"
+							},
+							"name": "parquetsource"
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseSchool",
+								"type": "DatasetReference"
+							},
+							"name": "dataverseschools"
+						},
+						{
+							"dataset": {
+								"referenceName": "p_schoolstaff_d",
+								"type": "DatasetReference"
+							},
+							"name": "schoolstaffafterquery"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataverseSchoolStaff",
+								"type": "DatasetReference"
+							},
+							"name": "sinkSchoolStaff",
+							"rejectedDataLinkedService": {
+								"referenceName": "AzureDataLakeStorage1",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"dataset": {
+								"referenceName": "DataverseSchool",
+								"type": "DatasetReference"
+							},
+							"name": "sinkSchoolPrinciple"
+						},
+						{
+							"dataset": {
+								"referenceName": "Contacts_Parquet_InactiveChunkFolder",
+								"type": "DatasetReference"
+							},
+							"name": "sinkinactivecontactfile"
+						}
+					],
+					"transformations": [
+						{
+							"name": "alterRow1"
+						},
+						{
+							"name": "derivedColumn1"
+						},
+						{
+							"name": "joinschoolappis"
+						},
+						{
+							"name": "derivedColumn2"
+						},
+						{
+							"name": "alterRow2"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "staffroleprinciple"
+						},
+						{
+							"name": "inactivestaff"
+						},
+						{
+							"name": "select2"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     inferDriftedColumnTypes: true,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> parquetsource",
+						"source(output(",
+						"          {@odata.etag} as string,",
+						"          tcbgrow_appid as string,",
+						"          tcbgrow_name as string,",
+						"          tcbgrow_schoolid as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
+						"source(output(",
+						"          tcbgrow_alternativenumber as string,",
+						"          cog_city as long,",
+						"          mobilephone as string,",
+						"          telephone1 as string,",
+						"          tcbgrow_countryofbirth as long,",
+						"          birthdate as timestamp,",
+						"          emailaddress1 as string,",
+						"          tcbgrow_employeetype as long,",
+						"          firstname as string,",
+						"          gendercode as string,",
+						"          new_staff_id as string,",
+						"          tcbgrow_idnumber as string,",
+						"          updated_at as timestamp,",
+						"          statecode as integer,",
+						"          tcbgrow_nextofkincontactnumber as string,",
+						"          tcbgrow_nextofkinemail as string,",
+						"          tcbgrow_nextofkinname as string,",
+						"          tcbgrow_nextofkinrelationship as long,",
+						"          lastname as string,",
+						"          middlename as string,",
+						"          tcbgrow_staffrole as long,",
+						"          cog_region as long,",
+						"          tcbgrow_qualification as long,",
+						"          tcbgrow_race as long,",
+						"          tcbgrow_schoolappid as long,",
+						"          tcbgrow_schoolstaff as string,",
+						"          new_start_date as timestamp,",
+						"          tcbgrow_startdate as timestamp,",
+						"          tcbgrow_address1 as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> schoolstaffafterquery",
+						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+						"parquetsource derive({cog_City@odata.bind} = iif(\r",
+						"    isNull(cog_city),\r",
+						"    toString(null()),\r",
+						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
+						"),",
+						"          {tcbgrow_CountryOfBirth@odata.bind} = iif(\r",
+						"    isNull(tcbgrow_countryofbirth),\r",
+						"    toString(null()),\r",
+						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
+						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolappid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolappid), \")\")),",
+						"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
+						"          birthdate = toString(birthdate, 'yyyy-MM-dd'),",
+						"          gendercode = case(\r",
+						"    trim(gendercode) == 'Male', 1,\r",
+						"    trim(gendercode) == 'Female', 2,\r",
+						"    trim(gendercode) == 'TBC', 3,\r",
+						"    toInteger(null())\r",
+						"    ),",
+						"          statecode = case(\r",
+						"     statecode == 0, 1,\r",
+						"     statecode == 1, 0,\r",
+						"     toInteger(null())\r",
+						")) ~> derivedColumn1",
+						"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> joinschoolappis",
+						"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(isNull(new_staff_id),toString(null()),concat(\"/contacts(new_staff_id='\", trim(new_staff_id), \"')\"))) ~> derivedColumn2",
+						"derivedColumn2 alterRow(updateIf(true())) ~> alterRow2",
+						"joinschoolappis select(mapColumn(",
+						"          tcbgrow_appid,",
+						"          tcbgrow_schoolid,",
+						"          new_staff_id",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
+						"schoolstaffafterquery filter(statecode==0) ~> inactivestaff",
+						"inactivestaff select(mapColumn(",
+						"          new_staff_id,",
+						"          statecode,",
+						"          lastname,",
+						"          tcbgrow_schoolappid,",
+						"          tcbgrow_schoolstaff",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"alterRow1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'tcbgrow_school_staff_key',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     outputAssertFailedRows: true,",
+						"     assertFailure_fileSystem: 'giraffe',",
+						"     assertFailure_folderPath: 'errors',",
+						"     mapColumn(",
+						"          tcbgrow_alternativenumber,",
+						"          mobilephone,",
+						"          telephone1,",
+						"          birthdate,",
+						"          emailaddress1,",
+						"          tcbgrow_employeetype,",
+						"          firstname,",
+						"          gendercode,",
+						"          new_staff_id,",
+						"          tcbgrow_idnumber,",
+						"          tcbgrow_nextofkincontactnumber,",
+						"          tcbgrow_nextofkinemail,",
+						"          tcbgrow_nextofkinname,",
+						"          tcbgrow_nextofkinrelationship,",
+						"          lastname,",
+						"          middlename,",
+						"          tcbgrow_race,",
+						"          tcbgrow_schoolstaff,",
+						"          new_start_date,",
+						"          tcbgrow_startdate,",
+						"          tcbgrow_address1,",
+						"          {cog_Region@odata.bind},",
+						"          {cog_City@odata.bind},",
+						"          {tcbgrow_Qualification@odata.bind},",
+						"          {tcbgrow_CountryOfBirth@odata.bind},",
+						"          {tcbgrow_School@odata.bind}",
+						"     )) ~> sinkSchoolStaff",
+						"alterRow2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:true,",
+						"     upsertable:false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 3,",
+						"     mapColumn(",
+						"          {tcbgrow_SchoolPrinciple@odata.bind},",
+						"          tcbgrow_schoolid",
+						"     )) ~> sinkSchoolPrinciple",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     filePattern:'contact_inactive_chunk_[n].parquet',",
+						"     truncate: true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 2,",
+						"     partitionBy('roundRobin', 10)) ~> sinkinactivecontactfile"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Age Groups')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Age Group from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_school_age_group WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolAgeGroup",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolagegroup_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Age Group Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Age Group from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Age Group",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolagegroup_s": {},
+									"UserQuerypschoolagegroupd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolagegroupd",
+											"dataset": {
+												"referenceName": "p_schoolagegroup_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_agegroup as string,\n\t\ttcbgrow_fees as long,\n\t\ttcbgrow_school as long,\n\t\tupdated_at as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolagegroup_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolagegroupd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Age Group Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Age Group Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Age Groups Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2010-01-07 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Centres')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Centres from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    -- Key: make cog_centreid an alternate key and upsert on it\n    CAST(centreid AS CHAR)     AS cog_centreid,\n\n    -- Direct 1:1 columns (auto-map by name)\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,        -- same codes 1-4\n    programme_status           AS cog_programmestatus,\n    agreement_type             AS cog_agreementtype,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,    -- only applied on create\n\n    -- Need extra handling (see notes below)\n    countrycode                AS countrycode_src,        -- lookup cog_country\n    regioncode                 AS regioncode_src,         -- lookup cog_province (Country + Region key)\n    currencycode               AS currencycode_src,       -- lookup transactioncurrencyid\n    grow_programme             AS grow_programme_src,     -- -> cog_customersegment choice\n    operating_hours            AS operating_hours_src,    -- JSON -> 3 columns\n    property_type              AS property_type_src,      -- JSON -> cog_propertytypeother\n    centre_type                AS centre_type_src,        -- -> code + other text\n    class_types                AS class_types_src         -- -> cog_buildingtypecode + other text\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "school_id",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "school_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "franchisee_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "franchisee_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "grow_id",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "grow_id",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "learner_capacity",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "learner_capacity",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "number_of_classrooms",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "number_of_classrooms",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "logo",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "logo",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "school_commencement_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "school_commencement_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "break_even_fee",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "break_even_fee",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "capacity",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "capacity",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "form_11",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hr_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "hr_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hr_staff_code",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "hr_staff_code",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "ecd_start_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "ecd_start_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "ecd_code",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "ecd_code",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "contract",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "contract",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "contract_start_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "contract_start_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "contract_end_date",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "contract_end_date",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "business_mentor_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "education_mentor_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_phone_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_phone_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "business_mentor_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "business_mentor_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_phone_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_phone_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "education_mentor_email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "education_mentor_email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "hourly_late_or_early_fee",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "hourly_late_or_early_fee",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "created_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "updated_by",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "school_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "school_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "inventory_group_id",
+											"type": "UInt64",
+											"physicalType": "UInt64"
+										},
+										"sink": {
+											"name": "inventory_group_id",
+											"type": "UInt64",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "monthly_salaries",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "monthly_salaries",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_payment",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_payment",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_attendance",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_attendance",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_learner_assessment",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_learner_assessment",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "is_caregiver_access",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "is_caregiver_access",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "segment",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "agreement_type",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "agreement_type",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "program_status",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "program_status",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "owner_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "owner_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Centres",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schools_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Dataverse Schools",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Centres from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Schools Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"source1": {},
+									"account": {},
+									"School": {},
+									"Partner": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Schools Dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Learners Stats')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Learner Stats from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_learner_attendance_stats_3months WHERE attendance_day >= '@{pipeline().parameters.WatermarkDate}' AND attendance_day < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolLearnerStats",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoollearnerstats_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Learner Stats Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Learner Stats from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Learner Stats",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoollearnerstats_s": {},
+									"UserQuerypschoollearnerstatsd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoollearnerstatsd",
+											"dataset": {
+												"referenceName": "p_schoollearnerstats_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_attendanceday as timestamp,\n\t\ttcbgrow_nooflearnersattended as long,\n\t\ttcbgrow_statsday as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearnerstats_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerstatsd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Learner Stats Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Learner Stats Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Learner Stats Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-07 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Learners')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Learner from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_learners_export WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolLearner",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoollearner_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Learner Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Learner from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Learner",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoollearner_s": {},
+									"UserQuerypschoollearnerd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoollearnerd",
+											"dataset": {
+												"referenceName": "p_schoollearner_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_middlename as string,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_startdate as timestamp,\n\t\ttcbgrow_enrolldate as timestamp,\n\t\ttcbgrow_gender as string,\n\t\ttcbgrow_school as long,\n\t\ttcbgrow_temporary as boolean,\n\t\ttcbgrow_leaneractive as boolean,\n\t\ttcbgrow_leanerspecial as boolean,\n\t\ttcbgrow_learnergraduated as boolean,\n\t\ttcbgrow_schoolagegroup as long,\n\t\ttcbgrow_address as string,\n\t\tcog_region as long,\n\t\ttcbgrow_city as long,\n\t\ttcbgrow_country as long,\n\t\ttcbgrow_race as long,\n\t\ttcbgrow_idnumber as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_leanerage as long,\n\t\ttcbgrow_name as string\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoollearner_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoollearnerd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse Learner Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Learner Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "Learner Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-07 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Owner Training Attendance')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Owner Training Attendance from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM schoolowner_training_attendance_update\n WHERE meeting_date >= '@{pipeline().parameters.WatermarkDate}'  AND meeting_date < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolOwnerTrainingAttendance",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolownertrainingattendance_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Owner Training Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Owner Training Attendance from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Owner Training Attendance",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolownertrainingattendance_s": {},
+									"UserQuerypschoolownertrainingattendanced": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolownertrainingattendanced",
+											"dataset": {
+												"referenceName": "p_schoolownertrainingattendance_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_attended as integer,\n\t\ttcbgrow_coursetype as string,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_franchiseenumber as long,\n\t\ttcbgrow_groupname as string,\n\t\ttcbgrow_grouptrain as string,\n\t\ttcbgrow_meeting as string,\n\t\ttcbgrow_meetingdate as timestamp,\n\t\ttcbgrow_mentor as string,\n\t\ttcbgrow_ownername as string,\n\t\ttcbgrow_region as long,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_meetingdatestring as string,\n\t\ttcbgrow_ownerid as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolownertrainingattendance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownertrainingattendanced"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Owner Training Attendance Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Owner Training Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Owners Training Attendance",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-05 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Owners')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Schools ECD Owners from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM persons WHERE updated_at >= '@{pipeline().parameters.WatermarkDate}' AND updated_at < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "first_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "last_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "preferred_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "preferred_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "email",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "date_of_birth",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "date_of_birth",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "gender",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "contact_no",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "contact_no",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "alternative_number",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "alternative_number",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "other_country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "other_country_of_birth_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "race_type_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "race_type_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "city_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "region_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "UInt32"
+										},
+										"sink": {
+											"name": "province_id",
+											"type": "UInt32",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "zip_code",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "zip_code",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "created_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "updated_at",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolOwners",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolowners_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Schools ECD Owners Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Schools ECD Owners from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "SchoolOwners",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolowners_s": {},
+									"UserQuerypschoolownersd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolownersd",
+											"dataset": {
+												"referenceName": "p_schoolowners_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_alternativenumber as string,\n\t\ttcbgrow_city as long,\n\t\ttcbgrow_lastappdate as timestamp,\n\t\tcreated_at as timestamp,\n\t\ttcbgrow_contactnumber as string,\n\t\ttcbgrow_countryofbirth as long,\n\t\ttcbgrow_dateofbirth as timestamp,\n\t\ttcbgrow_emailaddress as string,\n\t\ttcbgrow_firstname as string,\n\t\ttcbgrow_lastname as string,\n\t\ttcbgrow_name as string,\n\t\ttcbgrow_preferredname as string,\n\t\ttcbgrow_race as long,\n\t\tcog_region as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolowners_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolownersd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Dataverse ECD Owner Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Schools ECD Owners Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Owners Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-06 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Compliance')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Compliance from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM school_government_compliences WHERE effective_date >= '@{pipeline().parameters.WatermarkDate}' AND effective_date < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolCompliance",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolcompliance_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Compliance Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "Compliance from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Compliance",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolcompliance_s": {},
+									"UserQuerypschoolcomplianced": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolcomplianced",
+											"dataset": {
+												"referenceName": "p_schoolcompliance_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amountid as long,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_checklistholder as string,\n\t\ttcbgrow_dsdapplicationsubmission as timestamp,\n\t\ttcbgrow_dsdgrantapproval as string,\n\t\ttcbgrow_dsdgrantpaid as string,\n\t\ttcbgrow_dsdstatus as string,\n\t\ttcbgrow_effectivedate as timestamp,\n\t\ttcbgrow_eligibleforotherstudy as string,\n\t\ttcbgrow_expirydate as timestamp,\n\t\ttcbgrow_franchisecommencementdate as timestamp,\n\t\ttcbgrow_nporegistered as string,\n\t\ttcbgrow_nporegistrationdate as timestamp,\n\t\ttcbgrow_nporegistrationnumber as string,\n\t\ttcbgrow_numberofchildrensregistration as integer,\n\t\ttcbgrow_othersubsidyenddate as timestamp,\n\t\ttcbgrow_othersubsidystartdate as timestamp,\n\t\ttcbgrow_schoolid as long,\n\t\ttcbgrow_schoolcapacity as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolcompliance_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolcomplianced"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "School Compliance Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Compliance Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Compliance Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"source1": {},
+									"checklist": {},
+									"sink1": {},
+									"sink2": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-01-29 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/School Expenses')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "School Expenses from Maria",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT * FROM vw_schoolexpenses_3months WHERE date_paid >= '@{pipeline().parameters.WatermarkDate}' AND date_paid < CURDATE();",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MariaSchoolExpenses",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "p_schoolexpenses_s",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "School Expenses Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [
+							{
+								"activity": "School Expenses from Maria",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Expenses",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"p_schoolexpenses_s": {},
+									"UserQuerypschoolexpensesd": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQuerypschoolexpensesd",
+											"dataset": {
+												"referenceName": "p_schoolexpenses_d",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_amount as long,\n\t\ttcbgrow_asofdate as timestamp,\n\t\ttcbgrow_description as string,\n\t\ttcbgrow_importexpenseid as long,\n\t\ttcbgrow_importschoolid as long,\n\t\ttcbgrow_source as string,\n\t\ttcbgrow_month as integer,\n\t\ttcbgrow_year as string,\n\t\ttcbgrow_transactiontype as long\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schoolexpenses_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolexpensesd"
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "School Expenses Update",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "School Expenses Query",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "School Expenses Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"parquetsource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-03-12 16:45:28"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Fees')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1227,7 +3876,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Schools Dataflow')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Staff Attendance Stats')]",
@@ -2283,7 +4934,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/Staff_Dataflow')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Teacher Training Attendance')]",
@@ -3070,13 +5723,20 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Owners')]",
 				"[concat(variables('factoryId'), '/pipelines/Schools')]",
 				"[concat(variables('factoryId'), '/pipelines/Staff')]",
+				"[concat(variables('factoryId'), '/pipelines/Age Groups')]",
+				"[concat(variables('factoryId'), '/pipelines/Learners')]",
+				"[concat(variables('factoryId'), '/pipelines/Owner Training Attendance')]",
 				"[concat(variables('factoryId'), '/pipelines/Teacher Training Attendance')]",
 				"[concat(variables('factoryId'), '/pipelines/Staff Attendance Stats')]",
+				"[concat(variables('factoryId'), '/pipelines/School Compliance')]",
 				"[concat(variables('factoryId'), '/pipelines/School Salaries')]",
 				"[concat(variables('factoryId'), '/pipelines/School Income')]",
-				"[concat(variables('factoryId'), '/pipelines/School Fees')]"
+				"[concat(variables('factoryId'), '/pipelines/School Fees')]",
+				"[concat(variables('factoryId'), '/pipelines/School Expenses')]",
+				"[concat(variables('factoryId'), '/pipelines/Learners Stats')]"
 			]
 		},
 		{

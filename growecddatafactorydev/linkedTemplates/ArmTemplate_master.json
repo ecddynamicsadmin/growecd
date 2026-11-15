@@ -15,6 +15,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
 		},
+		"Giraffe_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Giraffe'"
+		},
 		"MariaDBCRM_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MariaDBCRM'"
@@ -38,6 +42,18 @@
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
 			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
+		},
+		"Giraffe_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"Giraffe_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "growecd"
+		},
+		"Giraffe_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
 		},
 		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
 			"type": "string",
@@ -132,6 +148,9 @@
 					"Dataverse1_servicePrincipalCredential": {
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
+					"Giraffe_password": {
+						"value": "[parameters('Giraffe_password')]"
+					},
 					"MariaDBCRM_password": {
 						"value": "[parameters('MariaDBCRM_password')]"
 					},
@@ -149,6 +168,15 @@
 					},
 					"Dataverse1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]"
+					},
+					"Giraffe_properties_typeProperties_server": {
+						"value": "[parameters('Giraffe_properties_typeProperties_server')]"
+					},
+					"Giraffe_properties_typeProperties_database": {
+						"value": "[parameters('Giraffe_properties_typeProperties_database')]"
+					},
+					"Giraffe_properties_typeProperties_username": {
+						"value": "[parameters('Giraffe_properties_typeProperties_username')]"
 					},
 					"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
