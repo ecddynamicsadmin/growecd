@@ -2,17 +2,17 @@
 	"name": "CRM_Countries",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "Dataverse1",
+			"referenceName": "CRM",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "Dataverse"
+			"name": "G2 Dataverse"
 		},
 		"annotations": [],
 		"type": "CommonDataServiceForAppsEntity",
 		"schema": [],
 		"typeProperties": {
-			"entityName": "account"
+			"entityName": "cog_country"
 		}
 	}
 }
