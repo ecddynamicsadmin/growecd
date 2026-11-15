@@ -15,6 +15,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT\n    -- Key: make cog_centreid an alternate key and upsert on it\n    CAST(centreid AS CHAR)     AS cog_centreid,\n\n    -- Direct 1:1 columns (auto-map by name)\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,        -- same codes 1-4\n    programme_status           AS cog_programmestatus,\n    agreement_type             AS cog_agreementtype,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,    -- only applied on create\n\n    -- Need extra handling (see notes below)\n    countrycode                AS countrycode_src,        -- lookup cog_country\n    regioncode                 AS regioncode_src,         -- lookup cog_province (Country + Region key)\n    currencycode               AS currencycode_src,       -- lookup transactioncurrencyid\n    grow_programme             AS grow_programme_src,     -- -> cog_customersegment choice\n    operating_hours            AS operating_hours_src,    -- JSON -> 3 columns\n    property_type              AS property_type_src,      -- JSON -> cog_propertytypeother\n    centre_type                AS centre_type_src,        -- -> code + other text\n    class_types                AS class_types_src         -- -> cog_buildingtypecode + other text\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
+							"type": "Expression"
+						}
+					},
 					"sink": {
 						"type": "ParquetSink",
 						"storeSettings": {
@@ -31,476 +38,581 @@
 							{
 								"source": {
 									"name": "id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "school_id",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "school_id",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "franchisee_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "franchisee_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "region_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "region_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "city_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "city_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "province_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "province_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "grow_id",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "grow_id",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "learner_capacity",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "learner_capacity",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "number_of_classrooms",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "number_of_classrooms",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "logo",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "logo",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "address",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "address",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "school_commencement_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Date"
 								},
 								"sink": {
 									"name": "school_commencement_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "break_even_fee",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "Int32"
 								},
 								"sink": {
 									"name": "break_even_fee",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
 									"name": "capacity",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "Int32"
 								},
 								"sink": {
 									"name": "capacity",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
 									"name": "form_11",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "form_11",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "hr_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "hr_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "hr_staff_code",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "hr_staff_code",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "ecd_start_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Date"
 								},
 								"sink": {
 									"name": "ecd_start_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "ecd_code",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "ecd_code",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "contract",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "contract",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "contract_start_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Date"
 								},
 								"sink": {
 									"name": "contract_start_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "contract_end_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Date"
 								},
 								"sink": {
 									"name": "contract_end_date",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "business_mentor_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "UInt64"
 								},
 								"sink": {
 									"name": "business_mentor_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "DECIMAL"
 								}
 							},
 							{
 								"source": {
 									"name": "education_mentor_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "UInt64"
 								},
 								"sink": {
 									"name": "education_mentor_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "DECIMAL"
 								}
 							},
 							{
 								"source": {
 									"name": "business_mentor_name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "business_mentor_name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "business_mentor_phone_number",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "business_mentor_phone_number",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "business_mentor_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "business_mentor_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "education_mentor_name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "education_mentor_name",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "education_mentor_phone_number",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "education_mentor_phone_number",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "education_mentor_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "education_mentor_email",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "hourly_late_or_early_fee",
-									"type": "Int64"
+									"type": "Int64",
+									"physicalType": "Int64"
 								},
 								"sink": {
 									"name": "hourly_late_or_early_fee",
-									"type": "Int64"
+									"type": "Int64",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
 									"name": "created_by",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "Int32"
 								},
 								"sink": {
 									"name": "created_by",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
 									"name": "updated_by",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "Int32"
 								},
 								"sink": {
 									"name": "updated_by",
-									"type": "Int32"
+									"type": "Int32",
+									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
 									"name": "created_at",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Timestamp"
 								},
 								"sink": {
 									"name": "created_at",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "updated_at",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "Timestamp"
 								},
 								"sink": {
 									"name": "updated_at",
-									"type": "DateTime"
+									"type": "DateTime",
+									"physicalType": "INT_96"
 								}
 							},
 							{
 								"source": {
 									"name": "school_status",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "school_status",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "inventory_group_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "UInt64"
 								},
 								"sink": {
 									"name": "inventory_group_id",
-									"type": "UInt64"
+									"type": "UInt64",
+									"physicalType": "DECIMAL"
 								}
 							},
 							{
 								"source": {
 									"name": "monthly_salaries",
-									"type": "Decimal"
+									"type": "Decimal",
+									"physicalType": "NewDecimal"
 								},
 								"sink": {
 									"name": "monthly_salaries",
-									"type": "Decimal"
+									"type": "Decimal",
+									"physicalType": "DECIMAL"
 								}
 							},
 							{
 								"source": {
 									"name": "is_learner_payment",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "Bool"
 								},
 								"sink": {
 									"name": "is_learner_payment",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "BOOLEAN"
 								}
 							},
 							{
 								"source": {
 									"name": "is_learner_attendance",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "Bool"
 								},
 								"sink": {
 									"name": "is_learner_attendance",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "BOOLEAN"
 								}
 							},
 							{
 								"source": {
 									"name": "is_learner_assessment",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "Bool"
 								},
 								"sink": {
 									"name": "is_learner_assessment",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "BOOLEAN"
 								}
 							},
 							{
 								"source": {
 									"name": "is_caregiver_access",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "Bool"
 								},
 								"sink": {
 									"name": "is_caregiver_access",
-									"type": "Boolean"
+									"type": "Boolean",
+									"physicalType": "BOOLEAN"
 								}
 							},
 							{
 								"source": {
 									"name": "segment",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "segment",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "agreement_type",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "agreement_type",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "program_status",
-									"type": "String"
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
 									"name": "program_status",
-									"type": "String"
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
 									"name": "owner_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "UInt32"
 								},
 								"sink": {
 									"name": "owner_id",
-									"type": "UInt32"
+									"type": "UInt32",
+									"physicalType": "INT_64"
 								}
 							}
-						]
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
 				},
+				"inputs": [
+					{
+						"referenceName": "Source_Centres",
+						"type": "DatasetReference"
+					}
+				],
 				"outputs": [
 					{
 						"referenceName": "p_schools_s",
@@ -509,56 +621,13 @@
 				]
 			},
 			{
-				"name": "Schools Query",
-				"type": "ExecuteWranglingDataflow",
+				"name": "Dataverse Schools",
+				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Centres from Giraffe",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataflow": {
-						"referenceName": "School",
-						"type": "DataFlowReference"
-					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
-					},
-					"queries": [
-						{
-							"queryName": "UserQuery",
-							"dataflowSinks": [
-								{
-									"name": "UserQuerypschoolsupdated",
-									"dataset": {
-										"referenceName": "p_schools_d",
-										"type": "DatasetReference"
-									},
-									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\ttcbgrow_programmestatus as string,\n\t\ttcbgrow_breakeven as integer,\n\t\ttcbgrow_ecdowner as long,\n\t\ttcbgrow_paymenttype as string,\n\t\ttcbgrow_schoolsegment as string,\n\t\ttcbgrow_monthlysalaries as decimal(38,9),\n\t\ttcbgrow_schoolstatus as string,\n\t\tupdated_at as timestamp,\n\t\ttcbgrow_contractdate as timestamp,\n\t\ttcbgrow_ecdcode as string,\n\t\ttcbgrow_commencementdate as timestamp,\n\t\ttcbgrow_address as string,\n\t\ttcbgrow_numberofclassrooms as string,\n\t\ttcbgrow_name as string,\n\t\tcog_city as long,\n\t\tcog_region as long,\n\t\ttcbgrow_growid as string,\n\t\ttcbgrow_appid as long,\n\t\ttcbgrow_capacity as integer,\n\t\ttcbgrow_country as integer,\n\t\ttcbgrow_appaccountcreationdate as timestamp,\n\t\ttcbgrow_centrestartdate as timestamp\n\t),\n\tformat: 'parquet',\n\tpartitionFileNames:['p_schools_d.parquet'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQuerypschoolsupdated"
-								}
-							]
-						}
-					]
-				}
-			},
-			{
-				"name": "Dataverse Schools",
-				"type": "ExecuteDataFlow",
-				"dependsOn": [
-					{
-						"activity": "Schools Query",
 						"dependencyConditions": [
 							"Succeeded"
 						]
