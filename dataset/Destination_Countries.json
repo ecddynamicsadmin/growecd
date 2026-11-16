@@ -1,5 +1,5 @@
 {
-	"name": "Destination_Countires",
+	"name": "Destination_Countries",
 	"properties": {
 		"description": "Countries from Giraffe",
 		"linkedServiceName": {
