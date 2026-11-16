@@ -1,5 +1,5 @@
 {
-	"name": "Destination_Learners",
+	"name": "Parquet_Learners",
 	"properties": {
 		"description": "Learners in the Dataverse",
 		"linkedServiceName": {

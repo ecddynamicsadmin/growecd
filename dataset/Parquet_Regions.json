@@ -1,7 +1,7 @@
 {
-	"name": "Destination_Regions",
+	"name": "Parquet_Regions",
 	"properties": {
-		"description": "Countries from Giraffe",
+		"description": "Regions from Giraffe",
 		"linkedServiceName": {
 			"referenceName": "AzureDataLakeStorage1",
 			"type": "LinkedServiceReference"

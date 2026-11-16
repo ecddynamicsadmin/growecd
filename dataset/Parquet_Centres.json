@@ -1,5 +1,5 @@
 {
-	"name": "Destination_Centres",
+	"name": "Parquet_Centres",
 	"properties": {
 		"description": "Accounts in the Dataverse",
 		"linkedServiceName": {

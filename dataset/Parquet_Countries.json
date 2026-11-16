@@ -1,5 +1,5 @@
 {
-	"name": "Destination_Countries",
+	"name": "Parquet_Countries",
 	"properties": {
 		"description": "Countries from Giraffe",
 		"linkedServiceName": {

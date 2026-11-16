@@ -1,5 +1,5 @@
 {
-	"name": "Destination_Centre_Profiles",
+	"name": "Parquet_Centre_Profiles",
 	"properties": {
 		"description": "Centre Profiles in the Dataverse",
 		"linkedServiceName": {

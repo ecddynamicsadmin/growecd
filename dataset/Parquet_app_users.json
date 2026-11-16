@@ -1,5 +1,5 @@
 {
-	"name": "Destination_app_users",
+	"name": "Parquet_app_users",
 	"properties": {
 		"description": "Contacts in the Dataverse",
 		"linkedServiceName": {
