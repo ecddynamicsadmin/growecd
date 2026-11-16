@@ -62,10 +62,6 @@
 				"type": "INT_8"
 			},
 			{
-				"name": "cog_programmestatus",
-				"type": "INT_8"
-			},
-			{
 				"name": "cog_agreementtype",
 				"type": "INT_8"
 			},
@@ -78,19 +74,19 @@
 				"type": "INT96"
 			},
 			{
+				"name": "cog_programme",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "cog_programmestatus",
+				"type": "INT_8"
+			},
+			{
 				"name": "cog_countryid",
 				"type": "UTF8"
 			},
 			{
 				"name": "cog_region",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_customersegment",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "operating_hours_src",
 				"type": "UTF8"
 			},
 			{
@@ -103,6 +99,10 @@
 			},
 			{
 				"name": "cog_classtype",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_operatinghours",
 				"type": "UTF8"
 			}
 		]
