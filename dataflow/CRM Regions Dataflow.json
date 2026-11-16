@@ -58,8 +58,7 @@
 				"     mapColumn(",
 				"          cog_name,",
 				"          cog_regioncode,",
-				"          {cog_Country@odata.bind},",
-				"          cog_country",
+				"          {cog_Country@odata.bind}",
 				"     )) ~> SinkRegions"
 			]
 		}
