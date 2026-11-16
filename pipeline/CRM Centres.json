@@ -5,6 +5,8 @@
 			{
 				"name": "Centres from Giraffe",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -311,8 +313,6 @@
 			{
 				"name": "CRM Centres",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Centres from Giraffe",
@@ -331,7 +331,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "Schools Dataflow",
+						"referenceName": "CRM Centres Dataflow",
 						"type": "DataFlowReference"
 					},
 					"compute": {
