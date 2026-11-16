@@ -11,6 +11,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
 		},
+		"CRM_servicePrincipalCredential": {
+			"type": "secureString",
+			"metadata": "Secure string for 'servicePrincipalCredential' of 'CRM'"
+		},
 		"Dataverse1_servicePrincipalCredential": {
 			"type": "secureString",
 			"metadata": "Secure string for 'servicePrincipalCredential' of 'Dataverse1'"
@@ -38,6 +42,10 @@
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://growecdstorage.dfs.core.windows.net/"
+		},
+		"CRM_properties_typeProperties_servicePrincipalId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
 		"Dataverse1_properties_typeProperties_servicePrincipalId": {
 			"type": "string",
@@ -145,6 +153,9 @@
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
+					"CRM_servicePrincipalCredential": {
+						"value": "[parameters('CRM_servicePrincipalCredential')]"
+					},
 					"Dataverse1_servicePrincipalCredential": {
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
@@ -165,6 +176,9 @@
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"CRM_properties_typeProperties_servicePrincipalId": {
+						"value": "[parameters('CRM_properties_typeProperties_servicePrincipalId')]"
 					},
 					"Dataverse1_properties_typeProperties_servicePrincipalId": {
 						"value": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]"
@@ -345,6 +359,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'growecddatafactorydev_ArmTemplate_5')]"
+			]
+		},
+		{
+			"name": "growecddatafactorydev_ArmTemplate_7",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_7.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'growecddatafactorydev_ArmTemplate_6')]"
 			]
 		}
 	]
