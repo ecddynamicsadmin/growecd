@@ -1,0 +1,131 @@
+{
+	"name": "CRM Regions",
+	"properties": {
+		"activities": [
+			{
+				"name": "Regions from Giraffe",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MariaDBSource",
+						"query": "SELECT\n    countrycode  AS cog_country,\n    region AS cog_name,\nregioncode AS cog_regioncode\nFROM growecd.regions;"
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "cog_country",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "cog_country",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_name",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "cog_name",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_regioncode",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "cog_regioncode",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Source_Regions",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Parquet_Regions",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "CRM Regions",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Regions from Giraffe",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "CRM Regions Dataflow",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "G2"
+		},
+		"annotations": []
+	}
+}

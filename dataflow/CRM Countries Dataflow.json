@@ -18,12 +18,12 @@
 						"referenceName": "CRM_Countries",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "SinkCountries"
 				}
 			],
 			"transformations": [
 				{
-					"name": "alterRow1"
+					"name": "Upsert"
 				}
 			],
 			"scriptLines": [
@@ -35,8 +35,8 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> ParquetCountries",
-				"ParquetCountries alterRow(upsertIf(true())) ~> alterRow1",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"ParquetCountries alterRow(upsertIf(true())) ~> Upsert",
+				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
@@ -49,7 +49,7 @@
 				"     mapColumn(",
 				"          cog_countrycode,",
 				"          cog_name",
-				"     )) ~> sink1"
+				"     )) ~> SinkCountries"
 			]
 		}
 	}
