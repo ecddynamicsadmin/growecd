@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CRM_Regions",
+						"referenceName": "CRM_Centres",
 						"type": "DatasetReference"
 					},
 					"name": "SinkRegions"
@@ -79,9 +79,29 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
 				"     mapColumn(",
-				"          cog_name,",
-				"          cog_regioncode,",
-				"          {cog_Country@odata.bind} = {cog_CountryId@odata.bind}",
+				"          cog_centreid,",
+				"          name,",
+				"          address1_city,",
+				"          address1_line1,",
+				"          emailaddress1,",
+				"          telephone1,",
+				"          cog_centrestartdate,",
+				"          cog_learnercapacity,",
+				"          cog_classroomcount,",
+				"          cog_ecdtypecode,",
+				"          cog_programmestatus,",
+				"          cog_agreementtype,",
+				"          cog_giraffeupdatedon,",
+				"          overriddencreatedon,",
+				"          cog_countryid,",
+				"          cog_region,",
+				"          cog_customersegment,",
+				"          operating_hours_src,",
+				"          cog_propertytype,",
+				"          cog_centretype,",
+				"          cog_classtype,",
+				"          bind = {cog_CountryId@odata.bind},",
+				"          bind = {cog_Region@odata.bind}",
 				"     )) ~> SinkRegions"
 			]
 		}
