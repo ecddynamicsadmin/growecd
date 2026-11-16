@@ -75,7 +75,7 @@
 				"  )\r",
 				",",
 				"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-				"          cog_centrestartdate = toString(toUTC(cog_centrestartdate, 'Africa/Johannesburg'), \"yyyy-MM-dd'\"),",
+				"          cog_centrestartdate = toString(toDate(cog_centrestartdate), 'yyyy-MM-dd'),",
 				"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DeriveCountryLookup",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
