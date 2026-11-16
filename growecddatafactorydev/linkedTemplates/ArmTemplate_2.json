@@ -13,6 +13,27 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolTeacherTrainingAttendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "teacher_training_attendance"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MariaSchoolUpdate')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -509,200 +530,12 @@
 				},
 				"schema": [
 					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "school_id",
+						"name": "cog_countrycode",
 						"type": "UTF8"
 					},
 					{
-						"name": "franchisee_id",
-						"type": "INT64"
-					},
-					{
-						"name": "region_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "grow_id",
+						"name": "cog_name",
 						"type": "UTF8"
-					},
-					{
-						"name": "name",
-						"type": "UTF8"
-					},
-					{
-						"name": "learner_capacity",
-						"type": "UTF8"
-					},
-					{
-						"name": "number_of_classrooms",
-						"type": "UTF8"
-					},
-					{
-						"name": "logo",
-						"type": "UTF8"
-					},
-					{
-						"name": "address",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_commencement_date",
-						"type": "INT96"
-					},
-					{
-						"name": "break_even_fee",
-						"type": "INT32"
-					},
-					{
-						"name": "capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "form_11",
-						"type": "UTF8"
-					},
-					{
-						"name": "hr_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hr_staff_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "ecd_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract_start_date",
-						"type": "INT96"
-					},
-					{
-						"name": "contract_end_date",
-						"type": "INT96"
-					},
-					{
-						"name": "business_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "education_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "business_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hourly_late_or_early_fee",
-						"type": "INT64"
-					},
-					{
-						"name": "created_by",
-						"type": "INT32"
-					},
-					{
-						"name": "updated_by",
-						"type": "INT32"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "school_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "inventory_group_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "monthly_salaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 18
-					},
-					{
-						"name": "is_learner_payment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_attendance",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_assessment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_caregiver_access",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "segment",
-						"type": "UTF8"
-					},
-					{
-						"name": "agreement_type",
-						"type": "UTF8"
-					},
-					{
-						"name": "program_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "owner_id",
-						"type": "INT64"
 					}
 				]
 			},
@@ -1489,6 +1322,27 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Source_Regions')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Giraffe",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Source Tables"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "regions"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/p_schoolagegroup_d')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1963,111 +1817,6 @@
 					{
 						"name": "running_total",
 						"type": "INT64"
-					},
-					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "id",
-						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolfees_d')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolfees_d.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/p_schoolfees_s')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "p_schoolfees_s.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffe"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "name",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_id",
-						"type": "INT64"
-					},
-					{
-						"name": "recordid",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "amount_received",
-						"type": "INT64"
-					},
-					{
-						"name": "received_on_date",
-						"type": "INT96"
-					},
-					{
-						"name": "last_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "first_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "amount_discounted",
-						"type": "INT64"
-					},
-					{
-						"name": "month",
-						"type": "INT32"
-					},
-					{
-						"name": "year",
-						"type": "INT32"
 					},
 					{
 						"name": "ecd_code",
