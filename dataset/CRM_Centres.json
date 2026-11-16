@@ -1,0 +1,19 @@
+{
+	"name": "CRM_Centres",
+	"properties": {
+		"description": "Dataverse Account",
+		"linkedServiceName": {
+			"referenceName": "CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "G2 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "account"
+		}
+	}
+}
