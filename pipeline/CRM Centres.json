@@ -265,12 +265,12 @@
 							},
 							{
 								"source": {
-									"name": "cog_classtype",
+									"name": "cog_classtypecode",
 									"type": "String",
 									"physicalType": "Text"
 								},
 								"sink": {
-									"name": "cog_classtype",
+									"name": "cog_classtypecode",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
