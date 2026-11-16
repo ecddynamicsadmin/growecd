@@ -1,0 +1,67 @@
+{
+	"name": "CRM Regions Dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Parquet_Regions",
+						"type": "DatasetReference"
+					},
+					"name": "ParquetRegions"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CRM_Regions",
+						"type": "DatasetReference"
+					},
+					"name": "SinkRegions"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Upsert"
+				},
+				{
+					"name": "DeriveCountryLookup"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cog_country as string,",
+				"          cog_name as string,",
+				"          cog_regioncode as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> ParquetRegions",
+				"DeriveCountryLookup alterRow(upsertIf(true())) ~> Upsert",
+				"ParquetRegions derive({cog_Country@odata.bind} = iif(\r",
+				"    isNull(cog_country),\r",
+				"    toString(null()),\r",
+				"    concat(\"/cog_countries(cog_countrycode=\",toString(cog_country),\")\")\r",
+				")) ~> DeriveCountryLookup",
+				"Upsert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     alternateKeyName: 'cog_countryregioncode',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     mapColumn(",
+				"          cog_name,",
+				"          cog_regioncode,",
+				"          {cog_Country@odata.bind},",
+				"          cog_country",
+				"     )) ~> SinkRegions"
+			]
+		}
+	}
+}
