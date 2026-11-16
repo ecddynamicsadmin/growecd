@@ -84,7 +84,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Countries",
+						"activity": "CRM Countries",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -111,7 +111,7 @@
 				}
 			},
 			{
-				"name": "Countries",
+				"name": "CRM Countries",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [
 					{
