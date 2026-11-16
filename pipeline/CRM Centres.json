@@ -1,5 +1,5 @@
 {
-	"name": "Centres",
+	"name": "CRM Centres",
 	"properties": {
 		"activities": [
 			{
@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT\n    -- Key: make cog_centreid an alternate key and upsert on it\n    CAST(centreid AS CHAR)     AS cog_centreid,\n\n    -- Direct 1:1 columns (auto-map by name)\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,        -- same codes 1-4\n    programme_status           AS cog_programmestatus,\n    agreement_type             AS cog_agreementtype,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,    -- only applied on create\n\n    -- Need extra handling (see notes below)\n    countrycode                AS countrycode_src,        -- lookup cog_country\n    regioncode                 AS regioncode_src,         -- lookup cog_province (Country + Region key)\n    currencycode               AS currencycode_src,       -- lookup transactioncurrencyid\n    grow_programme             AS grow_programme_src,     -- -> cog_customersegment choice\n    operating_hours            AS operating_hours_src,    -- JSON -> 3 columns\n    property_type              AS property_type_src,      -- JSON -> cog_propertytypeother\n    centre_type                AS centre_type_src,        -- -> code + other text\n    class_types                AS class_types_src         -- -> cog_buildingtypecode + other text\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
+							"value": "SELECT\n    cetreid AS cog_centreid,\n\n    -- Direct 1:1 columns (auto-map by name)\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,        -- same codes 1-4\n    programme_status           AS cog_programmestatus,\n    agreement_type             AS cog_agreementtype,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,    -- only applied on create\n\n    -- Need extra handling (see notes below)\n    countrycode                AS cog_countryid,\n    regioncode                 AS cog_region,\n    grow_programme             AS cog_customersegment,\n    operating_hours            AS operating_hours_src,\n    property_type              AS cog_propertytype,\n    centre_type                AS cog_centretype,\n    class_types                AS cog_classtype\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
 							"type": "Expression"
 						}
 					},
@@ -621,7 +621,7 @@
 				]
 			},
 			{
-				"name": "Dataverse Schools",
+				"name": "CRM Centres",
 				"type": "ExecuteDataFlow",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
