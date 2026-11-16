@@ -62,7 +62,7 @@
 				"type": "INT_8"
 			},
 			{
-				"name": "cog_agreementtype",
+				"name": "cog_agreementtypecode",
 				"type": "INT_8"
 			},
 			{
@@ -78,7 +78,7 @@
 				"type": "BOOLEAN"
 			},
 			{
-				"name": "cog_programmestatus",
+				"name": "cog_programmestatuscode",
 				"type": "INT_8"
 			},
 			{
@@ -90,15 +90,15 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "cog_propertytype",
+				"name": "cog_propertytypecode",
 				"type": "UTF8"
 			},
 			{
-				"name": "cog_centretype",
+				"name": "cog_centretypecode",
 				"type": "UTF8"
 			},
 			{
-				"name": "cog_classtype",
+				"name": "cog_classtypecode",
 				"type": "UTF8"
 			},
 			{
