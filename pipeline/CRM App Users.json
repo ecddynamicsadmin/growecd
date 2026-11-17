@@ -37,134 +37,50 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "cog_centreid",
+									"name": "firstname",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "firstname",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "lastname",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "lastname",
+									"type": "String",
+									"physicalType": "UTF8"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_userid",
 									"type": "Int32",
 									"physicalType": "Int32"
 								},
 								"sink": {
-									"name": "cog_centreid",
+									"name": "cog_userid",
 									"type": "Int32",
 									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
-									"name": "name",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "name",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "address1_city",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "address1_city",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "address1_line1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "address1_line1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "emailaddress1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "emailaddress1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "telephone1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "telephone1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_centrestartdate",
+									"name": "cog_lastlogin",
 									"type": "DateTime",
-									"physicalType": "Date"
+									"physicalType": "DateTime"
 								},
 								"sink": {
-									"name": "cog_centrestartdate",
+									"name": "cog_lastlogin",
 									"type": "DateTime",
 									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_learnercapacity",
-									"type": "Int16",
-									"physicalType": "Int16"
-								},
-								"sink": {
-									"name": "cog_learnercapacity",
-									"type": "Int16",
-									"physicalType": "INT_32"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_classroomcount",
-									"type": "Int16",
-									"physicalType": "Int16"
-								},
-								"sink": {
-									"name": "cog_classroomcount",
-									"type": "Int16",
-									"physicalType": "INT_32"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_ecdtypecode",
-									"type": "SByte",
-									"physicalType": "Byte"
-								},
-								"sink": {
-									"name": "cog_ecdtypecode",
-									"type": "SByte",
-									"physicalType": "INT_8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_agreementtypecode",
-									"type": "SByte",
-									"physicalType": "Byte"
-								},
-								"sink": {
-									"name": "cog_agreementtypecode",
-									"type": "SByte",
-									"physicalType": "INT_8"
 								}
 							},
 							{
@@ -189,102 +105,6 @@
 									"name": "overriddencreatedon",
 									"type": "DateTime",
 									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_programme",
-									"type": "Boolean",
-									"physicalType": "Bool"
-								},
-								"sink": {
-									"name": "cog_programme",
-									"type": "Boolean",
-									"physicalType": "BOOLEAN"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_programmestatuscode",
-									"type": "SByte",
-									"physicalType": "Byte"
-								},
-								"sink": {
-									"name": "cog_programmestatuscode",
-									"type": "SByte",
-									"physicalType": "INT_8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_countryid",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "cog_countryid",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_region",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "cog_region",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_propertytypecode",
-									"type": "String",
-									"physicalType": "Text"
-								},
-								"sink": {
-									"name": "cog_propertytypecode",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_centretypecode",
-									"type": "String",
-									"physicalType": "Text"
-								},
-								"sink": {
-									"name": "cog_centretypecode",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_classtypecode",
-									"type": "String",
-									"physicalType": "Text"
-								},
-								"sink": {
-									"name": "cog_classtypecode",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_operatinghours",
-									"type": "String",
-									"physicalType": "Text"
-								},
-								"sink": {
-									"name": "cog_operatinghours",
-									"type": "String",
-									"physicalType": "UTF8"
 								}
 							}
 						],
@@ -311,6 +131,8 @@
 			{
 				"name": "CRM App Users",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "App Users from Giraffe",
