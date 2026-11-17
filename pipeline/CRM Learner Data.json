@@ -171,12 +171,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"WatermarkDate": {
-				"type": "string",
-				"defaultValue": "2026-04-05 16:45:28"
-			}
-		},
 		"folder": {
 			"name": "G2"
 		},
