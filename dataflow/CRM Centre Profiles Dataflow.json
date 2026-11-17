@@ -131,7 +131,7 @@
 				"          {cog_ApplicationUser@odata.bind},",
 				"          {parentcustomerid_account@odata.bind}",
 				"     ),",
-				"     partitionBy('roundRobin', 10)) ~> SinkContacts"
+				"     partitionBy('roundRobin', 16)) ~> SinkContacts"
 			]
 		}
 	}
