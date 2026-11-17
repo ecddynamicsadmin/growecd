@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT\n    mobilenumber                AS mobilephone,\n    email                       AS emailaddress1,\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    birthdate                   AS birthdate,\n    gender                      AS cog_gendercode,\n    race                        AS cog_racecode,\n    race_text                   AS cog_raceother,\n    city                        AS address1_city,\n    physical_address            AS address1_line1,\n    countrycode                 AS countryid,\n    regioncode                  AS region,\n    profileid                   AS cog_giraffeprofileid,\n    centreid                    AS centreid,\n    usertype                    AS cog_rolecode,\n    start_date                  AS cog_startdate,\n    child_protection            AS cog_childprotectionclearancecode,\n    employment_type             AS cog_employmenttypecode,\n    qualification               AS cog_highestqualificationcode,\n    work_hours_total            AS cog_workhourstotal   \n\nFROM growecd.centre_profiles\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -153,24 +157,24 @@
 							},
 							{
 								"source": {
-									"name": "cog_countryid",
+									"name": "countryid",
 									"type": "String",
 									"physicalType": "VarChar"
 								},
 								"sink": {
-									"name": "cog_countryid",
+									"name": "countryid",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_region",
+									"name": "region",
 									"type": "String",
 									"physicalType": "VarChar"
 								},
 								"sink": {
-									"name": "cog_region",
+									"name": "region",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
@@ -189,12 +193,12 @@
 							},
 							{
 								"source": {
-									"name": "cog_centreid",
+									"name": "centreid",
 									"type": "Int32",
 									"physicalType": "Int32"
 								},
 								"sink": {
-									"name": "cog_centreid",
+									"name": "centreid",
 									"type": "Int32",
 									"physicalType": "INT_32"
 								}
@@ -269,30 +273,6 @@
 									"name": "cog_workhourstotal",
 									"type": "Int16",
 									"physicalType": "INT_32"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_giraffeupdatedon",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								},
-								"sink": {
-									"name": "cog_giraffeupdatedon",
-									"type": "DateTime",
-									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "overriddencreatedon",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								},
-								"sink": {
-									"name": "overriddencreatedon",
-									"type": "DateTime",
-									"physicalType": "INT_96"
 								}
 							}
 						],
