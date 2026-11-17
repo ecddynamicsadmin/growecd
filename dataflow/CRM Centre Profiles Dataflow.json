@@ -131,10 +131,10 @@
 				"          cog_workhourstotal,",
 				"          cog_giraffeupdatedon,",
 				"          overriddencreatedon,",
-				"          bind = {cog_CountryId@odata.bind},",
-				"          bind = {cog_Region@odata.bind},",
-				"          bind = {cog_ApplicationUser@odata.bind},",
-				"          bind = {parentcustomerid_account@odata.bind}",
+				"          {cog_CountryId@odata.bind},",
+				"          {cog_Region@odata.bind},",
+				"          {cog_ApplicationUser@odata.bind},",
+				"          {parentcustomerid_account@odata.bind}",
 				"     )) ~> SinkContacts"
 			]
 		}
