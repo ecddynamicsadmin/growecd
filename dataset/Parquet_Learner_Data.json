@@ -1,0 +1,110 @@
+{
+	"name": "Parquet_Learner_Data",
+	"properties": {
+		"description": "Accounts in the Dataverse",
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "G2 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "learner_data.parquet",
+				"folderPath": "parquet",
+				"fileSystem": "giraffetwo"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "cog_centreid",
+				"type": "INT32"
+			},
+			{
+				"name": "name",
+				"type": "UTF8"
+			},
+			{
+				"name": "address1_city",
+				"type": "UTF8"
+			},
+			{
+				"name": "address1_line1",
+				"type": "UTF8"
+			},
+			{
+				"name": "emailaddress1",
+				"type": "UTF8"
+			},
+			{
+				"name": "telephone1",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_centrestartdate",
+				"type": "INT96"
+			},
+			{
+				"name": "cog_learnercapacity",
+				"type": "INT32"
+			},
+			{
+				"name": "cog_classroomcount",
+				"type": "INT32"
+			},
+			{
+				"name": "cog_ecdtypecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_agreementtypecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_giraffeupdatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "overriddencreatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "cog_programme",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "cog_programmestatuscode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_countryid",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_region",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_propertytypecode",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_centretypecode",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_classtypecode",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_operatinghours",
+				"type": "UTF8"
+			}
+		]
+	}
+}
