@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT\n    requires_course_name      AS requirescoursename,\n    requires_category         AS cog_requirescategory,\n    eventtypeid               AS cog_giraffeid,\n    name                      AS cog_name,\n    centreid                  AS cog_centreid,\n    updated_at                AS cog_giraffeupdatedon,\n    created_at                AS overriddencreatedon   \n\nFROM growecd.centre_profiles\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n\n\nname\n\n\n\n",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
