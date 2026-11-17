@@ -130,7 +130,8 @@
 				"          {cog_Region@odata.bind},",
 				"          {cog_ApplicationUser@odata.bind},",
 				"          {parentcustomerid_account@odata.bind}",
-				"     )) ~> SinkContacts"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkContacts"
 			]
 		}
 	}
