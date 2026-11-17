@@ -74,7 +74,7 @@
 				"type": "INT32"
 			},
 			{
-				"name": "parentcustomerid_account",
+				"name": "centreid",
 				"type": "INT32"
 			},
 			{
