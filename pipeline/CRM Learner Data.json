@@ -140,6 +140,8 @@
 			{
 				"name": "CRM Learner Data",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Data from Giraffe",
