@@ -325,7 +325,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "CRM Training Event Attendance",
+						"referenceName": "CRM Training Event Attendance Dataflow",
 						"type": "DataFlowReference"
 					},
 					"integrationRuntime": {
