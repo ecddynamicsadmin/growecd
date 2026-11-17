@@ -73,7 +73,7 @@
 				"          cog_learners6to9,",
 				"          cog_learners9plus,",
 				"          cog_learners_total,",
-				"          bind = {cog_Account@odata.bind},",
+				"          {cog_Account@odata.bind},",
 				"          overriddencreatedon",
 				"     )) ~> SinkLearnerData"
 			]
