@@ -1,5 +1,5 @@
 {
-	"name": "CRM Centre Profiles",
+	"name": "CRM Centre Profiles Dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
