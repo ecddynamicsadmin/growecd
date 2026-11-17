@@ -26,84 +26,38 @@
 				"type": "INT32"
 			},
 			{
-				"name": "name",
+				"name": "cog_name",
 				"type": "UTF8"
 			},
 			{
-				"name": "address1_city",
-				"type": "UTF8"
+				"name": "cog_learners0to2",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
 			},
 			{
-				"name": "address1_line1",
-				"type": "UTF8"
+				"name": "cog_learners2to5",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
 			},
 			{
-				"name": "emailaddress1",
-				"type": "UTF8"
+				"name": "cog_learners6to9",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
 			},
 			{
-				"name": "telephone1",
-				"type": "UTF8"
+				"name": "cog_learners9plus",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
 			},
 			{
-				"name": "cog_centrestartdate",
-				"type": "INT96"
-			},
-			{
-				"name": "cog_learnercapacity",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_classroomcount",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_ecdtypecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_agreementtypecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_giraffeupdatedon",
-				"type": "INT96"
-			},
-			{
-				"name": "overriddencreatedon",
-				"type": "INT96"
-			},
-			{
-				"name": "cog_programme",
-				"type": "BOOLEAN"
-			},
-			{
-				"name": "cog_programmestatuscode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_countryid",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_region",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_propertytypecode",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_centretypecode",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_classtypecode",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_operatinghours",
-				"type": "UTF8"
+				"name": "cog_learners_total",
+				"type": "DECIMAL",
+				"precision": 38,
+				"scale": 18
 			}
 		]
 	}
