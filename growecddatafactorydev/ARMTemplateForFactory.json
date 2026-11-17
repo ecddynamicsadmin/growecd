@@ -297,6 +297,967 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM App Users')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "App Users from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    userid                      AS cog_userid,\n    last_login                  AS cog_lastlogin,\n    updated_at                  AS cog_giraffeupdatedon,\n    created_at                  AS overriddencreatedon\n\nFROM growecd.app_users\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "firstname",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "firstname",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "lastname",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_userid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_userid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_lastlogin",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "cog_lastlogin",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_App_Users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_app_users",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM App Users",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "App Users from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM App User Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetAppUser": {},
+									"SinkRegions": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_App_Users')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_app_users')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM App User Dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Centre Profiles')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Centre Profiles from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    mobilenumber                AS mobilephone,\n    email                       AS emailaddress1,\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    birthdate                   AS birthdate,\n    gender                      AS cog_gendercode,\n    race                        AS cog_racecode,\n    race_text                   AS cog_raceother,\n    city                        AS address1_city,\n    physical_address            AS address1_line1,\n    countrycode                 AS cog_countryid,\n    regioncode                  AS cog_region,\n    profileid                   AS cog_giraffeprofileid,\n    centreid                    AS cog_centreid,\n    usertype                    AS cog_rolecode,\n    start_date                  AS cog_startdate,\n    child_protection            AS cog_childprotectionclearancecode,\n    employment_type             AS cog_employmenttypecode,\n    qualification               AS cog_highestqualificationcode,\n    work_hours_total            AS cog_workhourstotal,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    userid                     AS cog_applicationuser   \n\nFROM growecd.centre_profiles\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "mobilephone",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "mobilephone",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "emailaddress1",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "emailaddress1",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "firstname",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "firstname",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "lastname",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "lastname",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "birthdate",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "birthdate",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_gendercode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_gendercode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_racecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_racecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_raceother",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_raceother",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address1_city",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address1_city",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address1_line1",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address1_line1",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeprofileid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_giraffeprofileid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_rolecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_rolecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_startdate",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "cog_startdate",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_childprotectionclearancecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_childprotectionclearancecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_employmenttypecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_employmenttypecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_highestqualificationcode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_highestqualificationcode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_workhourstotal",
+											"type": "Int16",
+											"physicalType": "Int16"
+										},
+										"sink": {
+											"name": "cog_workhourstotal",
+											"type": "Int16",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_applicationuser",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_applicationuser",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Centre_Profiles",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Centre_Profiles",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Contacts Centre Profiles",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Centre Profiles from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Centre Profiles Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetCentreProfiles": {},
+									"SinkContacts": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Coarse"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Centre_Profiles')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Centre_Profiles')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Centre Profiles Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Centres')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Centres from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    centreid AS cog_centreid,\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,\n    agreement_type             AS cog_agreementtypecode,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    grow_programme             AS cog_programme,   \n    programme_status           AS cog_programmestatuscode,\n    countrycode                AS cog_countryid,\n    regioncode                 AS cog_region,\n    property_type              AS cog_propertytypecode,\n    centre_type                AS cog_centretypecode,\n    class_types                AS cog_classtypecode,\n    operating_hours            AS cog_operatinghours\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n  AND is_test != 1;",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address1_city",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address1_city",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "address1_line1",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "address1_line1",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "emailaddress1",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "emailaddress1",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "telephone1",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "telephone1",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_centrestartdate",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "cog_centrestartdate",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learnercapacity",
+											"type": "Int16",
+											"physicalType": "Int16"
+										},
+										"sink": {
+											"name": "cog_learnercapacity",
+											"type": "Int16",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_classroomcount",
+											"type": "Int16",
+											"physicalType": "Int16"
+										},
+										"sink": {
+											"name": "cog_classroomcount",
+											"type": "Int16",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_ecdtypecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_ecdtypecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_agreementtypecode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_agreementtypecode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "DateTime"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_programme",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "cog_programme",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_programmestatuscode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_programmestatuscode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_propertytypecode",
+											"type": "String",
+											"physicalType": "Text"
+										},
+										"sink": {
+											"name": "cog_propertytypecode",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_centretypecode",
+											"type": "String",
+											"physicalType": "Text"
+										},
+										"sink": {
+											"name": "cog_centretypecode",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_classtypecode",
+											"type": "String",
+											"physicalType": "Text"
+										},
+										"sink": {
+											"name": "cog_classtypecode",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_operatinghours",
+											"type": "String",
+											"physicalType": "Text"
+										},
+										"sink": {
+											"name": "cog_operatinghours",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Centres",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Centres",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Accounts",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Centres from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Centres Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetCentres": {},
+									"SinkRegions": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Centres')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Centres')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Centres Dataflow')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CRM Countries')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -429,6 +1390,209 @@
 				"[concat(variables('factoryId'), '/datasets/Source_Countries')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_Countries')]",
 				"[concat(variables('factoryId'), '/dataflows/CRM Countries Dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Learner Data')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Learner Data from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": "SELECT\n    l.centreid AS cog_centreid,\n    c.name     AS cog_name,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 0 AND 1 THEN 1 ELSE 0 END) AS cog_learners0to2,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 2 AND 5 THEN 1 ELSE 0 END) AS cog_learners2to5,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 6 AND 8 THEN 1 ELSE 0 END) AS cog_learners6to9,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 9            THEN 1 ELSE 0 END) AS cog_learners9plus,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 0            THEN 1 ELSE 0 END) AS cog_learners_total\nFROM growecd.learners AS l\nLEFT JOIN growecd.centres AS c\n       ON c.centreid = l.centreid\nWHERE COALESCE(l.archived, 0) <> 1\nGROUP BY l.centreid, c.name\nORDER BY l.centreid;"
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learners0to2",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "cog_learners0to2",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learners2to5",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "cog_learners2to5",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learners6to9",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "cog_learners6to9",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learners9plus",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "cog_learners9plus",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_learners_total",
+											"type": "Decimal",
+											"physicalType": "NewDecimal"
+										},
+										"sink": {
+											"name": "cog_learners_total",
+											"type": "Decimal",
+											"physicalType": "DECIMAL"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Learners",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Learner_Data",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Learner Data",
+						"type": "ExecuteDataFlow",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Learner Data from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Leaner Data Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetLearnerData": {},
+									"SinkLearnerData": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Learners')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Learner_Data')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Leaner Data Dataflow')]"
 			]
 		},
 		{
@@ -576,695 +1740,6 @@
 				"[concat(variables('factoryId'), '/datasets/Source_Regions')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_Regions')]",
 				"[concat(variables('factoryId'), '/dataflows/CRM Regions Dataflow')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Centres')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Centres from Giraffe",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "MariaDBSource",
-								"query": {
-									"value": "SELECT\n    -- Key: make cog_centreid an alternate key and upsert on it\n    CAST(centreid AS CHAR)     AS cog_centreid,\n\n    -- Direct 1:1 columns (auto-map by name)\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,        -- same codes 1-4\n    programme_status           AS cog_programmestatus,\n    agreement_type             AS cog_agreementtype,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,    -- only applied on create\n\n    -- Need extra handling (see notes below)\n    countrycode                AS countrycode_src,        -- lookup cog_country\n    regioncode                 AS regioncode_src,         -- lookup cog_province (Country + Region key)\n    currencycode               AS currencycode_src,       -- lookup transactioncurrencyid\n    grow_programme             AS grow_programme_src,     -- -> cog_customersegment choice\n    operating_hours            AS operating_hours_src,    -- JSON -> 3 columns\n    property_type              AS property_type_src,      -- JSON -> cog_propertytypeother\n    centre_type                AS centre_type_src,        -- -> code + other text\n    class_types                AS class_types_src         -- -> cog_buildingtypecode + other text\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
-									"type": "Expression"
-								}
-							},
-							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
-								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "school_id",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "school_id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "franchisee_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "franchisee_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "region_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "region_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "city_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "city_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "province_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "province_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "grow_id",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "grow_id",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "learner_capacity",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "learner_capacity",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "number_of_classrooms",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "number_of_classrooms",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "logo",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "logo",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "address",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "address",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "school_commencement_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "school_commencement_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "break_even_fee",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "break_even_fee",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "capacity",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "capacity",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "form_11",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "form_11",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "hr_email",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "hr_email",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "hr_staff_code",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "hr_staff_code",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "ecd_start_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "ecd_start_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "ecd_code",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "ecd_code",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "contract",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "contract",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "contract_start_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "contract_start_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "contract_end_date",
-											"type": "DateTime",
-											"physicalType": "Date"
-										},
-										"sink": {
-											"name": "contract_end_date",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "business_mentor_id",
-											"type": "UInt64",
-											"physicalType": "UInt64"
-										},
-										"sink": {
-											"name": "business_mentor_id",
-											"type": "UInt64",
-											"physicalType": "DECIMAL"
-										}
-									},
-									{
-										"source": {
-											"name": "education_mentor_id",
-											"type": "UInt64",
-											"physicalType": "UInt64"
-										},
-										"sink": {
-											"name": "education_mentor_id",
-											"type": "UInt64",
-											"physicalType": "DECIMAL"
-										}
-									},
-									{
-										"source": {
-											"name": "business_mentor_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "business_mentor_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "business_mentor_phone_number",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "business_mentor_phone_number",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "business_mentor_email",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "business_mentor_email",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "education_mentor_name",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "education_mentor_name",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "education_mentor_phone_number",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "education_mentor_phone_number",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "education_mentor_email",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "education_mentor_email",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "hourly_late_or_early_fee",
-											"type": "Int64",
-											"physicalType": "Int64"
-										},
-										"sink": {
-											"name": "hourly_late_or_early_fee",
-											"type": "Int64",
-											"physicalType": "INT_64"
-										}
-									},
-									{
-										"source": {
-											"name": "created_by",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "created_by",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_by",
-											"type": "Int32",
-											"physicalType": "Int32"
-										},
-										"sink": {
-											"name": "updated_by",
-											"type": "Int32",
-											"physicalType": "INT_32"
-										}
-									},
-									{
-										"source": {
-											"name": "created_at",
-											"type": "DateTime",
-											"physicalType": "Timestamp"
-										},
-										"sink": {
-											"name": "created_at",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "updated_at",
-											"type": "DateTime",
-											"physicalType": "Timestamp"
-										},
-										"sink": {
-											"name": "updated_at",
-											"type": "DateTime",
-											"physicalType": "INT_96"
-										}
-									},
-									{
-										"source": {
-											"name": "school_status",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "school_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "inventory_group_id",
-											"type": "UInt64",
-											"physicalType": "UInt64"
-										},
-										"sink": {
-											"name": "inventory_group_id",
-											"type": "UInt64",
-											"physicalType": "DECIMAL"
-										}
-									},
-									{
-										"source": {
-											"name": "monthly_salaries",
-											"type": "Decimal",
-											"physicalType": "NewDecimal"
-										},
-										"sink": {
-											"name": "monthly_salaries",
-											"type": "Decimal",
-											"physicalType": "DECIMAL"
-										}
-									},
-									{
-										"source": {
-											"name": "is_learner_payment",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_learner_payment",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "is_learner_attendance",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_learner_attendance",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "is_learner_assessment",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_learner_assessment",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "is_caregiver_access",
-											"type": "Boolean",
-											"physicalType": "Bool"
-										},
-										"sink": {
-											"name": "is_caregiver_access",
-											"type": "Boolean",
-											"physicalType": "BOOLEAN"
-										}
-									},
-									{
-										"source": {
-											"name": "segment",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "segment",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "agreement_type",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "agreement_type",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "program_status",
-											"type": "String",
-											"physicalType": "VarChar"
-										},
-										"sink": {
-											"name": "program_status",
-											"type": "String",
-											"physicalType": "UTF8"
-										}
-									},
-									{
-										"source": {
-											"name": "owner_id",
-											"type": "UInt32",
-											"physicalType": "UInt32"
-										},
-										"sink": {
-											"name": "owner_id",
-											"type": "UInt32",
-											"physicalType": "INT_64"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "Source_Centres",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "p_schools_s",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "Dataverse Schools",
-						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
-						"dependsOn": [
-							{
-								"activity": "Centres from Giraffe",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "Schools Dataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"parquetsource": {},
-									"source1": {},
-									"account": {},
-									"School": {},
-									"Partner": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"WatermarkDate": {
-						"type": "string",
-						"defaultValue": "2026-04-05 16:45:28"
-					}
-				},
-				"folder": {
-					"name": "G2"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/Source_Centres')]",
-				"[concat(variables('factoryId'), '/datasets/p_schools_s')]",
-				"[concat(variables('factoryId'), '/dataflows/Schools Dataflow')]"
 			]
 		},
 		{
@@ -6377,6 +6852,78 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Application_Users')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_applicationuser"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Centres')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "account"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Contacts')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "contact"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CRM_Countries')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -7210,200 +7757,96 @@
 				},
 				"schema": [
 					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "school_id",
+						"name": "mobilephone",
 						"type": "UTF8"
 					},
 					{
-						"name": "franchisee_id",
-						"type": "INT64"
-					},
-					{
-						"name": "region_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "grow_id",
+						"name": "emailaddress1",
 						"type": "UTF8"
 					},
 					{
-						"name": "name",
+						"name": "firstname",
 						"type": "UTF8"
 					},
 					{
-						"name": "learner_capacity",
+						"name": "lastname",
 						"type": "UTF8"
 					},
 					{
-						"name": "number_of_classrooms",
-						"type": "UTF8"
-					},
-					{
-						"name": "logo",
-						"type": "UTF8"
-					},
-					{
-						"name": "address",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_commencement_date",
+						"name": "birthdate",
 						"type": "INT96"
 					},
 					{
-						"name": "break_even_fee",
+						"name": "cog_gendercode",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_racecode",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_raceother",
+						"type": "UTF8"
+					},
+					{
+						"name": "address1_city",
+						"type": "UTF8"
+					},
+					{
+						"name": "address1_line1",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_countryid",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_region",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeprofileid",
 						"type": "INT32"
 					},
 					{
-						"name": "capacity",
+						"name": "cog_centreid",
 						"type": "INT32"
 					},
 					{
-						"name": "form_11",
-						"type": "UTF8"
+						"name": "cog_rolecode",
+						"type": "INT_8"
 					},
 					{
-						"name": "hr_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hr_staff_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "ecd_start_date",
+						"name": "cog_startdate",
 						"type": "INT96"
 					},
 					{
-						"name": "ecd_code",
-						"type": "UTF8"
+						"name": "cog_childprotectionclearancecode",
+						"type": "INT_8"
 					},
 					{
-						"name": "contract",
-						"type": "UTF8"
+						"name": "cog_employmenttypecode",
+						"type": "INT_8"
 					},
 					{
-						"name": "contract_start_date",
-						"type": "INT96"
+						"name": "cog_highestqualificationcode",
+						"type": "INT_8"
 					},
 					{
-						"name": "contract_end_date",
-						"type": "INT96"
-					},
-					{
-						"name": "business_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "education_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "business_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hourly_late_or_early_fee",
-						"type": "INT64"
-					},
-					{
-						"name": "created_by",
+						"name": "cog_workhourstotal",
 						"type": "INT32"
 					},
 					{
-						"name": "updated_by",
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "cog_applicationuser",
 						"type": "INT32"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "school_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "inventory_group_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "monthly_salaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 18
-					},
-					{
-						"name": "is_learner_payment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_attendance",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_assessment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_caregiver_access",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "segment",
-						"type": "UTF8"
-					},
-					{
-						"name": "agreement_type",
-						"type": "UTF8"
-					},
-					{
-						"name": "program_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "owner_id",
-						"type": "INT64"
 					}
 				]
 			},
@@ -7437,200 +7880,88 @@
 				},
 				"schema": [
 					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "school_id",
-						"type": "UTF8"
-					},
-					{
-						"name": "franchisee_id",
-						"type": "INT64"
-					},
-					{
-						"name": "region_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "grow_id",
-						"type": "UTF8"
+						"name": "cog_centreid",
+						"type": "INT32"
 					},
 					{
 						"name": "name",
 						"type": "UTF8"
 					},
 					{
-						"name": "learner_capacity",
+						"name": "address1_city",
 						"type": "UTF8"
 					},
 					{
-						"name": "number_of_classrooms",
+						"name": "address1_line1",
 						"type": "UTF8"
 					},
 					{
-						"name": "logo",
+						"name": "emailaddress1",
 						"type": "UTF8"
 					},
 					{
-						"name": "address",
+						"name": "telephone1",
 						"type": "UTF8"
 					},
 					{
-						"name": "school_commencement_date",
+						"name": "cog_centrestartdate",
 						"type": "INT96"
 					},
 					{
-						"name": "break_even_fee",
+						"name": "cog_learnercapacity",
 						"type": "INT32"
 					},
 					{
-						"name": "capacity",
+						"name": "cog_classroomcount",
 						"type": "INT32"
 					},
 					{
-						"name": "form_11",
-						"type": "UTF8"
+						"name": "cog_ecdtypecode",
+						"type": "INT_8"
 					},
 					{
-						"name": "hr_email",
-						"type": "UTF8"
+						"name": "cog_agreementtypecode",
+						"type": "INT_8"
 					},
 					{
-						"name": "hr_staff_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "ecd_start_date",
+						"name": "cog_giraffeupdatedon",
 						"type": "INT96"
 					},
 					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract_start_date",
+						"name": "overriddencreatedon",
 						"type": "INT96"
 					},
 					{
-						"name": "contract_end_date",
-						"type": "INT96"
-					},
-					{
-						"name": "business_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "education_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "business_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hourly_late_or_early_fee",
-						"type": "INT64"
-					},
-					{
-						"name": "created_by",
-						"type": "INT32"
-					},
-					{
-						"name": "updated_by",
-						"type": "INT32"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "school_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "inventory_group_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "monthly_salaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 18
-					},
-					{
-						"name": "is_learner_payment",
+						"name": "cog_programme",
 						"type": "BOOLEAN"
 					},
 					{
-						"name": "is_learner_attendance",
-						"type": "BOOLEAN"
+						"name": "cog_programmestatuscode",
+						"type": "INT_8"
 					},
 					{
-						"name": "is_learner_assessment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_caregiver_access",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "segment",
+						"name": "cog_countryid",
 						"type": "UTF8"
 					},
 					{
-						"name": "agreement_type",
+						"name": "cog_region",
 						"type": "UTF8"
 					},
 					{
-						"name": "program_status",
+						"name": "cog_propertytypecode",
 						"type": "UTF8"
 					},
 					{
-						"name": "owner_id",
-						"type": "INT64"
+						"name": "cog_centretypecode",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_classtypecode",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_operatinghours",
+						"type": "UTF8"
 					}
 				]
 			},
@@ -7670,6 +8001,75 @@
 					{
 						"name": "cog_name",
 						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Learner_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Accounts in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "learner_data.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_centreid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_learners0to2",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "cog_learners2to5",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "cog_learners6to9",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "cog_learners9plus",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
+					},
+					{
+						"name": "cog_learners_total",
+						"type": "DECIMAL",
+						"precision": 38,
+						"scale": 18
 					}
 				]
 			},
@@ -8157,200 +8557,28 @@
 				},
 				"schema": [
 					{
-						"name": "id",
-						"type": "INT64"
-					},
-					{
-						"name": "school_id",
+						"name": "firstname",
 						"type": "UTF8"
 					},
 					{
-						"name": "franchisee_id",
-						"type": "INT64"
-					},
-					{
-						"name": "region_id",
-						"type": "INT64"
-					},
-					{
-						"name": "city_id",
-						"type": "INT64"
-					},
-					{
-						"name": "province_id",
-						"type": "INT64"
-					},
-					{
-						"name": "grow_id",
+						"name": "lastname",
 						"type": "UTF8"
 					},
 					{
-						"name": "name",
-						"type": "UTF8"
-					},
-					{
-						"name": "learner_capacity",
-						"type": "UTF8"
-					},
-					{
-						"name": "number_of_classrooms",
-						"type": "UTF8"
-					},
-					{
-						"name": "logo",
-						"type": "UTF8"
-					},
-					{
-						"name": "address",
-						"type": "UTF8"
-					},
-					{
-						"name": "school_commencement_date",
-						"type": "INT96"
-					},
-					{
-						"name": "break_even_fee",
+						"name": "cog_userid",
 						"type": "INT32"
 					},
 					{
-						"name": "capacity",
-						"type": "INT32"
-					},
-					{
-						"name": "form_11",
-						"type": "UTF8"
-					},
-					{
-						"name": "hr_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hr_staff_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "ecd_start_date",
+						"name": "cog_lastlogin",
 						"type": "INT96"
 					},
 					{
-						"name": "ecd_code",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract",
-						"type": "UTF8"
-					},
-					{
-						"name": "contract_start_date",
+						"name": "cog_giraffeupdatedon",
 						"type": "INT96"
 					},
 					{
-						"name": "contract_end_date",
+						"name": "overriddencreatedon",
 						"type": "INT96"
-					},
-					{
-						"name": "business_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "education_mentor_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "business_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "business_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_phone_number",
-						"type": "UTF8"
-					},
-					{
-						"name": "education_mentor_email",
-						"type": "UTF8"
-					},
-					{
-						"name": "hourly_late_or_early_fee",
-						"type": "INT64"
-					},
-					{
-						"name": "created_by",
-						"type": "INT32"
-					},
-					{
-						"name": "updated_by",
-						"type": "INT32"
-					},
-					{
-						"name": "created_at",
-						"type": "INT96"
-					},
-					{
-						"name": "updated_at",
-						"type": "INT96"
-					},
-					{
-						"name": "school_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "inventory_group_id",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 0
-					},
-					{
-						"name": "monthly_salaries",
-						"type": "DECIMAL",
-						"precision": 38,
-						"scale": 18
-					},
-					{
-						"name": "is_learner_payment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_attendance",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_learner_assessment",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "is_caregiver_access",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "segment",
-						"type": "UTF8"
-					},
-					{
-						"name": "agreement_type",
-						"type": "UTF8"
-					},
-					{
-						"name": "program_status",
-						"type": "UTF8"
-					},
-					{
-						"name": "owner_id",
-						"type": "INT64"
 					}
 				]
 			},
@@ -11996,6 +12224,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/GrowECD-IRR')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "North Europe",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Age Groups Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -12076,6 +12325,382 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM App User Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_app_users",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetAppUser"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Application_Users",
+								"type": "DatasetReference"
+							},
+							"name": "SinkRegions"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_firstname as string,",
+						"          cog_lastname as string,",
+						"          cog_userid as integer,",
+						"          cog_lastlogin as timestamp,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetAppUser",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetAppUser derive(cog_name = concat(cog_firstname,\" \",cog_lastname)) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_userid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_firstname,",
+						"          cog_lastname,",
+						"          cog_userid,",
+						"          cog_lastlogin,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          cog_name",
+						"     )) ~> SinkRegions"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_app_users')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Application_Users')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Centre Profiles Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Centre_Profiles",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetCentreProfiles"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Contacts",
+								"type": "DatasetReference"
+							},
+							"name": "SinkContacts"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          mobilephone as string,",
+						"          emailaddress1 as string,",
+						"          firstname as string,",
+						"          lastname as string,",
+						"          birthdate as timestamp,",
+						"          cog_gendercode as byte,",
+						"          cog_racecode as byte,",
+						"          cog_raceother as string,",
+						"          address1_city as string,",
+						"          address1_line1 as string,",
+						"          cog_countryid as string,",
+						"          cog_region as string,",
+						"          cog_giraffeprofileid as integer,",
+						"          cog_centreid as integer,",
+						"          cog_rolecode as byte,",
+						"          cog_startdate as timestamp,",
+						"          cog_childprotectionclearancecode as byte,",
+						"          cog_employmenttypecode as byte,",
+						"          cog_highestqualificationcode as byte,",
+						"          cog_workhourstotal as integer,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp,",
+						"          cog_applicationuser as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetCentreProfiles",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetCentreProfiles derive({cog_CountryId@odata.bind} = iif(\r",
+						"    isNull(cog_countryid),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_countryid),\"')\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
+						"),",
+						"          {cog_ApplicationUser@odata.bind} = iif(\r",
+						"  isNull(cog_applicationuser),\r",
+						"  toString(null()),\r",
+						"  concat('/cog_applicationusers(cog_userid=', toString(toInteger(cog_applicationuser)), ')')\r",
+						"),",
+						"          {parentcustomerid_account@odata.bind} = iif(\r",
+						"  isNull(cog_centreid),\r",
+						"  toString(null()),\r",
+						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
+						"),",
+						"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_startdate = toString(toDate(cog_startdate), 'yyyy-MM-dd'),",
+						"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_racecode = iif(\r",
+						"  isNull(cog_racecode) || trim(toString(cog_racecode)) == '',\r",
+						"  toInteger(null()),\r",
+						"  iif(in(['0','1','2','3','4'], trim(toString(cog_racecode))),\r",
+						"      toInteger(trim(toString(cog_racecode))),\r",
+						"      99)\r",
+						"),",
+						"          cog_raceother = iif(\r",
+						"  isNull(cog_raceother) || trim(toString(cog_raceother)) == '' || in(['1','2','3'], trim(toString(cog_raceother))),\r",
+						"  toString(null()),\r",
+						"  left(trim(toString(cog_raceother)), 255)\r",
+						"),",
+						"          birthdate = toString(toDate(birthdate), 'yyyy-MM-dd')) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_giraffeprofileid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          mobilephone,",
+						"          emailaddress1,",
+						"          firstname,",
+						"          lastname,",
+						"          birthdate,",
+						"          cog_gendercode,",
+						"          cog_racecode,",
+						"          cog_raceother,",
+						"          address1_city,",
+						"          address1_line1,",
+						"          cog_giraffeprofileid,",
+						"          cog_rolecode,",
+						"          cog_startdate,",
+						"          cog_childprotectionclearancecode,",
+						"          cog_employmenttypecode,",
+						"          cog_highestqualificationcode,",
+						"          cog_workhourstotal,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          {cog_CountryId@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          {cog_ApplicationUser@odata.bind},",
+						"          {parentcustomerid_account@odata.bind}",
+						"     ),",
+						"     partitionBy('roundRobin', 16)) ~> SinkContacts"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Centre_Profiles')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Contacts')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Centres Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Centres",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetCentres"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Centres",
+								"type": "DatasetReference"
+							},
+							"name": "SinkRegions"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_centreid as integer,",
+						"          name as string,",
+						"          address1_city as string,",
+						"          address1_line1 as string,",
+						"          emailaddress1 as string,",
+						"          telephone1 as string,",
+						"          cog_centrestartdate as timestamp,",
+						"          cog_learnercapacity as integer,",
+						"          cog_classroomcount as integer,",
+						"          cog_ecdtypecode as byte,",
+						"          cog_agreementtypecode as byte,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp,",
+						"          cog_programme as boolean,",
+						"          cog_programmestatuscode as byte,",
+						"          cog_countryid as string,",
+						"          cog_region as string,",
+						"          cog_propertytypecode as string,",
+						"          cog_centretypecode as string,",
+						"          cog_classtypecode as string,",
+						"          cog_operatinghours as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetCentres",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetCentres derive({cog_CountryId@odata.bind} = iif(\r",
+						"    isNull(cog_countryid),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_countryid),\"')\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
+						"),",
+						"          cog_programme = case(\r",
+						"    isNull(cog_programme), 769070000,\r",
+						"    cog_programme == true(), 769070001,\r",
+						"    cog_programme == false(), 769070002\r",
+						"  ),",
+						"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_centrestartdate = toString(toDate(cog_centrestartdate), 'yyyy-MM-dd'),",
+						"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_classtypecode = iif(\r",
+						"  size(filter(split(regexReplace(toString(cog_classtypecode), '[\\\\[\\\\]\\\\s\"]', ''), ','), in(['1','2','3','4','5','6','7'], #item))) == 0,\r",
+						"  toString(null()),\r",
+						"  reduce(\r",
+						"    filter(split(regexReplace(toString(cog_classtypecode), '[\\\\[\\\\]\\\\s\"]', ''), ','), in(['1','2','3','4','5','6','7'], #item)),\r",
+						"    '',\r",
+						"    iif(#acc == '', #item, #acc + ',' + #item),\r",
+						"    #result\r",
+						"  )\r",
+						"),",
+						"          cog_centretypecode = iif(\r",
+						"  isNull(cog_centretypecode) || trim(toString(cog_centretypecode)) == '',\r",
+						"  toInteger(null()),\r",
+						"  iif(in(['1','2','3','4','5'], trim(toString(cog_centretypecode))),\r",
+						"      toInteger(trim(toString(cog_centretypecode))),\r",
+						"      6)\r",
+						"),",
+						"          cog_centretypeother = iif(\r",
+						"  isNull(cog_centretypecode) || trim(toString(cog_centretypecode)) == '' || in(['1','2','3','4','5'], trim(toString(cog_centretypecode))),\r",
+						"  toString(null()),\r",
+						"  left(trim(toString(cog_centretypecode)), 255)\r",
+						"),",
+						"          cog_propertytypecode = iif(\r",
+						"  isNull(cog_propertytypecode) || trim(toString(cog_propertytypecode)) == '',\r",
+						"  toInteger(null()),\r",
+						"  iif(in(['1','2','3'], trim(toString(cog_propertytypecode))),\r",
+						"      toInteger(trim(toString(cog_propertytypecode))),\r",
+						"      99)\r",
+						"),",
+						"          cog_propertytypeother = iif(\r",
+						"  isNull(cog_propertytypecode) || trim(toString(cog_propertytypecode)) == '' || in(['1','2','3'], trim(toString(cog_propertytypecode))),\r",
+						"  toString(null()),\r",
+						"  left(trim(toString(cog_propertytypecode)), 255)\r",
+						")) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_centreid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_centreid,",
+						"          name,",
+						"          address1_city,",
+						"          address1_line1,",
+						"          emailaddress1,",
+						"          telephone1,",
+						"          cog_centrestartdate,",
+						"          cog_learnercapacity,",
+						"          cog_classroomcount,",
+						"          cog_ecdtypecode,",
+						"          cog_agreementtypecode,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          cog_programme,",
+						"          cog_programmestatuscode,",
+						"          cog_propertytypecode,",
+						"          cog_centretypecode,",
+						"          cog_classtypecode,",
+						"          cog_operatinghours,",
+						"          {cog_CountryId@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          cog_centretypeother,",
+						"          cog_propertytypeother",
+						"     )) ~> SinkRegions"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Centres')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Centres')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CRM Countries Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -12135,6 +12760,88 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet_Countries')]",
 				"[concat(variables('factoryId'), '/datasets/CRM_Countries')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Leaner Data Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Learner_Data",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetLearnerData"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Centres",
+								"type": "DatasetReference"
+							},
+							"name": "SinkLearnerData"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_centreid as integer,",
+						"          cog_name as string,",
+						"          cog_learners0to2 as decimal(38,18),",
+						"          cog_learners2to5 as decimal(38,18),",
+						"          cog_learners6to9 as decimal(38,18),",
+						"          cog_learners9plus as decimal(38,18),",
+						"          cog_learners_total as decimal(38,18)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetLearnerData",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetLearnerData derive({cog_Account@odata.bind} = iif(\r",
+						"  isNull(cog_centreid),\r",
+						"  toString(null()),\r",
+						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
+						"),",
+						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_centreid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_name,",
+						"          cog_learners0to2,",
+						"          cog_learners2to5,",
+						"          cog_learners6to9,",
+						"          cog_learners9plus,",
+						"          cog_learners_total,",
+						"          bind = {cog_Account@odata.bind},",
+						"          overriddencreatedon",
+						"     )) ~> SinkLearnerData"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Learner_Data')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Centres')]"
 			]
 		},
 		{
