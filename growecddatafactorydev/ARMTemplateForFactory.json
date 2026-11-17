@@ -1562,8 +1562,7 @@
 								"datasetParameters": {
 									"ParquetLearnerData": {},
 									"SinkLearnerData": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"integrationRuntime": {
@@ -6934,6 +6933,30 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "cog_country"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Learner_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_learnerdata"
 				}
 			},
 			"dependsOn": [
@@ -12814,7 +12837,7 @@
 						"          cog_learners2to5 = toInteger(cog_learners2to5),",
 						"          cog_learners6to9 = toInteger(cog_learners6to9),",
 						"          cog_learners9plus = toInteger(cog_learners9plus),",
-						"          cog_learners_total = toInteger(cog_learnerstotal)) ~> DerivedColumns",
+						"          cog_learnerstotal = toInteger(cog_learnerstotal)) ~> DerivedColumns",
 						"Upsert sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -15211,30 +15234,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM_Learner_Data')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Dataverse Account",
-				"linkedServiceName": {
-					"referenceName": "CRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_learnerdata"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
 			]
 		}
 	]

@@ -421,6 +421,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Learner_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_learnerdata"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CRM_Regions')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -578,29 +602,6 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "cog_checklist"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Dataverse1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DataverseCompliance')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Dataverse1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "tcbgrow_schoolcompliance"
 				}
 			},
 			"dependsOn": [

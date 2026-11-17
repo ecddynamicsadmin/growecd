@@ -1712,8 +1712,7 @@
 								"datasetParameters": {
 									"ParquetLearnerData": {},
 									"SinkLearnerData": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"integrationRuntime": {
