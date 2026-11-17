@@ -362,7 +362,7 @@
 						"referenceName": "GrowECD-IRR",
 						"type": "IntegrationRuntimeReference"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Coarse"
 				}
 			}
 		],
