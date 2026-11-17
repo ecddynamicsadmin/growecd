@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CRM_Centres",
+						"referenceName": "CRM_Learner_Data",
 						"type": "DatasetReference"
 					},
 					"name": "SinkLearnerData"
