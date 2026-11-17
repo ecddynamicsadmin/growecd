@@ -79,7 +79,7 @@
 				"    toString(null()),\r",
 				"    concat(\"/accounts(cog_centreid=\",toString(cog_centreid),\")\")\r",
 				"   ),",
-				"          overriddencreatedon = toString(toUTC(cog_startdate, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+				"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
 				"          cog_startdate = toString(toDate(cog_startdate), 'yyyy-MM-dd'),",
 				"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
 				"          cog_racecode = iif(\r",
