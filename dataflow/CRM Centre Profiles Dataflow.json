@@ -27,9 +27,6 @@
 				},
 				{
 					"name": "DerivedColumns"
-				},
-				{
-					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -62,7 +59,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> ParquetCentreProfiles",
-				"filter1 alterRow(upsertIf(true())) ~> Upsert",
+				"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
 				"ParquetCentreProfiles derive({cog_CountryId@odata.bind} = iif(\r",
 				"    isNull(cog_countryid),\r",
 				"    toString(null()),\r",
@@ -99,8 +96,6 @@
 				"  left(trim(toString(cog_raceother)), 255)\r",
 				"),",
 				"          birthdate = toString(toDate(birthdate), 'yyyy-MM-dd')) ~> DerivedColumns",
-				"DerivedColumns filter(toInteger(cog_centreid) == 1\r",
-				") ~> filter1",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
