@@ -311,8 +311,6 @@
 			{
 				"name": "CRM Accounts",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Centres from Giraffe",
