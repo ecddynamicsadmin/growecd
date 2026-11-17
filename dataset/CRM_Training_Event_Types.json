@@ -1,0 +1,16 @@
+{
+	"name": "CRM_Training_Event_Types",
+	"properties": {
+		"description": "Dataverse Account",
+		"linkedServiceName": {
+			"referenceName": "CRM",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "G2 Dataverse"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": []
+	}
+}
