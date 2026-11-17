@@ -99,7 +99,7 @@
 				"  left(trim(toString(cog_raceother)), 255)\r",
 				"),",
 				"          birthdate = toString(toDate(birthdate), 'yyyy-MM-dd')) ~> DerivedColumns",
-				"DerivedColumns filter(!isNull(cog_centreid) && toInteger(cog_centreid) == 1\r",
+				"DerivedColumns filter(toInteger(cog_centreid) == 1\r",
 				") ~> filter1",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -122,8 +122,6 @@
 				"          cog_raceother,",
 				"          address1_city,",
 				"          address1_line1,",
-				"          cog_countryid,",
-				"          cog_region,",
 				"          cog_giraffeprofileid,",
 				"          cog_rolecode,",
 				"          cog_startdate,",
@@ -133,10 +131,10 @@
 				"          cog_workhourstotal,",
 				"          cog_giraffeupdatedon,",
 				"          overriddencreatedon,",
-				"          cog_applicationuser,",
-				"          {cog_CountryId@odata.bind},",
-				"          {cog_Region@odata.bind},",
-				"          {parentcustomerid_account@odata.bind}",
+				"          bind = {cog_CountryId@odata.bind},",
+				"          bind = {cog_Region@odata.bind},",
+				"          bind = {cog_ApplicationUser@odata.bind},",
+				"          bind = {parentcustomerid_account@odata.bind}",
 				"     )) ~> SinkContacts"
 			]
 		}
