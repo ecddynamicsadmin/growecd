@@ -5,6 +5,8 @@
 			{
 				"name": "Learner Data from Giraffe",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -140,8 +142,6 @@
 			{
 				"name": "CRM Learner Data",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Learner Data from Giraffe",
