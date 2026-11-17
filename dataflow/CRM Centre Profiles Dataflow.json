@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "DerivedColumns"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -44,7 +47,7 @@
 				"          cog_countryid as string,",
 				"          cog_region as string,",
 				"          cog_giraffeprofileid as integer,",
-				"          centreid as integer,",
+				"          parentcustomerid_account as integer,",
 				"          cog_rolecode as byte,",
 				"          cog_startdate as timestamp,",
 				"          cog_childprotectionclearancecode as byte,",
@@ -52,13 +55,14 @@
 				"          cog_highestqualificationcode as byte,",
 				"          cog_workhourstotal as integer,",
 				"          cog_giraffeupdatedon as timestamp,",
-				"          overriddencreatedon as timestamp",
+				"          overriddencreatedon as timestamp,",
+				"          cog_applicationuser as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> ParquetCentreProfiles",
-				"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+				"filter1 alterRow(upsertIf(true())) ~> Upsert",
 				"ParquetCentreProfiles derive({cog_CountryId@odata.bind} = iif(\r",
 				"    isNull(cog_countryid),\r",
 				"    toString(null()),\r",
@@ -69,7 +73,8 @@
 				"    toString(null()),\r",
 				"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
 				"),",
-				"          {cog_ApplicationUser@odata.bind} = iif(     isNull(cog_region),     toString(null()),     concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\") ),",
+				"          {cog_ApplicationUser@odata.bind} = iif(     isNull(cog_applicationuser),     toString(null()),     concat(\"/cog_applicationusers(cog_userid=\",toString(cog_applicationuser),\")\") ),",
+				"          {parentcustomerid_account@odata.bind} = iif(     isNull(parentcustomerid_account),     toString(null()),     concat(\"/accounts(cog_centreid=\",toString(parentcustomerid_account),\")\") ),",
 				"          overriddencreatedon = toString(toUTC(cog_startdate, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
 				"          cog_startdate = toString(toDate(cog_startdate), 'yyyy-MM-dd'),",
 				"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
@@ -85,6 +90,7 @@
 				"  toString(null()),\r",
 				"  left(trim(toString(cog_raceother)), 255)\r",
 				")) ~> DerivedColumns",
+				"DerivedColumns filter({parentcustomerid_account@odata.bind} == '1') ~> filter1",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
