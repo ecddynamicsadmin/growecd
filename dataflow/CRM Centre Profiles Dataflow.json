@@ -136,7 +136,6 @@
 				"          cog_applicationuser,",
 				"          {cog_CountryId@odata.bind},",
 				"          {cog_Region@odata.bind},",
-				"          {cog_ApplicationUser@odata.bind},",
 				"          {parentcustomerid_account@odata.bind}",
 				"     )) ~> SinkContacts"
 			]
