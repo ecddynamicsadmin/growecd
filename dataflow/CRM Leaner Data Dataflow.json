@@ -66,13 +66,14 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     saveOrder: 1,",
 				"     mapColumn(",
+				"          cog_centreid,",
 				"          cog_name,",
 				"          cog_learners0to2,",
 				"          cog_learners2to5,",
 				"          cog_learners6to9,",
 				"          cog_learners9plus,",
 				"          cog_learners_total,",
-				"          {cog_Account@odata.bind},",
+				"          bind = {cog_Account@odata.bind},",
 				"          overriddencreatedon",
 				"     )) ~> SinkLearnerData"
 			]
