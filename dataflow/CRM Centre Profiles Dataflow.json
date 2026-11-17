@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "CRM_Centres",
+						"referenceName": "CRM_Contacts",
 						"type": "DatasetReference"
 					},
 					"name": "SinkContacts"
@@ -115,23 +115,20 @@
 				"          cog_countryid,",
 				"          cog_region,",
 				"          cog_giraffeprofileid,",
-				"          cog_centreid,",
+				"          parentcustomerid_account,",
 				"          cog_rolecode,",
-				"          cog_startdate = ParquetCentreProfiles@cog_startdate,",
+				"          cog_startdate,",
 				"          cog_childprotectionclearancecode,",
 				"          cog_employmenttypecode,",
 				"          cog_highestqualificationcode,",
 				"          cog_workhourstotal,",
+				"          cog_giraffeupdatedon,",
+				"          overriddencreatedon,",
+				"          cog_applicationuser,",
 				"          bind = {cog_CountryId@odata.bind},",
 				"          bind = {cog_Region@odata.bind},",
-				"          overriddencreatedon,",
-				"          cog_centrestartdate = cog_startdate,",
-				"          cog_giraffeupdatedon,",
-				"          cog_classtypecode,",
-				"          cog_centretypecode,",
-				"          cog_centretypeother,",
-				"          cog_propertytypecode = cog_racecode,",
-				"          cog_propertytypeother = cog_raceother",
+				"          bind = {cog_ApplicationUser@odata.bind},",
+				"          bind = {parentcustomerid_account@odata.bind}",
 				"     )) ~> SinkContacts"
 			]
 		}
