@@ -5,6 +5,8 @@
 			{
 				"name": "Centre Profiles from Giraffe",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -335,8 +337,6 @@
 			{
 				"name": "CRM Contacts Centre Profiles",
 				"type": "ExecuteDataFlow",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Centre Profiles from Giraffe",
@@ -358,9 +358,9 @@
 						"referenceName": "CRM Centre Profiles Dataflow",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "GrowECD-IRR",
+						"type": "IntegrationRuntimeReference"
 					},
 					"traceLevel": "Fine"
 				}
