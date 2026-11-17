@@ -16,7 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "MariaDBSource"
+						"type": "MariaDBSource",
+						"query": {
+							"value": "SELECT\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    userid                      AS cog_userid,\n    last_login                  AS cog_lastlogin,\n    updated_at                  AS cog_giraffeupdatedon,\n    created_at                  AS overriddencreatedon\n\nFROM growecd.app_users\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
