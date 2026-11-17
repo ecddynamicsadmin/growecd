@@ -1,0 +1,118 @@
+{
+	"name": "Parquet_Training_Event_Types",
+	"properties": {
+		"description": "Centre Profiles in the Dataverse",
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "G2 Parquet"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "training_event_types.parquet",
+				"folderPath": "parquet",
+				"fileSystem": "giraffetwo"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "mobilephone",
+				"type": "UTF8"
+			},
+			{
+				"name": "emailaddress1",
+				"type": "UTF8"
+			},
+			{
+				"name": "firstname",
+				"type": "UTF8"
+			},
+			{
+				"name": "lastname",
+				"type": "UTF8"
+			},
+			{
+				"name": "birthdate",
+				"type": "INT96"
+			},
+			{
+				"name": "cog_gendercode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_racecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_raceother",
+				"type": "UTF8"
+			},
+			{
+				"name": "address1_city",
+				"type": "UTF8"
+			},
+			{
+				"name": "address1_line1",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_countryid",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_region",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_giraffeprofileid",
+				"type": "INT32"
+			},
+			{
+				"name": "cog_centreid",
+				"type": "INT32"
+			},
+			{
+				"name": "cog_rolecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_startdate",
+				"type": "INT96"
+			},
+			{
+				"name": "cog_childprotectionclearancecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_employmenttypecode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_highestqualificationcode",
+				"type": "INT_8"
+			},
+			{
+				"name": "cog_workhourstotal",
+				"type": "INT32"
+			},
+			{
+				"name": "cog_giraffeupdatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "overriddencreatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "cog_applicationuser",
+				"type": "INT32"
+			}
+		]
+	}
+}
