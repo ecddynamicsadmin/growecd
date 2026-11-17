@@ -74,7 +74,7 @@
 				"type": "INT32"
 			},
 			{
-				"name": "cog_centreid",
+				"name": "centreid",
 				"type": "INT32"
 			},
 			{
@@ -100,6 +100,14 @@
 			{
 				"name": "cog_workhourstotal",
 				"type": "INT32"
+			},
+			{
+				"name": "cog_giraffeupdatedon",
+				"type": "INT96"
+			},
+			{
+				"name": "overriddencreatedon",
+				"type": "INT96"
 			}
 		]
 	}
