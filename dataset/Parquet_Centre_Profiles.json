@@ -108,6 +108,10 @@
 			{
 				"name": "overriddencreatedon",
 				"type": "INT96"
+			},
+			{
+				"name": "cog_applicationuser",
+				"type": "INT32"
 			}
 		]
 	}
