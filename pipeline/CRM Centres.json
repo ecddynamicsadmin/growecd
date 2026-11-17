@@ -18,7 +18,7 @@
 					"source": {
 						"type": "MariaDBSource",
 						"query": {
-							"value": "SELECT\n    centreid AS cog_centreid,\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,\n    agreement_type             AS cog_agreementtypecode,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    grow_programme             AS cog_programme,   \n    programme_status           AS cog_programmestatuscode,\n    countrycode                AS cog_countryid,\n    regioncode                 AS cog_region,\n    property_type              AS cog_propertytypecode,\n    centre_type                AS cog_centretypecode,\n    class_types                AS cog_classtypecode,\n    operating_hours            AS cog_operatinghours\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
+							"value": "SELECT\n    centreid AS cog_centreid,\n    name                       AS name,\n    city                       AS address1_city,\n    physical_address           AS address1_line1,\n    email                      AS emailaddress1,\n    phone_number               AS telephone1,\n    start_date                 AS cog_centrestartdate,\n    capacity                   AS cog_learnercapacity,\n    classrooms                 AS cog_classroomcount,\n    ecd_type                   AS cog_ecdtypecode,\n    agreement_type             AS cog_agreementtypecode,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    grow_programme             AS cog_programme,   \n    programme_status           AS cog_programmestatuscode,\n    countrycode                AS cog_countryid,\n    regioncode                 AS cog_region,\n    property_type              AS cog_propertytypecode,\n    centre_type                AS cog_centretypecode,\n    class_types                AS cog_classtypecode,\n    operating_hours            AS cog_operatinghours\nFROM growecd.centres\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()\n  AND is_test != 1;",
 							"type": "Expression"
 						}
 					},
@@ -311,6 +311,8 @@
 			{
 				"name": "CRM Accounts",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Centres from Giraffe",
