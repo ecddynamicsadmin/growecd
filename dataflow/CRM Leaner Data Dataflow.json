@@ -54,7 +54,7 @@
 				"          cog_learners2to5 = toInteger(cog_learners2to5),",
 				"          cog_learners6to9 = toInteger(cog_learners6to9),",
 				"          cog_learners9plus = toInteger(cog_learners9plus),",
-				"          cog_learners_total = toInteger(cog_learners_total)) ~> DerivedColumns",
+				"          cog_learners_total = toInteger(cog_learnerstotal)) ~> DerivedColumns",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
