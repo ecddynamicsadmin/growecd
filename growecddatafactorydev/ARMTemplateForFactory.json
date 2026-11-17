@@ -1413,7 +1413,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "MariaDBSource",
-								"query": "SELECT\n    l.centreid AS cog_centreid,\n    c.name     AS cog_name,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 0 AND 1 THEN 1 ELSE 0 END) AS cog_learners0to2,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 2 AND 5 THEN 1 ELSE 0 END) AS cog_learners2to5,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 6 AND 8 THEN 1 ELSE 0 END) AS cog_learners6to9,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 9            THEN 1 ELSE 0 END) AS cog_learners9plus,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 0            THEN 1 ELSE 0 END) AS cog_learners_total\nFROM growecd.learners AS l\nLEFT JOIN growecd.centres AS c\n       ON c.centreid = l.centreid\nWHERE COALESCE(l.archived, 0) <> 1\nGROUP BY l.centreid, c.name\nORDER BY l.centreid;"
+								"query": "SELECT\n    l.centreid AS cog_centreid,\n    c.name     AS cog_name,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 0 AND 1 THEN 1 ELSE 0 END) AS cog_learners0to2,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 2 AND 5 THEN 1 ELSE 0 END) AS cog_learners2to5,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) BETWEEN 6 AND 8 THEN 1 ELSE 0 END) AS cog_learners6to9,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 9            THEN 1 ELSE 0 END) AS cog_learners9plus,\n    SUM(CASE WHEN TIMESTAMPDIFF(YEAR, l.birthdate, CURDATE()) >= 0            THEN 1 ELSE 0 END) AS cog_learnerstotal\nFROM growecd.learners AS l\nLEFT JOIN growecd.centres AS c\n       ON c.centreid = l.centreid\nWHERE COALESCE(l.archived, 0) <> 1\nGROUP BY l.centreid, c.name\nORDER BY l.centreid;"
 							},
 							"sink": {
 								"type": "ParquetSink",
@@ -1502,12 +1502,12 @@
 									},
 									{
 										"source": {
-											"name": "cog_learners_total",
+											"name": "cog_learnerstotal",
 											"type": "Decimal",
 											"physicalType": "NewDecimal"
 										},
 										"sink": {
-											"name": "cog_learners_total",
+											"name": "cog_learnerstotal",
 											"type": "Decimal",
 											"physicalType": "DECIMAL"
 										}
@@ -1538,8 +1538,6 @@
 					{
 						"name": "CRM Learner Data",
 						"type": "ExecuteDataFlow",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Learner Data from Giraffe",
@@ -1564,12 +1562,13 @@
 								"datasetParameters": {
 									"ParquetLearnerData": {},
 									"SinkLearnerData": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -1577,12 +1576,6 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"WatermarkDate": {
-						"type": "string",
-						"defaultValue": "2026-04-05 16:45:28"
-					}
 				},
 				"folder": {
 					"name": "G2"
@@ -1592,7 +1585,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Source_Learners')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_Learner_Data')]",
-				"[concat(variables('factoryId'), '/dataflows/CRM Leaner Data Dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/CRM Leaner Data Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
 			]
 		},
 		{
@@ -8066,7 +8060,7 @@
 						"scale": 18
 					},
 					{
-						"name": "cog_learners_total",
+						"name": "cog_learnerstotal",
 						"type": "DECIMAL",
 						"precision": 38,
 						"scale": 18
@@ -12781,7 +12775,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "CRM_Centres",
+								"referenceName": "CRM_Learner_Data",
 								"type": "DatasetReference"
 							},
 							"name": "SinkLearnerData"
@@ -12803,7 +12797,7 @@
 						"          cog_learners2to5 as decimal(38,18),",
 						"          cog_learners6to9 as decimal(38,18),",
 						"          cog_learners9plus as decimal(38,18),",
-						"          cog_learners_total as decimal(38,18)",
+						"          cog_learnerstotal as decimal(38,18)",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -12815,7 +12809,12 @@
 						"  toString(null()),\r",
 						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
 						"),",
-						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DerivedColumns",
+						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_learners0to2 = toInteger(cog_learners0to2),",
+						"          cog_learners2to5 = toInteger(cog_learners2to5),",
+						"          cog_learners6to9 = toInteger(cog_learners6to9),",
+						"          cog_learners9plus = toInteger(cog_learners9plus),",
+						"          cog_learners_total = toInteger(cog_learnerstotal)) ~> DerivedColumns",
 						"Upsert sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -12827,13 +12826,14 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 1,",
 						"     mapColumn(",
+						"          cog_centreid,",
 						"          cog_name,",
 						"          cog_learners0to2,",
 						"          cog_learners2to5,",
 						"          cog_learners6to9,",
 						"          cog_learners9plus,",
-						"          cog_learners_total,",
-						"          bind = {cog_Account@odata.bind},",
+						"          cog_learnerstotal,",
+						"          {cog_Account@odata.bind},",
 						"          overriddencreatedon",
 						"     )) ~> SinkLearnerData"
 					]
@@ -12841,7 +12841,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet_Learner_Data')]",
-				"[concat(variables('factoryId'), '/datasets/CRM_Centres')]"
+				"[concat(variables('factoryId'), '/datasets/CRM_Learner_Data')]"
 			]
 		},
 		{
@@ -15211,6 +15211,30 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Learner_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_learnerdata"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
 			]
 		}
 	]

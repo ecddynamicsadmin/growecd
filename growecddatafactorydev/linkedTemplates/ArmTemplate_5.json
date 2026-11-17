@@ -131,6 +131,28 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Learner_Data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_learnerdata"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Giraffe Files')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1379,7 +1401,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "CRM_Centres",
+								"referenceName": "CRM_Learner_Data",
 								"type": "DatasetReference"
 							},
 							"name": "SinkLearnerData"
@@ -1401,7 +1423,7 @@
 						"          cog_learners2to5 as decimal(38,18),",
 						"          cog_learners6to9 as decimal(38,18),",
 						"          cog_learners9plus as decimal(38,18),",
-						"          cog_learners_total as decimal(38,18)",
+						"          cog_learnerstotal as decimal(38,18)",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -1413,7 +1435,12 @@
 						"  toString(null()),\r",
 						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
 						"),",
-						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DerivedColumns",
+						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_learners0to2 = toInteger(cog_learners0to2),",
+						"          cog_learners2to5 = toInteger(cog_learners2to5),",
+						"          cog_learners6to9 = toInteger(cog_learners6to9),",
+						"          cog_learners9plus = toInteger(cog_learners9plus),",
+						"          cog_learners_total = toInteger(cog_learnerstotal)) ~> DerivedColumns",
 						"Upsert sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -1425,19 +1452,22 @@
 						"     skipDuplicateMapOutputs: true,",
 						"     saveOrder: 1,",
 						"     mapColumn(",
+						"          cog_centreid,",
 						"          cog_name,",
 						"          cog_learners0to2,",
 						"          cog_learners2to5,",
 						"          cog_learners6to9,",
 						"          cog_learners9plus,",
-						"          cog_learners_total,",
-						"          bind = {cog_Account@odata.bind},",
+						"          cog_learnerstotal,",
+						"          {cog_Account@odata.bind},",
 						"          overriddencreatedon",
 						"     )) ~> SinkLearnerData"
 					]
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CRM_Learner_Data')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CRM Regions Dataflow')]",
@@ -2175,29 +2205,6 @@
 						"          {tcbgrow_School@odata.bind}",
 						"     )) ~> sink1"
 					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Expenses')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolexpenses_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolexpenses_s",
-							"dataset": {
-								"referenceName": "p_schoolexpenses_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolexpenses_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolexpenses_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolexpenses_s\",\n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount_paid\",  \n            \"date_paid\",\n            \"fin_type\",  \n            \"recordid\",  \n            \"school_id\",\n            \"fin_code\",  \n            \"month\", \n            \"year\"\n        }),  \n  \n    // ✅ Add column WITHOUT declaring type  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Selected Columns\",  \n            \"TranType\",  \n            each 301220002  \n        ),  \n  \n    // ✅ Set type in separate step (Spark safe)  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added TranType\",  \n            {{\"TranType\", Int64.Type}}  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Changed Type\",{  \n            {\"amount_paid\", \"tcbgrow_amount\"},  \n            {\"date_paid\", \"tcbgrow_asofdate\"},\n            {\"fin_type\", \"tcbgrow_description\"},  \n            {\"fin_code\", \"tcbgrow_source\"},\n            {\"recordid\", \"tcbgrow_importexpenseid\"},  \n            {\"school_id\", \"tcbgrow_importschoolid\"},  \n            {\"month\", \"tcbgrow_month\"},  \n            {\"year\", \"tcbgrow_year\"},  \n            {\"TranType\", \"tcbgrow_transactiontype\"}  \n        }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Changed column type\", \"tcbgrow_asofdate\", \"tcbgrow_transactiondate\")  \n  \nin  \n    #\"Duplicated column\";\r\n",
-					"documentLocale": "en-us"
 				}
 			},
 			"dependsOn": []

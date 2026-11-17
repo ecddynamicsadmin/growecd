@@ -13,6 +13,29 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/School Expenses')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "p_schoolexpenses_s",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolexpenses_s",
+							"dataset": {
+								"referenceName": "p_schoolexpenses_s",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared p_schoolexpenses_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolexpenses_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let Source = #\"p_schoolexpenses_s\",\n  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount_paid\",  \n            \"date_paid\",\n            \"fin_type\",  \n            \"recordid\",  \n            \"school_id\",\n            \"fin_code\",  \n            \"month\", \n            \"year\"\n        }),  \n  \n    // ✅ Add column WITHOUT declaring type  \n    #\"Added TranType\" =  \n        Table.AddColumn(  \n            #\"Selected Columns\",  \n            \"TranType\",  \n            each 301220002  \n        ),  \n  \n    // ✅ Set type in separate step (Spark safe)  \n    #\"Changed Type\" =  \n        Table.TransformColumnTypes(  \n            #\"Added TranType\",  \n            {{\"TranType\", Int64.Type}}  \n        ),  \n  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Changed Type\",{  \n            {\"amount_paid\", \"tcbgrow_amount\"},  \n            {\"date_paid\", \"tcbgrow_asofdate\"},\n            {\"fin_type\", \"tcbgrow_description\"},  \n            {\"fin_code\", \"tcbgrow_source\"},\n            {\"recordid\", \"tcbgrow_importexpenseid\"},  \n            {\"school_id\", \"tcbgrow_importschoolid\"},  \n            {\"month\", \"tcbgrow_month\"},  \n            {\"year\", \"tcbgrow_year\"},  \n            {\"TranType\", \"tcbgrow_transactiontype\"}  \n        }),\n  #\"Changed column type\" = Table.TransformColumnTypes(#\"Renamed Columns\", {{\"tcbgrow_year\", type text}}),\r\n  #\"Duplicated column\" = Table.DuplicateColumn(#\"Changed column type\", \"tcbgrow_asofdate\", \"tcbgrow_transactiondate\")  \n  \nin  \n    #\"Duplicated column\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/School Fees Dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -1212,295 +1235,6 @@
 						"          cog_schoolappid,",
 						"          cog_partnershortcode",
 						"     )) ~> Partner"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Staff_Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoolstaff_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						},
-						{
-							"dataset": {
-								"referenceName": "DataverseSchool",
-								"type": "DatasetReference"
-							},
-							"name": "dataverseschools"
-						},
-						{
-							"dataset": {
-								"referenceName": "p_schoolstaff_d",
-								"type": "DatasetReference"
-							},
-							"name": "schoolstaffafterquery"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchoolStaff",
-								"type": "DatasetReference"
-							},
-							"name": "sinkSchoolStaff",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"dataset": {
-								"referenceName": "DataverseSchool",
-								"type": "DatasetReference"
-							},
-							"name": "sinkSchoolPrinciple"
-						},
-						{
-							"dataset": {
-								"referenceName": "Contacts_Parquet_InactiveChunkFolder",
-								"type": "DatasetReference"
-							},
-							"name": "sinkinactivecontactfile"
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						},
-						{
-							"name": "joinschoolappis"
-						},
-						{
-							"name": "derivedColumn2"
-						},
-						{
-							"name": "alterRow2"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "staffroleprinciple"
-						},
-						{
-							"name": "inactivestaff"
-						},
-						{
-							"name": "select2"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_alternativenumber as string,",
-						"          cog_city as long,",
-						"          mobilephone as string,",
-						"          telephone1 as string,",
-						"          tcbgrow_countryofbirth as long,",
-						"          birthdate as timestamp,",
-						"          emailaddress1 as string,",
-						"          tcbgrow_employeetype as long,",
-						"          firstname as string,",
-						"          gendercode as string,",
-						"          new_staff_id as string,",
-						"          tcbgrow_idnumber as string,",
-						"          updated_at as timestamp,",
-						"          statecode as integer,",
-						"          tcbgrow_nextofkincontactnumber as string,",
-						"          tcbgrow_nextofkinemail as string,",
-						"          tcbgrow_nextofkinname as string,",
-						"          tcbgrow_nextofkinrelationship as long,",
-						"          lastname as string,",
-						"          middlename as string,",
-						"          tcbgrow_staffrole as long,",
-						"          cog_region as long,",
-						"          tcbgrow_qualification as long,",
-						"          tcbgrow_race as long,",
-						"          tcbgrow_schoolappid as long,",
-						"          tcbgrow_schoolstaff as string,",
-						"          new_start_date as timestamp,",
-						"          tcbgrow_startdate as timestamp,",
-						"          tcbgrow_address1 as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"source(output(",
-						"          {@odata.etag} as string,",
-						"          tcbgrow_appid as string,",
-						"          tcbgrow_name as string,",
-						"          tcbgrow_schoolid as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     query: '<fetch>\\n  <entity name=\"tcbgrow_school\">\\n    <attribute name=\"tcbgrow_appid\" />\\n    <attribute name=\"tcbgrow_name\" />\\n    <attribute name=\"tcbgrow_schoolid\" />\\n  </entity>\\n</fetch>') ~> dataverseschools",
-						"source(output(",
-						"          tcbgrow_alternativenumber as string,",
-						"          cog_city as long,",
-						"          mobilephone as string,",
-						"          telephone1 as string,",
-						"          tcbgrow_countryofbirth as long,",
-						"          birthdate as timestamp,",
-						"          emailaddress1 as string,",
-						"          tcbgrow_employeetype as long,",
-						"          firstname as string,",
-						"          gendercode as string,",
-						"          new_staff_id as string,",
-						"          tcbgrow_idnumber as string,",
-						"          updated_at as timestamp,",
-						"          statecode as integer,",
-						"          tcbgrow_nextofkincontactnumber as string,",
-						"          tcbgrow_nextofkinemail as string,",
-						"          tcbgrow_nextofkinname as string,",
-						"          tcbgrow_nextofkinrelationship as long,",
-						"          lastname as string,",
-						"          middlename as string,",
-						"          tcbgrow_staffrole as long,",
-						"          cog_region as long,",
-						"          tcbgrow_qualification as long,",
-						"          tcbgrow_race as long,",
-						"          tcbgrow_schoolappid as long,",
-						"          tcbgrow_schoolstaff as string,",
-						"          new_start_date as timestamp,",
-						"          tcbgrow_startdate as timestamp,",
-						"          tcbgrow_address1 as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> schoolstaffafterquery",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({cog_City@odata.bind} = iif(\r",
-						"    isNull(cog_city),\r",
-						"    toString(null()),\r",
-						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(cog_city), ')')\r",
-						"),",
-						"          {tcbgrow_CountryOfBirth@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_countryofbirth),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_countryofbirth), \")\")\r",
-						"),",
-						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
-						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolappid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolappid), \")\")),",
-						"          {tcbgrow_Qualification@odata.bind} = iif(    isNull(tcbgrow_qualification),    toString(null()),    concat(\"/tcbgrow_qualifications(tcbgrow_appid=\", toString(tcbgrow_qualification), \")\")),",
-						"          birthdate = toString(birthdate, 'yyyy-MM-dd'),",
-						"          gendercode = case(\r",
-						"    trim(gendercode) == 'Male', 1,\r",
-						"    trim(gendercode) == 'Female', 2,\r",
-						"    trim(gendercode) == 'TBC', 3,\r",
-						"    toInteger(null())\r",
-						"    ),",
-						"          statecode = case(\r",
-						"     statecode == 0, 1,\r",
-						"     statecode == 1, 0,\r",
-						"     toInteger(null())\r",
-						")) ~> derivedColumn1",
-						"staffroleprinciple, dataverseschools join(tcbgrow_schoolappid == toInteger(tcbgrow_appid),",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> joinschoolappis",
-						"select1 derive({tcbgrow_SchoolPrinciple@odata.bind} = iif(isNull(new_staff_id),toString(null()),concat(\"/contacts(new_staff_id='\", trim(new_staff_id), \"')\"))) ~> derivedColumn2",
-						"derivedColumn2 alterRow(updateIf(true())) ~> alterRow2",
-						"joinschoolappis select(mapColumn(",
-						"          tcbgrow_appid,",
-						"          tcbgrow_schoolid,",
-						"          new_staff_id",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"parquetsource filter(tcbgrow_staffrole==1) ~> staffroleprinciple",
-						"schoolstaffafterquery filter(statecode==0) ~> inactivestaff",
-						"inactivestaff select(mapColumn(",
-						"          new_staff_id,",
-						"          statecode,",
-						"          lastname,",
-						"          tcbgrow_schoolappid,",
-						"          tcbgrow_schoolstaff",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select2",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_school_staff_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_alternativenumber,",
-						"          mobilephone,",
-						"          telephone1,",
-						"          birthdate,",
-						"          emailaddress1,",
-						"          tcbgrow_employeetype,",
-						"          firstname,",
-						"          gendercode,",
-						"          new_staff_id,",
-						"          tcbgrow_idnumber,",
-						"          tcbgrow_nextofkincontactnumber,",
-						"          tcbgrow_nextofkinemail,",
-						"          tcbgrow_nextofkinname,",
-						"          tcbgrow_nextofkinrelationship,",
-						"          lastname,",
-						"          middlename,",
-						"          tcbgrow_race,",
-						"          tcbgrow_schoolstaff,",
-						"          new_start_date,",
-						"          tcbgrow_startdate,",
-						"          tcbgrow_address1,",
-						"          {cog_Region@odata.bind},",
-						"          {cog_City@odata.bind},",
-						"          {tcbgrow_Qualification@odata.bind},",
-						"          {tcbgrow_CountryOfBirth@odata.bind},",
-						"          {tcbgrow_School@odata.bind}",
-						"     )) ~> sinkSchoolStaff",
-						"alterRow2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:true,",
-						"     upsertable:false,",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 3,",
-						"     mapColumn(",
-						"          {tcbgrow_SchoolPrinciple@odata.bind},",
-						"          tcbgrow_schoolid",
-						"     )) ~> sinkSchoolPrinciple",
-						"select2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     filePattern:'contact_inactive_chunk_[n].parquet',",
-						"     truncate: true,",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 2,",
-						"     partitionBy('roundRobin', 10)) ~> sinkinactivecontactfile"
 					]
 				}
 			},
