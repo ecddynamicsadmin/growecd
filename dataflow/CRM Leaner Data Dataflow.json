@@ -37,7 +37,7 @@
 				"          cog_learners2to5 as decimal(38,18),",
 				"          cog_learners6to9 as decimal(38,18),",
 				"          cog_learners9plus as decimal(38,18),",
-				"          cog_learners_total as decimal(38,18)",
+				"          cog_learnerstotal as decimal(38,18)",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -72,7 +72,7 @@
 				"          cog_learners2to5,",
 				"          cog_learners6to9,",
 				"          cog_learners9plus,",
-				"          cog_learnerstotal = cog_learners_total,",
+				"          cog_learnerstotal,",
 				"          {cog_Account@odata.bind},",
 				"          overriddencreatedon",
 				"     )) ~> SinkLearnerData"

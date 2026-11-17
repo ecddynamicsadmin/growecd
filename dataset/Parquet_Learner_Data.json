@@ -54,7 +54,7 @@
 				"scale": 18
 			},
 			{
-				"name": "cog_learners_total",
+				"name": "cog_learnerstotal",
 				"type": "DECIMAL",
 				"precision": 38,
 				"scale": 18

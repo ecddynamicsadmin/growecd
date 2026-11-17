@@ -106,12 +106,12 @@
 							},
 							{
 								"source": {
-									"name": "cog_learners_total",
+									"name": "cog_learnerstotal",
 									"type": "Decimal",
 									"physicalType": "NewDecimal"
 								},
 								"sink": {
-									"name": "cog_learners_total",
+									"name": "cog_learnerstotal",
 									"type": "Decimal",
 									"physicalType": "DECIMAL"
 								}
