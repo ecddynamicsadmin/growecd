@@ -1,5 +1,5 @@
 {
-	"name": "CRM Training Event Types",
+	"name": "CRM Training Event Types Dataflow",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
