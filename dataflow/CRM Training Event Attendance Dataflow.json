@@ -67,7 +67,8 @@
 				"          {cog_Contact@odata.bind} = iif(     isNull(cog_contact),     toString(null()),     concat(\"/contacts(cog_giraffeprofileid=\",toString(cog_contact),\")\") ),",
 				"          {cog_TrainingEventId@odata.bind} = iif(     isNull(cog_trainingeventid),     toString(null()),     concat(\"/cog_trainingevents(cog_giraffeid=\",toString(cog_trainingeventid),\")\") ),",
 				"          {cog_CentreId@odata.bind} = iif(     isNull(cog_centreid),     toString(null()),     concat(\"/accounts(cog_centreid=\",toString(cog_centreid),\")\") ),",
-				"          {cog_ApplicationUser@odata.bind} = iif(     isNull(cog_applicationuser),     toString(null()),     concat(\"/cog_applicationusers(cog_giraffeid=\",toString(cog_applicationuser),\")\") ),",
+				"          cog_name = cog_centrename,",
+				"          {cog_ApplicationUser@odata.bind} = iif(     isNull(cog_applicationuser),     toString(null()),     concat(\"/cog_applicationusers(cog_userid=\",toString(cog_applicationuser),\")\") ),",
 				"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
 				"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DerivedColumns",
 				"Upsert sink(allowSchemaDrift: true,",
@@ -95,7 +96,8 @@
 				"          {cog_Contact@odata.bind},",
 				"          {cog_TrainingEventId@odata.bind},",
 				"          {cog_CentreId@odata.bind},",
-				"          {cog_ApplicationUser@odata.bind}",
+				"          {cog_ApplicationUser@odata.bind},",
+				"          cog_name",
 				"     )) ~> SinkTrainingEventAttendance"
 			]
 		}
