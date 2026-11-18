@@ -82,7 +82,6 @@
 				"     saveOrder: 1,",
 				"     mapColumn(",
 				"          cog_giraffeid,",
-				"          cog_trainingeventid,",
 				"          cog_giraffeupdatedon,",
 				"          overriddencreatedon,",
 				"          cog_contact,",
