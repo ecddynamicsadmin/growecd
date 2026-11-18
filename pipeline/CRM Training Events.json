@@ -155,6 +155,8 @@
 			{
 				"name": "CRM Events",
 				"type": "ExecuteDataFlow",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Events from Giraffe",
