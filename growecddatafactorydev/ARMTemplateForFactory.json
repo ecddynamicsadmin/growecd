@@ -1225,7 +1225,8 @@
 								"parameters": {},
 								"datasetParameters": {
 									"ParquetCentres": {},
-									"SinkRegions": {}
+									"CRMRegions": {},
+									"SinkCentres": {}
 								}
 							},
 							"staging": {},
@@ -13979,6 +13980,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "ParquetCentres"
+						},
+						{
+							"dataset": {
+								"referenceName": "CRM_Regions",
+								"type": "DatasetReference"
+							},
+							"name": "CRMRegions"
 						}
 					],
 					"sinks": [
@@ -13987,7 +13995,7 @@
 								"referenceName": "CRM_Centres",
 								"type": "DatasetReference"
 							},
-							"name": "SinkRegions"
+							"name": "SinkCentres"
 						}
 					],
 					"transformations": [
@@ -13996,6 +14004,18 @@
 						},
 						{
 							"name": "DerivedColumns"
+						},
+						{
+							"name": "derivedCustomerSegment"
+						},
+						{
+							"name": "joinCRMRegionforBranchGUID"
+						},
+						{
+							"name": "derivedBranch"
+						},
+						{
+							"name": "selectBranchRegionCode"
 						}
 					],
 					"scriptLines": [
@@ -14026,7 +14046,21 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> ParquetCentres",
-						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"source(output(",
+						"          {@odata.etag} as string,",
+						"          cog_branch as string,",
+						"          cog_country as string,",
+						"          cog_name as string,",
+						"          cog_regioncode as string,",
+						"          cog_regionid as string,",
+						"          createdon as string,",
+						"          modifiedon as string,",
+						"          statecode as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     query: '<fetch>\\n     <entity name=\"cog_region\">\\n          <attribute name=\"statecode\"/>\\n          <attribute name=\"cog_regionid\"/>\\n          <attribute name=\"cog_name\"/>\\n          <attribute name=\"createdon\"/>\\n          <attribute name=\"modifiedon\"/>\\n          <attribute name=\"cog_regioncode\"/>\\n          <attribute name=\"cog_country\"/>\\n          <attribute name=\"cog_branch\"/>\\n          <order attribute=\"cog_regioncode\" descending=\"false\"/>\\n          <filter type=\"and\">\\n               <condition attribute=\"statecode\" operator=\"eq\" value=\"0\"/>\\n               <condition attribute=\"cog_branch\" operator=\"not-null\"/>\\n          </filter>\\n     </entity>\\n</fetch>') ~> CRMRegions",
+						"derivedBranch alterRow(upsertIf(true())) ~> Upsert",
 						"ParquetCentres derive({cog_CountryId@odata.bind} = iif(\r",
 						"    isNull(cog_countryid),\r",
 						"    toString(null()),\r",
@@ -14079,6 +14113,19 @@
 						"  toString(null()),\r",
 						"  left(trim(toString(cog_propertytypecode)), 255)\r",
 						")) ~> DerivedColumns",
+						"DerivedColumns derive({cog_CustomerSegment@odata.bind} = iif(    isNull(cog_programme),    toString(null()),    concat(\"/cog_customersegments(cog_giraffeid=\",toString(cog_programme),\")\"))) ~> derivedCustomerSegment",
+						"derivedCustomerSegment, CRMRegions join(cog_region == cog_regioncode,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> joinCRMRegionforBranchGUID",
+						"joinCRMRegionforBranchGUID derive({cog_Branch@odata.bind} = concat(\"/cog_branchs(\",toString(cog_branch),\")\")) ~> derivedBranch",
+						"CRMRegions select(mapColumn(",
+						"          cog_branch,",
+						"          cog_regioncode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectBranchRegionCode",
 						"Upsert sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
@@ -14111,14 +14158,17 @@
 						"          cog_operatinghours,",
 						"          {cog_CountryId@odata.bind},",
 						"          {cog_Region@odata.bind},",
+						"          {cog_CustomerSegment@odata.bind},",
+						"          {cog_Branch@odata.bind},",
 						"          cog_centretypeother,",
 						"          cog_propertytypeother",
-						"     )) ~> SinkRegions"
+						"     )) ~> SinkCentres"
 					]
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet_Centres')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Regions')]",
 				"[concat(variables('factoryId'), '/datasets/CRM_Centres')]"
 			]
 		},

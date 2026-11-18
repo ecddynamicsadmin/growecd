@@ -352,7 +352,8 @@
 								"parameters": {},
 								"datasetParameters": {
 									"ParquetCentres": {},
-									"SinkRegions": {}
+									"CRMRegions": {},
+									"SinkCentres": {}
 								}
 							},
 							"staging": {},
