@@ -113,7 +113,7 @@
 				"  toString(null()),\r",
 				"  left(trim(toString(cog_propertytypecode)), 255)\r",
 				")) ~> DerivedColumns",
-				"DerivedColumns derive({cog_CustomerSegment@odata.bind} = iif(    isNull(cog_programme),    toString(null()),    concat(\"/cog_customersegments(cog_giraffid=\",toString(cog_programme),\")\"))) ~> derivedCustomerSegment",
+				"DerivedColumns derive({cog_CustomerSegment@odata.bind} = iif(    isNull(cog_programme),    toString(null()),    concat(\"/cog_customersegments(cog_giraffeid=\",toString(cog_programme),\")\"))) ~> derivedCustomerSegment",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
