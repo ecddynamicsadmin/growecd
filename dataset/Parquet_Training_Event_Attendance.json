@@ -70,7 +70,7 @@
 				"type": "INT_8"
 			},
 			{
-				"name": "cog_recordedmobile",
+				"name": "cog_recordedmobilenumber",
 				"type": "UTF8"
 			},
 			{
