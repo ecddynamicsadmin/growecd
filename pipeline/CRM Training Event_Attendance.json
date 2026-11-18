@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "MariaDBSource",
-						"query": "SELECT\n    mobilenumber                AS mobilephone,\n    email                       AS emailaddress1,\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    birthdate                   AS birthdate,\n    gender                      AS cog_gendercode,\n    race                        AS cog_racecode,\n    race_text                   AS cog_raceother,\n    city                        AS address1_city,\n    physical_address            AS address1_line1,\n    countrycode                 AS cog_countryid,\n    regioncode                  AS cog_region,\n    profileid                   AS cog_giraffeprofileid,\n    centreid                    AS cog_centreid,\n    usertype                    AS cog_rolecode,\n    start_date                  AS cog_startdate,\n    child_protection            AS cog_childprotectionclearancecode,\n    employment_type             AS cog_employmenttypecode,\n    qualification               AS cog_highestqualificationcode,\n    work_hours_total            AS cog_workhourstotal,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    userid                     AS cog_applicationuser   \n\nFROM growecd.centre_profiles\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE()"
+						"query": {
+							"value": "SELECT\n    attendanceid              AS cog_giraffeid,\n    eventid                   AS cog_trainingeventid,\n    updated_at                AS cog_giraffeupdatedon,\n    created_at                AS overriddencreatedon,   \n    profileid                 AS cog_contact,\n    centreid                  AS cog_centreid,\n    userid                    AS cog_applicationuser,\n    attendeeid                AS cog_attendeeid,\n    centre_name               AS cog_centrename,\n    countrycode               AS cog_countryid,\n    regioncode                AS cog_region,\n    usertype                  AS cog_usertype,\n    recorded_mobilenumber     AS cog_recordedmobile,\n    recorded_email            AS cog_recordedemail,\n    status                    AS cog_attendancestatuscode,\n    absence_reason            AS cog_absencereason,\n    usertype                  AS cog_roleateventcode\n\nFROM growecd.cms_event_attendance\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();",
+							"type": "Expression"
+						}
 					},
 					"sink": {
 						"type": "ParquetSink",
@@ -34,6 +37,66 @@
 						"mappings": [
 							{
 								"source": {
+									"name": "cog_giraffeid",
+									"type": "Int64",
+									"physicalType": "Int64"
+								},
+								"sink": {
+									"name": "cog_giraffeid",
+									"type": "Int64",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_trainingeventid",
+									"type": "Int64",
+									"physicalType": "Int64"
+								},
+								"sink": {
+									"name": "cog_trainingeventid",
+									"type": "Int64",
+									"physicalType": "INT_64"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_giraffeupdatedon",
+									"type": "DateTime",
+									"physicalType": "Timestamp"
+								},
+								"sink": {
+									"name": "cog_giraffeupdatedon",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "overriddencreatedon",
+									"type": "DateTime",
+									"physicalType": "Timestamp"
+								},
+								"sink": {
+									"name": "overriddencreatedon",
+									"type": "DateTime",
+									"physicalType": "INT_96"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_contact",
+									"type": "Int32",
+									"physicalType": "Int32"
+								},
+								"sink": {
+									"name": "cog_contact",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								}
+							},
+							{
+								"source": {
 									"name": "cog_centreid",
 									"type": "Int32",
 									"physicalType": "Int32"
@@ -46,170 +109,38 @@
 							},
 							{
 								"source": {
-									"name": "name",
-									"type": "String",
-									"physicalType": "VarChar"
+									"name": "cog_applicationuser",
+									"type": "Int32",
+									"physicalType": "Int32"
 								},
 								"sink": {
-									"name": "name",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "address1_city",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "address1_city",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "address1_line1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "address1_line1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "emailaddress1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "emailaddress1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "telephone1",
-									"type": "String",
-									"physicalType": "VarChar"
-								},
-								"sink": {
-									"name": "telephone1",
-									"type": "String",
-									"physicalType": "UTF8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_centrestartdate",
-									"type": "DateTime",
-									"physicalType": "Date"
-								},
-								"sink": {
-									"name": "cog_centrestartdate",
-									"type": "DateTime",
-									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_learnercapacity",
-									"type": "Int16",
-									"physicalType": "Int16"
-								},
-								"sink": {
-									"name": "cog_learnercapacity",
-									"type": "Int16",
+									"name": "cog_applicationuser",
+									"type": "Int32",
 									"physicalType": "INT_32"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_classroomcount",
-									"type": "Int16",
-									"physicalType": "Int16"
+									"name": "cog_attendeeid",
+									"type": "Int64",
+									"physicalType": "Int64"
 								},
 								"sink": {
-									"name": "cog_classroomcount",
-									"type": "Int16",
-									"physicalType": "INT_32"
+									"name": "cog_attendeeid",
+									"type": "Int64",
+									"physicalType": "INT_64"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_ecdtypecode",
-									"type": "SByte",
-									"physicalType": "Byte"
+									"name": "cog_centrename",
+									"type": "String",
+									"physicalType": "VarChar"
 								},
 								"sink": {
-									"name": "cog_ecdtypecode",
-									"type": "SByte",
-									"physicalType": "INT_8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_agreementtypecode",
-									"type": "SByte",
-									"physicalType": "Byte"
-								},
-								"sink": {
-									"name": "cog_agreementtypecode",
-									"type": "SByte",
-									"physicalType": "INT_8"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_giraffeupdatedon",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								},
-								"sink": {
-									"name": "cog_giraffeupdatedon",
-									"type": "DateTime",
-									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "overriddencreatedon",
-									"type": "DateTime",
-									"physicalType": "DateTime"
-								},
-								"sink": {
-									"name": "overriddencreatedon",
-									"type": "DateTime",
-									"physicalType": "INT_96"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_programme",
-									"type": "Boolean",
-									"physicalType": "Bool"
-								},
-								"sink": {
-									"name": "cog_programme",
-									"type": "Boolean",
-									"physicalType": "BOOLEAN"
-								}
-							},
-							{
-								"source": {
-									"name": "cog_programmestatuscode",
-									"type": "SByte",
-									"physicalType": "Byte"
-								},
-								"sink": {
-									"name": "cog_programmestatuscode",
-									"type": "SByte",
-									"physicalType": "INT_8"
+									"name": "cog_centrename",
+									"type": "String",
+									"physicalType": "UTF8"
 								}
 							},
 							{
@@ -238,50 +169,74 @@
 							},
 							{
 								"source": {
-									"name": "cog_propertytypecode",
-									"type": "String",
-									"physicalType": "Text"
+									"name": "cog_usertype",
+									"type": "SByte",
+									"physicalType": "Byte"
 								},
 								"sink": {
-									"name": "cog_propertytypecode",
+									"name": "cog_usertype",
+									"type": "SByte",
+									"physicalType": "INT_8"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_recordedmobile",
+									"type": "String",
+									"physicalType": "VarChar"
+								},
+								"sink": {
+									"name": "cog_recordedmobile",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_centretypecode",
+									"name": "cog_recordedemail",
 									"type": "String",
-									"physicalType": "Text"
+									"physicalType": "VarChar"
 								},
 								"sink": {
-									"name": "cog_centretypecode",
+									"name": "cog_recordedemail",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_classtypecode",
+									"name": "cog_attendancestatuscode",
+									"type": "SByte",
+									"physicalType": "Byte"
+								},
+								"sink": {
+									"name": "cog_attendancestatuscode",
+									"type": "SByte",
+									"physicalType": "INT_8"
+								}
+							},
+							{
+								"source": {
+									"name": "cog_absencereason",
 									"type": "String",
 									"physicalType": "Text"
 								},
 								"sink": {
-									"name": "cog_classtypecode",
+									"name": "cog_absencereason",
 									"type": "String",
 									"physicalType": "UTF8"
 								}
 							},
 							{
 								"source": {
-									"name": "cog_operatinghours",
-									"type": "String",
-									"physicalType": "Text"
+									"name": "cog_roleateventcode",
+									"type": "SByte",
+									"physicalType": "Byte"
 								},
 								"sink": {
-									"name": "cog_operatinghours",
-									"type": "String",
-									"physicalType": "UTF8"
+									"name": "cog_roleateventcode",
+									"type": "SByte",
+									"physicalType": "INT_8"
 								}
 							}
 						],
