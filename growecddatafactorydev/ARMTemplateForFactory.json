@@ -1229,9 +1229,9 @@
 								}
 							},
 							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
 							},
 							"traceLevel": "Fine"
 						}
@@ -1254,7 +1254,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Source_Centres')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_Centres')]",
-				"[concat(variables('factoryId'), '/dataflows/CRM Centres Dataflow')]"
+				"[concat(variables('factoryId'), '/dataflows/CRM Centres Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
 			]
 		},
 		{
@@ -1733,6 +1734,946 @@
 				"[concat(variables('factoryId'), '/datasets/Source_Regions')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet_Regions')]",
 				"[concat(variables('factoryId'), '/dataflows/CRM Regions Dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Attendance')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Event Attendance from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    a.attendanceid            AS cog_giraffeid,\n    a.eventid                 AS cog_trainingeventid,\n    a.updated_at              AS cog_giraffeupdatedon,\n    a.created_at              AS overriddencreatedon,\n    a.profileid               AS cog_contact,\n    a.centreid                AS cog_centreid,\n    a.userid                  AS cog_applicationuser,\n    a.attendeeid              AS cog_attendeeid,\n    a.centre_name             AS cog_centrename,\n    a.countrycode             AS cog_countryid,\n    a.regioncode              AS cog_region,\n    a.usertype                AS cog_usertype,\n    a.recorded_mobilenumber   AS cog_recordedmobilenumber,\n    a.recorded_email          AS cog_recordedemail,\n    a.status                  AS cog_attendancestatuscode,\n    a.absence_reason          AS cog_absencereason,\n    a.usertype                AS cog_roleateventcode\nFROM growecd.cms_event_attendance AS a\nINNER JOIN growecd.cms_events AS e\n        ON e.eventid = a.eventid\nWHERE LEFT(e.title, 18) = 'Accelerator_Module'\n  AND a.updated_at >= '@{formatDateTime(pipeline().parameters.WatermarkDate, 'yyyy-MM-dd HH:mm:ss')}'\n  AND a.updated_at <  CURDATE()",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_giraffeid",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "cog_giraffeid",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_trainingeventid",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "cog_trainingeventid",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_contact",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_contact",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_centreid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_applicationuser",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_applicationuser",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_attendeeid",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "cog_attendeeid",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_centrename",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_centrename",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_countryid",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_region",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_usertype",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_usertype",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_recordedmobilenumber",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_recordedmobilenumber",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_recordedemail",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_recordedemail",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_attendancestatuscode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_attendancestatuscode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_absencereason",
+											"type": "String",
+											"physicalType": "Text"
+										},
+										"sink": {
+											"name": "cog_absencereason",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_roleateventcode",
+											"type": "SByte",
+											"physicalType": "Byte"
+										},
+										"sink": {
+											"name": "cog_roleateventcode",
+											"type": "SByte",
+											"physicalType": "INT_8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Training_Events_Attendance",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Training_Event_Attendance",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Event Attendance",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Event Attendance from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Training Event Attendance Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetTrainingEventAttendance": {},
+									"SinkTrainingEventAttendance": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Training_Events_Attendance')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Attendance')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Training Event Attendance Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Event Master from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    year_introduced          AS cog_yearintroduced,\n    category                    AS cog_category,\n    eventmasterid               AS cog_giraffeid,\n    eventtypeid               AS  cog_eventtypeid,\n    course_name                      AS cog_name,\n    updated_at                AS cog_giraffeupdatedon,\n    created_at                AS overriddencreatedon   \n\nFROM growecd.cms_event_master\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();\n",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_yearintroduced",
+											"type": "Int32",
+											"physicalType": "Year"
+										},
+										"sink": {
+											"name": "cog_yearintroduced",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_category",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_category",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_giraffeid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_eventtypeid",
+											"type": "Int16",
+											"physicalType": "Int16"
+										},
+										"sink": {
+											"name": "cog_eventtypeid",
+											"type": "Int16",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Training_Event_Master",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Training_Event_Master",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Event Master",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Event Master from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Training Event Master Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetTrainingEventMAster": {},
+									"SinkTrainingEventMaster": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Training_Event_Master')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Master')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Training Event Master Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Types')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Event Types from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    requires_course_name      AS cog_requirescoursename,\n    requires_category         AS cog_requirescategory,\n    eventtypeid               AS cog_giraffeid,\n    name                      AS cog_name,\n    updated_at                AS cog_giraffeupdatedon,\n    created_at                AS overriddencreatedon   \n\nFROM growecd.cms_event_types\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();\n\n\n",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_requirescoursename",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "cog_requirescoursename",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_requirescategory",
+											"type": "Boolean",
+											"physicalType": "Bool"
+										},
+										"sink": {
+											"name": "cog_requirescategory",
+											"type": "Boolean",
+											"physicalType": "BOOLEAN"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeid",
+											"type": "Int16",
+											"physicalType": "Int16"
+										},
+										"sink": {
+											"name": "cog_giraffeid",
+											"type": "Int16",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Training_Event_Types",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Training_Event_Types",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Event Types",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Event Types from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Training Event Types Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetTrainingEventTypes": {},
+									"SinkTrainingEventTypes": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Training_Event_Types')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Types')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Training Event Types Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Events')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Events from Giraffe",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MariaDBSource",
+								"query": {
+									"value": "SELECT\n    title                     AS cog_name,\n    event_date                AS cog_eventdate,\n    eventid                   AS cog_giraffeid,\n    eventmasterid             AS cog_eventmasterid,\n    updated_at                AS cog_giraffeupdatedon,\n    created_at                AS overriddencreatedon,   \n    facilitator               AS cog_facilitator, \n    venue                     AS cog_venue  \n\nFROM growecd.cms_events\nWHERE updated_at >= '@{pipeline().parameters.WatermarkDate}'\n  AND updated_at < CURDATE();\n\n\n\n\n",
+									"type": "Expression"
+								}
+							},
+							"sink": {
+								"type": "ParquetSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "ParquetWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_name",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_eventdate",
+											"type": "DateTime",
+											"physicalType": "Date"
+										},
+										"sink": {
+											"name": "cog_eventdate",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeid",
+											"type": "Int64",
+											"physicalType": "Int64"
+										},
+										"sink": {
+											"name": "cog_giraffeid",
+											"type": "Int64",
+											"physicalType": "INT_64"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_eventmasterid",
+											"type": "Int32",
+											"physicalType": "Int32"
+										},
+										"sink": {
+											"name": "cog_eventmasterid",
+											"type": "Int32",
+											"physicalType": "INT_32"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "cog_giraffeupdatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "Timestamp"
+										},
+										"sink": {
+											"name": "overriddencreatedon",
+											"type": "DateTime",
+											"physicalType": "INT_96"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_facilitator",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_facilitator",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									},
+									{
+										"source": {
+											"name": "cog_venue",
+											"type": "String",
+											"physicalType": "VarChar"
+										},
+										"sink": {
+											"name": "cog_venue",
+											"type": "String",
+											"physicalType": "UTF8"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Source_Training_Events",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "Parquet_Training_Events",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "CRM Events",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Events from Giraffe",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "CRM Training Events Dataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ParquetTrainingEvents": {},
+									"SinkTrainingEvents": {}
+								}
+							},
+							"staging": {},
+							"integrationRuntime": {
+								"referenceName": "GrowECD-IRR",
+								"type": "IntegrationRuntimeReference"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"WatermarkDate": {
+						"type": "string",
+						"defaultValue": "2026-04-05 16:45:28"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Source_Training_Events')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Events')]",
+				"[concat(variables('factoryId'), '/dataflows/CRM Training Events Dataflow')]",
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
 			]
 		},
 		{
@@ -6987,6 +7928,102 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Training_Event_Attendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_trainingeventattendance"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Training_Event_Master')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_trainingeventmaster"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Training_Event_Types')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_trainingeventtype"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM_Training_Events')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Dataverse Account",
+				"linkedServiceName": {
+					"referenceName": "CRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Dataverse"
+				},
+				"annotations": [],
+				"type": "CommonDataServiceForAppsEntity",
+				"schema": [],
+				"typeProperties": {
+					"entityName": "cog_trainingevent"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Contacts_Parquet_InactiveChunkFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -8549,6 +9586,282 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Attendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Centre Profiles in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_event_attendances.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_giraffeid",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_trainingeventid",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "cog_contact",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_centreid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_applicationuser",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_attendeeid",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_centrename",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_countryid",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_region",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_usertype",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_recordedmobilenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_recordedemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_attendancestatuscode",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_absencereason",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_roleateventcode",
+						"type": "INT_8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Master')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Centre Profiles in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_event_master.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_yearintroduced",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_category",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_eventtypeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Types')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Centre Profiles in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_event_types.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_requirescoursename",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "cog_requirescategory",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "cog_giraffeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Events')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Centre Profiles in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_events.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_eventdate",
+						"type": "INT96"
+					},
+					{
+						"name": "cog_giraffeid",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_eventmasterid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "cog_facilitator",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_venue",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Parquet_app_users')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -8735,6 +10048,98 @@
 				"schema": [],
 				"typeProperties": {
 					"tableName": "regions"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Giraffe')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_Training_Event_Master')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Giraffe",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Source Tables"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "cms_event_master"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Giraffe')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_Training_Event_Types')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Giraffe",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Source Tables"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "cms_event_types"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Giraffe')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_Training_Events')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Giraffe",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Source Tables"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "cms_events"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Giraffe')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Source_Training_Events_Attendance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Giraffe",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Source Tables"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "cms_event_external_attendees"
 				}
 			},
 			"dependsOn": [
@@ -12937,6 +14342,350 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Parquet_Regions')]",
 				"[concat(variables('factoryId'), '/datasets/CRM_Regions')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Attendance Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Training_Event_Attendance",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetTrainingEventAttendance"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Training_Event_Attendance",
+								"type": "DatasetReference"
+							},
+							"name": "SinkTrainingEventAttendance"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_giraffeid as long,",
+						"          cog_trainingeventid as long,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp,",
+						"          cog_contact as integer,",
+						"          cog_centreid as integer,",
+						"          cog_applicationuser as integer,",
+						"          cog_attendeeid as long,",
+						"          cog_centrename as string,",
+						"          cog_countryid as string,",
+						"          cog_region as string,",
+						"          cog_usertype as byte,",
+						"          cog_recordedmobilenumber as string,",
+						"          cog_recordedemail as string,",
+						"          cog_attendancestatuscode as byte,",
+						"          cog_absencereason as string,",
+						"          cog_roleateventcode as byte",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetTrainingEventAttendance",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetTrainingEventAttendance derive({cog_CountryId@odata.bind} = iif(\r",
+						"    isNull(cog_countryid),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_countryid),\"')\")\r",
+						"),",
+						"          {cog_Region@odata.bind} = iif(\r",
+						"    isNull(cog_region),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
+						"),",
+						"          {cog_Contact@odata.bind} = iif(     isNull(cog_contact),     toString(null()),     concat(\"/contacts(cog_giraffeprofileid=\",toString(cog_contact),\")\") ),",
+						"          {cog_TrainingEventId@odata.bind} = iif(     isNull(cog_trainingeventid),     toString(null()),     concat(\"/cog_trainingevents(cog_giraffeid=\",toString(cog_trainingeventid),\")\") ),",
+						"          {cog_CentreId@odata.bind} = iif(     isNull(cog_centreid),     toString(null()),     concat(\"/accounts(cog_centreid=\",toString(cog_centreid),\")\") ),",
+						"          cog_name = cog_centrename,",
+						"          {cog_ApplicationUser@odata.bind} = iif(     isNull(cog_applicationuser),     toString(null()),     concat(\"/cog_applicationusers(cog_userid=\",toString(cog_applicationuser),\")\") ),",
+						"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
+						"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\")) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_giraffeid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_giraffeid,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          cog_centrename,",
+						"          cog_recordedmobilenumber,",
+						"          cog_recordedemail,",
+						"          cog_attendancestatuscode,",
+						"          cog_absencereason,",
+						"          cog_roleateventcode,",
+						"          {cog_CountryId@odata.bind},",
+						"          {cog_Region@odata.bind},",
+						"          {cog_Contact@odata.bind},",
+						"          {cog_TrainingEventId@odata.bind},",
+						"          {cog_CentreId@odata.bind},",
+						"          {cog_ApplicationUser@odata.bind},",
+						"          cog_name",
+						"     )) ~> SinkTrainingEventAttendance"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Attendance')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Training_Event_Attendance')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Master Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Training_Event_Master",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetTrainingEventMAster"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Training_Event_Master",
+								"type": "DatasetReference"
+							},
+							"name": "SinkTrainingEventMaster"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_yearintroduced as integer,",
+						"          cog_category as string,",
+						"          cog_giraffeid as integer,",
+						"          cog_eventtypeid as integer,",
+						"          cog_name as string,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetTrainingEventMAster",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetTrainingEventMAster derive({cog_EventTypeId@odata.bind} = iif(\r",
+						"    isNull(cog_eventtypeid),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_trainingeventtypes(cog_giraffeid=\",toString(cog_eventtypeid),\")\")\r",
+						")) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_giraffeid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_yearintroduced,",
+						"          cog_category,",
+						"          cog_giraffeid,",
+						"          cog_name,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          {cog_EventTypeId@odata.bind}",
+						"     )) ~> SinkTrainingEventMaster"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Master')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Training_Event_Master')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Event Types Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Training_Event_Types",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetTrainingEventTypes"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Training_Event_Types",
+								"type": "DatasetReference"
+							},
+							"name": "SinkTrainingEventTypes"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_requirescoursename as boolean,",
+						"          cog_requirescategory as boolean,",
+						"          cog_giraffeid as integer,",
+						"          cog_name as string,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetTrainingEventTypes",
+						"ParquetTrainingEventTypes alterRow(upsertIf(true())) ~> Upsert",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_giraffeid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_requirescoursename,",
+						"          cog_requirescategory,",
+						"          cog_giraffeid,",
+						"          cog_name,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon",
+						"     )) ~> SinkTrainingEventTypes"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Event_Types')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Training_Event_Types')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM Training Events Dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Parquet_Training_Events",
+								"type": "DatasetReference"
+							},
+							"name": "ParquetTrainingEvents"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CRM_Training_Events",
+								"type": "DatasetReference"
+							},
+							"name": "SinkTrainingEvents"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Upsert"
+						},
+						{
+							"name": "DerivedColumns"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          cog_name as string,",
+						"          cog_eventdate as timestamp,",
+						"          cog_giraffeid as long,",
+						"          cog_eventmasterid as integer,",
+						"          cog_giraffeupdatedon as timestamp,",
+						"          overriddencreatedon as timestamp,",
+						"          cog_facilitator as string,",
+						"          cog_venue as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> ParquetTrainingEvents",
+						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
+						"ParquetTrainingEvents derive({cog_EventMasterId@odata.bind} = iif(\r",
+						"    isNull(cog_eventmasterid),\r",
+						"    toString(null()),\r",
+						"    concat(\"/cog_trainingeventmasters(cog_giraffeid=\",toString(cog_eventmasterid),\")\")\r",
+						"),",
+						"          cog_eventdate = toString(toDate(cog_eventdate), 'yyyy-MM-dd')) ~> DerivedColumns",
+						"Upsert sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:false,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     alternateKeyName: 'cog_giraffeid',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     saveOrder: 1,",
+						"     mapColumn(",
+						"          cog_name,",
+						"          cog_eventdate,",
+						"          cog_giraffeid,",
+						"          cog_giraffeupdatedon,",
+						"          overriddencreatedon,",
+						"          cog_facilitator,",
+						"          cog_venue,",
+						"          {cog_EventMasterId@odata.bind}",
+						"     )) ~> SinkTrainingEvents"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Parquet_Training_Events')]",
+				"[concat(variables('factoryId'), '/datasets/CRM_Training_Events')]"
 			]
 		},
 		{

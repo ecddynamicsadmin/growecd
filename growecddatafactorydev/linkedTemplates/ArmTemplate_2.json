@@ -13,6 +13,90 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolFees')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolfees_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolIncome')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolincome_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearner')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learners_export"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolLearnerStats')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_learner_attendance_stats_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MariaSchoolOwnerTrainingAttendance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -948,11 +1032,11 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Parquet_app_users')]",
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Attendance')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"description": "Contacts in the Dataverse",
+				"description": "Centre Profiles in the Dataverse",
 				"linkedServiceName": {
 					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
@@ -965,7 +1049,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "app_users.parquet",
+						"fileName": "training_event_attendances.parquet",
 						"folderPath": "parquet",
 						"fileSystem": "giraffetwo"
 					},
@@ -973,20 +1057,121 @@
 				},
 				"schema": [
 					{
-						"name": "firstname",
-						"type": "UTF8"
+						"name": "cog_giraffeid",
+						"type": "INT64"
 					},
 					{
-						"name": "lastname",
-						"type": "UTF8"
+						"name": "cog_trainingeventid",
+						"type": "INT64"
 					},
 					{
-						"name": "cog_userid",
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "cog_contact",
 						"type": "INT32"
 					},
 					{
-						"name": "cog_lastlogin",
-						"type": "INT96"
+						"name": "cog_centreid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_applicationuser",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_attendeeid",
+						"type": "INT64"
+					},
+					{
+						"name": "cog_centrename",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_countryid",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_region",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_usertype",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_recordedmobilenumber",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_recordedemail",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_attendancestatuscode",
+						"type": "INT_8"
+					},
+					{
+						"name": "cog_absencereason",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_roleateventcode",
+						"type": "INT_8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Master')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Centre Profiles in the Dataverse",
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "G2 Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_event_master.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "cog_yearintroduced",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_category",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_eventtypeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_name",
+						"type": "UTF8"
 					},
 					{
 						"name": "cog_giraffeupdatedon",
@@ -1001,128 +1186,55 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Source_App_Users')]",
+			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Types')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"description": "Centre Profiles in the Dataverse",
 				"linkedServiceName": {
-					"referenceName": "Giraffe",
+					"referenceName": "AzureDataLakeStorage1",
 					"type": "LinkedServiceReference"
 				},
 				"folder": {
-					"name": "G2 Source Tables"
+					"name": "G2 Parquet"
 				},
 				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
+				"type": "Parquet",
 				"typeProperties": {
-					"tableName": "app_users"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Centre_Profiles')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Giraffe",
-					"type": "LinkedServiceReference"
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "training_event_types.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffetwo"
+					},
+					"compressionCodec": "snappy"
 				},
-				"folder": {
-					"name": "G2 Source Tables"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "centre_profiles"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Centres')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Giraffe",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Source Tables"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "centres"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Countries')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Giraffe",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Source Tables"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "countries"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Learners')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Giraffe",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Source Tables"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "learners"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Source_Regions')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Giraffe",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Source Tables"
-				},
-				"annotations": [],
-				"type": "MariaDBTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "regions"
-				}
+				"schema": [
+					{
+						"name": "cog_requirescoursename",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "cog_requirescategory",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "cog_giraffeid",
+						"type": "INT32"
+					},
+					{
+						"name": "cog_name",
+						"type": "UTF8"
+					},
+					{
+						"name": "cog_giraffeupdatedon",
+						"type": "INT96"
+					},
+					{
+						"name": "overriddencreatedon",
+						"type": "INT96"
+					}
+				]
 			},
 			"dependsOn": []
 		}

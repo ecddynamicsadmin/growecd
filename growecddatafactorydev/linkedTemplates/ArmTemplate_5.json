@@ -21,6 +21,409 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/p_schoolteachertrainingattendance_s')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Parquet"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "p_schoolteachertrainingattendance_s.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "giraffe"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "staff",
+						"type": "UTF8"
+					},
+					{
+						"name": "school",
+						"type": "UTF8"
+					},
+					{
+						"name": "region",
+						"type": "INT64"
+					},
+					{
+						"name": "ecd_code",
+						"type": "UTF8"
+					},
+					{
+						"name": "position",
+						"type": "UTF8"
+					},
+					{
+						"name": "date_employed",
+						"type": "INT96"
+					},
+					{
+						"name": "ecd_start_date",
+						"type": "INT96"
+					},
+					{
+						"name": "attendance_date",
+						"type": "INT96"
+					},
+					{
+						"name": "attended",
+						"type": "INT32"
+					},
+					{
+						"name": "status",
+						"type": "UTF8"
+					},
+					{
+						"name": "reason",
+						"type": "UTF8"
+					},
+					{
+						"name": "course",
+						"type": "UTF8"
+					},
+					{
+						"name": "school_id",
+						"type": "INT64"
+					},
+					{
+						"name": "course_type",
+						"type": "UTF8"
+					},
+					{
+						"name": "teacher_id",
+						"type": "UTF8"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_LearnersStats_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_learner_attendance_stats_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolAgeGroups_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_school_age_group.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolExpense_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolexpenses_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolFees_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolfees_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolIncome_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolincome_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwnerTraining_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "schoolowner_training_attendance_update.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolOwners_AUTO_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "persons.csv",
+						"fileSystem": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolStaff_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolstaff_export_all.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolTeacherTraining_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "teacher_training_attendance.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsSalaries_AUTO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schoolsalaries_3months.csv",
+						"folderPath": "giraffe"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsUpdate_AUTO_Json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Storage"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "vw_schools_rpt_final_null_op.json",
+						"fileSystem": "giraffe"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/storage_GRW_SchoolsUpdate_AUTO_csv')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -801,8 +1204,18 @@
 				"annotations": []
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_LearnersStats_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolIncome_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwnerTraining_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsSalaries_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolStaff_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolAgeGroups_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_SchoolCompliance_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolExpense_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolFees_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolTeacherTraining_AUTO')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_StaffStatsImport_AUTO')]",
+				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolOwners_AUTO_csv')]",
 				"[concat(variables('factoryId'), '/datasets/storage_GRW_SchoolsUpdate_AUTO_csv')]"
 			]
 		},
@@ -957,1257 +1370,6 @@
 						"          tcbgrow_appid,",
 						"          tcbgrow_agegroup,",
 						"          tcbgrow_fees,",
-						"          {tcbgrow_School@odata.bind}",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM App User Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_app_users",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetAppUser"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Application_Users",
-								"type": "DatasetReference"
-							},
-							"name": "SinkRegions"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						},
-						{
-							"name": "DerivedColumns"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          cog_firstname as string,",
-						"          cog_lastname as string,",
-						"          cog_userid as integer,",
-						"          cog_lastlogin as timestamp,",
-						"          cog_giraffeupdatedon as timestamp,",
-						"          overriddencreatedon as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetAppUser",
-						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
-						"ParquetAppUser derive(cog_name = concat(cog_firstname,\" \",cog_lastname)) ~> DerivedColumns",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_userid',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          cog_firstname,",
-						"          cog_lastname,",
-						"          cog_userid,",
-						"          cog_lastlogin,",
-						"          cog_giraffeupdatedon,",
-						"          overriddencreatedon,",
-						"          cog_name",
-						"     )) ~> SinkRegions"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM Centre Profiles Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_Centre_Profiles",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetCentreProfiles"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Contacts",
-								"type": "DatasetReference"
-							},
-							"name": "SinkContacts"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						},
-						{
-							"name": "DerivedColumns"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          mobilephone as string,",
-						"          emailaddress1 as string,",
-						"          firstname as string,",
-						"          lastname as string,",
-						"          birthdate as timestamp,",
-						"          cog_gendercode as byte,",
-						"          cog_racecode as byte,",
-						"          cog_raceother as string,",
-						"          address1_city as string,",
-						"          address1_line1 as string,",
-						"          cog_countryid as string,",
-						"          cog_region as string,",
-						"          cog_giraffeprofileid as integer,",
-						"          cog_centreid as integer,",
-						"          cog_rolecode as byte,",
-						"          cog_startdate as timestamp,",
-						"          cog_childprotectionclearancecode as byte,",
-						"          cog_employmenttypecode as byte,",
-						"          cog_highestqualificationcode as byte,",
-						"          cog_workhourstotal as integer,",
-						"          cog_giraffeupdatedon as timestamp,",
-						"          overriddencreatedon as timestamp,",
-						"          cog_applicationuser as integer",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetCentreProfiles",
-						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
-						"ParquetCentreProfiles derive({cog_CountryId@odata.bind} = iif(\r",
-						"    isNull(cog_countryid),\r",
-						"    toString(null()),\r",
-						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_countryid),\"')\")\r",
-						"),",
-						"          {cog_Region@odata.bind} = iif(\r",
-						"    isNull(cog_region),\r",
-						"    toString(null()),\r",
-						"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
-						"),",
-						"          {cog_ApplicationUser@odata.bind} = iif(\r",
-						"  isNull(cog_applicationuser),\r",
-						"  toString(null()),\r",
-						"  concat('/cog_applicationusers(cog_userid=', toString(toInteger(cog_applicationuser)), ')')\r",
-						"),",
-						"          {parentcustomerid_account@odata.bind} = iif(\r",
-						"  isNull(cog_centreid),\r",
-						"  toString(null()),\r",
-						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
-						"),",
-						"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-						"          cog_startdate = toString(toDate(cog_startdate), 'yyyy-MM-dd'),",
-						"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-						"          cog_racecode = iif(\r",
-						"  isNull(cog_racecode) || trim(toString(cog_racecode)) == '',\r",
-						"  toInteger(null()),\r",
-						"  iif(in(['0','1','2','3','4'], trim(toString(cog_racecode))),\r",
-						"      toInteger(trim(toString(cog_racecode))),\r",
-						"      99)\r",
-						"),",
-						"          cog_raceother = iif(\r",
-						"  isNull(cog_raceother) || trim(toString(cog_raceother)) == '' || in(['1','2','3'], trim(toString(cog_raceother))),\r",
-						"  toString(null()),\r",
-						"  left(trim(toString(cog_raceother)), 255)\r",
-						"),",
-						"          birthdate = toString(toDate(birthdate), 'yyyy-MM-dd')) ~> DerivedColumns",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_giraffeprofileid',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          mobilephone,",
-						"          emailaddress1,",
-						"          firstname,",
-						"          lastname,",
-						"          birthdate,",
-						"          cog_gendercode,",
-						"          cog_racecode,",
-						"          cog_raceother,",
-						"          address1_city,",
-						"          address1_line1,",
-						"          cog_giraffeprofileid,",
-						"          cog_rolecode,",
-						"          cog_startdate,",
-						"          cog_childprotectionclearancecode,",
-						"          cog_employmenttypecode,",
-						"          cog_highestqualificationcode,",
-						"          cog_workhourstotal,",
-						"          cog_giraffeupdatedon,",
-						"          overriddencreatedon,",
-						"          {cog_CountryId@odata.bind},",
-						"          {cog_Region@odata.bind},",
-						"          {cog_ApplicationUser@odata.bind},",
-						"          {parentcustomerid_account@odata.bind}",
-						"     ),",
-						"     partitionBy('roundRobin', 16)) ~> SinkContacts"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM Centres Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_Centres",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetCentres"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Centres",
-								"type": "DatasetReference"
-							},
-							"name": "SinkRegions"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						},
-						{
-							"name": "DerivedColumns"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          cog_centreid as integer,",
-						"          name as string,",
-						"          address1_city as string,",
-						"          address1_line1 as string,",
-						"          emailaddress1 as string,",
-						"          telephone1 as string,",
-						"          cog_centrestartdate as timestamp,",
-						"          cog_learnercapacity as integer,",
-						"          cog_classroomcount as integer,",
-						"          cog_ecdtypecode as byte,",
-						"          cog_agreementtypecode as byte,",
-						"          cog_giraffeupdatedon as timestamp,",
-						"          overriddencreatedon as timestamp,",
-						"          cog_programme as boolean,",
-						"          cog_programmestatuscode as byte,",
-						"          cog_countryid as string,",
-						"          cog_region as string,",
-						"          cog_propertytypecode as string,",
-						"          cog_centretypecode as string,",
-						"          cog_classtypecode as string,",
-						"          cog_operatinghours as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetCentres",
-						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
-						"ParquetCentres derive({cog_CountryId@odata.bind} = iif(\r",
-						"    isNull(cog_countryid),\r",
-						"    toString(null()),\r",
-						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_countryid),\"')\")\r",
-						"),",
-						"          {cog_Region@odata.bind} = iif(\r",
-						"    isNull(cog_region),\r",
-						"    toString(null()),\r",
-						"    concat(\"/cog_regions(cog_regioncode='\",toString(cog_region),\"')\")\r",
-						"),",
-						"          cog_programme = case(\r",
-						"    isNull(cog_programme), 769070000,\r",
-						"    cog_programme == true(), 769070001,\r",
-						"    cog_programme == false(), 769070002\r",
-						"  ),",
-						"          overriddencreatedon = toString(toUTC(overriddencreatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-						"          cog_centrestartdate = toString(toDate(cog_centrestartdate), 'yyyy-MM-dd'),",
-						"          cog_giraffeupdatedon = toString(toUTC(cog_giraffeupdatedon, 'Africa/Johannesburg'), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-						"          cog_classtypecode = iif(\r",
-						"  size(filter(split(regexReplace(toString(cog_classtypecode), '[\\\\[\\\\]\\\\s\"]', ''), ','), in(['1','2','3','4','5','6','7'], #item))) == 0,\r",
-						"  toString(null()),\r",
-						"  reduce(\r",
-						"    filter(split(regexReplace(toString(cog_classtypecode), '[\\\\[\\\\]\\\\s\"]', ''), ','), in(['1','2','3','4','5','6','7'], #item)),\r",
-						"    '',\r",
-						"    iif(#acc == '', #item, #acc + ',' + #item),\r",
-						"    #result\r",
-						"  )\r",
-						"),",
-						"          cog_centretypecode = iif(\r",
-						"  isNull(cog_centretypecode) || trim(toString(cog_centretypecode)) == '',\r",
-						"  toInteger(null()),\r",
-						"  iif(in(['1','2','3','4','5'], trim(toString(cog_centretypecode))),\r",
-						"      toInteger(trim(toString(cog_centretypecode))),\r",
-						"      6)\r",
-						"),",
-						"          cog_centretypeother = iif(\r",
-						"  isNull(cog_centretypecode) || trim(toString(cog_centretypecode)) == '' || in(['1','2','3','4','5'], trim(toString(cog_centretypecode))),\r",
-						"  toString(null()),\r",
-						"  left(trim(toString(cog_centretypecode)), 255)\r",
-						"),",
-						"          cog_propertytypecode = iif(\r",
-						"  isNull(cog_propertytypecode) || trim(toString(cog_propertytypecode)) == '',\r",
-						"  toInteger(null()),\r",
-						"  iif(in(['1','2','3'], trim(toString(cog_propertytypecode))),\r",
-						"      toInteger(trim(toString(cog_propertytypecode))),\r",
-						"      99)\r",
-						"),",
-						"          cog_propertytypeother = iif(\r",
-						"  isNull(cog_propertytypecode) || trim(toString(cog_propertytypecode)) == '' || in(['1','2','3'], trim(toString(cog_propertytypecode))),\r",
-						"  toString(null()),\r",
-						"  left(trim(toString(cog_propertytypecode)), 255)\r",
-						")) ~> DerivedColumns",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_centreid',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          cog_centreid,",
-						"          name,",
-						"          address1_city,",
-						"          address1_line1,",
-						"          emailaddress1,",
-						"          telephone1,",
-						"          cog_centrestartdate,",
-						"          cog_learnercapacity,",
-						"          cog_classroomcount,",
-						"          cog_ecdtypecode,",
-						"          cog_agreementtypecode,",
-						"          cog_giraffeupdatedon,",
-						"          overriddencreatedon,",
-						"          cog_programme,",
-						"          cog_programmestatuscode,",
-						"          cog_propertytypecode,",
-						"          cog_centretypecode,",
-						"          cog_classtypecode,",
-						"          cog_operatinghours,",
-						"          {cog_CountryId@odata.bind},",
-						"          {cog_Region@odata.bind},",
-						"          cog_centretypeother,",
-						"          cog_propertytypeother",
-						"     )) ~> SinkRegions"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM Countries Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_Countries",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetCountries"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Countries",
-								"type": "DatasetReference"
-							},
-							"name": "SinkCountries"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          cog_countrycode as string,",
-						"          cog_name as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetCountries",
-						"ParquetCountries alterRow(upsertIf(true())) ~> Upsert",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_countrycode',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          cog_countrycode,",
-						"          cog_name",
-						"     )) ~> SinkCountries"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM Leaner Data Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_Learner_Data",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetLearnerData"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Learner_Data",
-								"type": "DatasetReference"
-							},
-							"name": "SinkLearnerData"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						},
-						{
-							"name": "DerivedColumns"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          cog_centreid as integer,",
-						"          cog_name as string,",
-						"          cog_learners0to2 as decimal(38,18),",
-						"          cog_learners2to5 as decimal(38,18),",
-						"          cog_learners6to9 as decimal(38,18),",
-						"          cog_learners9plus as decimal(38,18),",
-						"          cog_learnerstotal as decimal(38,18)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetLearnerData",
-						"DerivedColumns alterRow(upsertIf(true())) ~> Upsert",
-						"ParquetLearnerData derive({cog_Account@odata.bind} = iif(\r",
-						"  isNull(cog_centreid),\r",
-						"  toString(null()),\r",
-						"  concat('/accounts(cog_centreid=', toString(toInteger(cog_centreid)), ')')\r",
-						"),",
-						"          overriddencreatedon = toString(currentUTC(), \"yyyy-MM-dd'T'HH:mm:ss'Z'\"),",
-						"          cog_learners0to2 = toInteger(cog_learners0to2),",
-						"          cog_learners2to5 = toInteger(cog_learners2to5),",
-						"          cog_learners6to9 = toInteger(cog_learners6to9),",
-						"          cog_learners9plus = toInteger(cog_learners9plus),",
-						"          cog_learnerstotal = toInteger(cog_learnerstotal)) ~> DerivedColumns",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_centreid',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          cog_centreid,",
-						"          cog_name,",
-						"          cog_learners0to2,",
-						"          cog_learners2to5,",
-						"          cog_learners6to9,",
-						"          cog_learners9plus,",
-						"          cog_learnerstotal,",
-						"          {cog_Account@odata.bind},",
-						"          overriddencreatedon",
-						"     )) ~> SinkLearnerData"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM Regions Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Parquet_Regions",
-								"type": "DatasetReference"
-							},
-							"name": "ParquetRegions"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "CRM_Regions",
-								"type": "DatasetReference"
-							},
-							"name": "SinkRegions"
-						}
-					],
-					"transformations": [
-						{
-							"name": "Upsert"
-						},
-						{
-							"name": "DeriveCountryLookup"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          cog_country as string,",
-						"          cog_name as string,",
-						"          cog_regioncode as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> ParquetRegions",
-						"DeriveCountryLookup alterRow(upsertIf(true())) ~> Upsert",
-						"ParquetRegions derive({cog_Country@odata.bind} = iif(\r",
-						"    isNull(cog_country),\r",
-						"    toString(null()),\r",
-						"    concat(\"/cog_countries(cog_countrycode='\",toString(cog_country),\"')\")\r",
-						")) ~> DeriveCountryLookup",
-						"Upsert sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_regioncode',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     mapColumn(",
-						"          cog_name,",
-						"          cog_regioncode,",
-						"          {cog_Country@odata.bind}",
-						"     )) ~> SinkRegions"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Learner Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoollearner_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchoolLearner",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_appid as string,",
-						"          tcbgrow_firstname as string,",
-						"          tcbgrow_lastname as string,",
-						"          tcbgrow_middlename as string,",
-						"          tcbgrow_dateofbirth as timestamp,",
-						"          tcbgrow_startdate as timestamp,",
-						"          tcbgrow_enrolldate as timestamp,",
-						"          tcbgrow_gender as string,",
-						"          tcbgrow_school as long,",
-						"          tcbgrow_temporary as boolean,",
-						"          tcbgrow_leaneractive as boolean,",
-						"          tcbgrow_leanerspecial as boolean,",
-						"          tcbgrow_learnergraduated as boolean,",
-						"          tcbgrow_schoolagegroup as long,",
-						"          tcbgrow_address as string,",
-						"          cog_region as long,",
-						"          tcbgrow_city as long,",
-						"          tcbgrow_country as long,",
-						"          tcbgrow_race as long,",
-						"          tcbgrow_idnumber as string,",
-						"          updated_at as timestamp,",
-						"          tcbgrow_leanerage as long,",
-						"          tcbgrow_name as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_City@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_city),\r",
-						"    toString(null()),\r",
-						"    concat('/tcbgrow_cities(tcbgrow_appid=', toString(tcbgrow_city), ')')\r",
-						"),",
-						"          {tcbgrow_Country@odata.bind} = iif(\r",
-						"    isNull(tcbgrow_country),\r",
-						"    toString(null()),\r",
-						"    concat(\"/tcbgrow_countries(tcbgrow_appid=\", toString(tcbgrow_country), \")\")\r",
-						"),",
-						"          {cog_Region@odata.bind} = iif(    isNull(cog_region),    toString(null()),    concat(\"/tcbgrow_regionses(cog_appid=\", toString(cog_region), \")\")),",
-						"          {tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
-						"          {tcbgrow_AgeGroup@odata.bind} = iif(    isNull(tcbgrow_schoolagegroup),    toString(null()),    concat(\"/tcbgrow_schoolagegroups(tcbgrow_appid=\", toString(tcbgrow_schoolagegroup), \")\")),",
-						"          tcbgrow_gender = case(\r",
-						"    trim(tcbgrow_gender) == 'Male', 301220000,\r",
-						"    trim(tcbgrow_gender) == 'Female', 301220001,\r",
-						"    trim(tcbgrow_gender) == 'Not Provided', 301220002,\r",
-						"    toInteger(null())\r",
-						"    ),",
-						"          tcbgrow_leaneractive = case(\r",
-						"    trim(toString(tcbgrow_leaneractive)) == 'true', 1,\r",
-						"    trim(toString(tcbgrow_leaneractive)) == 'false', 0,\r",
-						"    toInteger(null())\r",
-						"    ),",
-						"          tcbgrow_leanerspecial = case(\r",
-						"    trim(toString(tcbgrow_leanerspecial)) == 'true', 1,\r",
-						"    trim(toString(tcbgrow_leanerspecial)) == 'false', 0,\r",
-						"    toInteger(null())\r",
-						"    ),",
-						"          tcbgrow_learnergraduated = case(\r",
-						"    trim(toString(tcbgrow_learnergraduated)) == 'true', 1,\r",
-						"    trim(toString(tcbgrow_learnergraduated)) == 'false', 0,\r",
-						"    toInteger(null())\r",
-						"    ),",
-						"          tcbgrow_temporary = toString(tcbgrow_temporary),",
-						"          tcbgrow_dateofbirth = iif(  \r",
-						"    isNull(tcbgrow_dateofbirth) || year(tcbgrow_dateofbirth) < 1753,  \r",
-						"    toTimestamp(null()),  \r",
-						"    tcbgrow_dateofbirth  \r",
-						")) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_appid,",
-						"          {tcbgrow_AgeGroup@odata.bind},",
-						"          {tcbgrow_School@odata.bind},",
-						"          {cog_Region@odata.bind},",
-						"          {tcbgrow_Country@odata.bind},",
-						"          {tcbgrow_City@odata.bind},",
-						"          tcbgrow_firstname,",
-						"          tcbgrow_lastname,",
-						"          tcbgrow_middlename,",
-						"          tcbgrow_dateofbirth,",
-						"          tcbgrow_startdate,",
-						"          tcbgrow_enrolldate,",
-						"          tcbgrow_gender,",
-						"          tcbgrow_temporary,",
-						"          tcbgrow_leaneractive,",
-						"          tcbgrow_leanerspecial,",
-						"          tcbgrow_learnergraduated,",
-						"          tcbgrow_race,",
-						"          tcbgrow_idnumber,",
-						"          tcbgrow_leanerage,",
-						"          tcbgrow_name,",
-						"          tcbgrow_address",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Learner Stats Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoollearnerstats_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchoolLearnerStats",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_school as long,",
-						"          tcbgrow_attendanceday as timestamp,",
-						"          tcbgrow_nooflearnersattended as long,",
-						"          tcbgrow_statsday as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_school),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_school), \")\")),",
-						"          tcbgrow_schoolid = tcbgrow_school) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_attendanceday,",
-						"          tcbgrow_nooflearnersattended,",
-						"          tcbgrow_statsday,",
-						"          {tcbgrow_School@odata.bind},",
-						"          tcbgrow_schoolid",
-						"     )) ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Age Group')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolagegroup_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolagegroup_s",
-							"dataset": {
-								"referenceName": "p_schoolagegroup_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolagegroup_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parque/p_schoolagegroup_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolagegroup_s\",  \n  \n    #\"Changed column type\" =  \n        Table.TransformColumnTypes(Source,  \n        {{\"age_group_id\", type text}}),  \n  \n    #\"Mapped Age Group\" =  \n        Table.TransformColumns(#\"Changed column type\",  \n        {{\"age_group_id\", each   \n            if _ = \"0 - 2 years old\" then \"1\"  \n            else if _ = \"2 - 3 years old\" then \"2\"  \n            else if _ = \"3 - 4 years old\" then \"3\"  \n            else if _ = \"4 - 5 years old\" then \"4\"  \n            else if _ = \"5 - 6 years old\" then \"5\"  \n            else if _ = \"6 - 7 years old\" then \"6\"  \n            else _, type text}}),  \n  \n    #\"Removed columns\" =  \n        Table.RemoveColumns(#\"Mapped Age Group\",  \n        {\"renewed_effective_fees\", \"renewed_effective_date\",  \n         \"created_by\", \"updated_by\",  \n         \"created_at\", \"late_early_fee\"}),  \n  \n    #\"Renamed columns 1\" =  \n        Table.RenameColumns(#\"Removed columns\",  \n        {{\"age_group_id\", \"tcbgrow_agegroup\"},  \n         {\"fees\", \"tcbgrow_fees\"},  \n         {\"id\", \"tcbgrow_appid\"},  \n         {\"school_id\", \"tcbgrow_school\"}})  \n  \nin  \n    #\"Renamed columns 1\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Compliance Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoolcompliance_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						},
-						{
-							"dataset": {
-								"referenceName": "p_schoolcompliance_d",
-								"type": "DatasetReference"
-							},
-							"name": "source1"
-						},
-						{
-							"dataset": {
-								"referenceName": "DataverseChecklist",
-								"type": "DatasetReference"
-							},
-							"name": "checklist"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseCompliance",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"dataset": {
-								"referenceName": "DataverseRegistrationStatusChecklist",
-								"type": "DatasetReference"
-							},
-							"name": "sink2"
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "parse1"
-						},
-						{
-							"name": "select2"
-						},
-						{
-							"name": "unpivot1"
-						},
-						{
-							"name": "select3"
-						},
-						{
-							"name": "filter1"
-						},
-						{
-							"name": "join1"
-						},
-						{
-							"name": "derivedColumn2"
-						},
-						{
-							"name": "select4"
-						},
-						{
-							"name": "select5"
-						},
-						{
-							"name": "alterRow2"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_amountid as long,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_checklistholder as string,",
-						"          tcbgrow_dsdapplicationsubmission as timestamp,",
-						"          tcbgrow_dsdgrantapproval as string,",
-						"          tcbgrow_dsdgrantpaid as string,",
-						"          tcbgrow_dsdstatus as string,",
-						"          tcbgrow_effectivedate as timestamp,",
-						"          tcbgrow_eligibleforotherstudy as string,",
-						"          tcbgrow_expirydate as timestamp,",
-						"          tcbgrow_franchisecommencementdate as timestamp,",
-						"          tcbgrow_nporegistered as string,",
-						"          tcbgrow_nporegistrationdate as timestamp,",
-						"          tcbgrow_nporegistrationnumber as string,",
-						"          tcbgrow_numberofchildrensregistration as integer,",
-						"          tcbgrow_othersubsidyenddate as timestamp,",
-						"          tcbgrow_othersubsidystartdate as timestamp,",
-						"          tcbgrow_schoolid as long,",
-						"          tcbgrow_schoolcapacity as long",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"source(output(",
-						"          tcbgrow_amountid as long,",
-						"          tcbgrow_appid as long,",
-						"          tcbgrow_checklistholder as string,",
-						"          tcbgrow_dsdapplicationsubmission as timestamp,",
-						"          tcbgrow_dsdgrantapproval as string,",
-						"          tcbgrow_dsdgrantpaid as string,",
-						"          tcbgrow_dsdstatus as string,",
-						"          tcbgrow_effectivedate as timestamp,",
-						"          tcbgrow_eligibleforotherstudy as string,",
-						"          tcbgrow_expirydate as timestamp,",
-						"          tcbgrow_franchisecommencementdate as timestamp,",
-						"          tcbgrow_nporegistered as string,",
-						"          tcbgrow_nporegistrationdate as timestamp,",
-						"          tcbgrow_nporegistrationnumber as string,",
-						"          tcbgrow_numberofchildrensregistration as integer,",
-						"          tcbgrow_othersubsidyenddate as timestamp,",
-						"          tcbgrow_othersubsidystartdate as timestamp,",
-						"          tcbgrow_schoolid as long,",
-						"          tcbgrow_schoolcapacity as long",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> source1",
-						"source(output(",
-						"          {@odata.etag} as string,",
-						"          cog_checklistid as string,",
-						"          cog_checklistname as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     query: '<fetch>\\n     <entity name=\"cog_checklist\">\\n          <attribute name=\"cog_checklistid\"/>\\n          <attribute name=\"cog_checklistname\"/>\\n          <order attribute=\"cog_checklistname\" descending=\"false\"/>\\n     </entity>\\n</fetch>') ~> checklist",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_schoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_schoolid), \")\"))) ~> derivedColumn1",
-						"source1 select(mapColumn(",
-						"          tcbgrow_appid,",
-						"          tcbgrow_checklistholder",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 parse(parsed_data = tcbgrow_checklistholder ? (business_plan as boolean,",
-						"          disciplinary_policy as boolean,",
-						"          lease_agreement as boolean,",
-						"          npo_certificate as boolean,",
-						"          building_plan as boolean,",
-						"          emergency_plan as boolean,",
-						"          zoning_certificate as boolean,",
-						"          constitution as boolean,",
-						"          form29 as boolean,",
-						"          form30 as boolean,",
-						"          fire_safety as boolean,",
-						"          health_clearance as boolean,",
-						"          form16 as boolean,",
-						"          form17 as boolean,",
-						"          western_cape as boolean,",
-						"          kwa_zulu_natal as boolean),",
-						"     format: 'json',",
-						"     documentForm: 'singleDocument') ~> parse1",
-						"parse1 select(mapColumn(",
-						"          tcbgrow_appid,",
-						"          business_plan = parsed_data.business_plan,",
-						"          disciplinary_policy = parsed_data.disciplinary_policy,",
-						"          lease_agreement = parsed_data.lease_agreement,",
-						"          npo_certificate = parsed_data.npo_certificate,",
-						"          building_plan = parsed_data.building_plan,",
-						"          emergency_plan = parsed_data.emergency_plan,",
-						"          zoning_certificate = parsed_data.zoning_certificate,",
-						"          constitution = parsed_data.constitution,",
-						"          form29 = parsed_data.form29,",
-						"          form30 = parsed_data.form30,",
-						"          fire_safety = parsed_data.fire_safety,",
-						"          health_clearance = parsed_data.health_clearance,",
-						"          form16 = parsed_data.form16,",
-						"          form17 = parsed_data.form17,",
-						"          western_cape = parsed_data.western_cape,",
-						"          kwa_zulu_natal = parsed_data.kwa_zulu_natal",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select2",
-						"select2 unpivot(output(",
-						"          checklist_item as string,",
-						"          business_plan as boolean,",
-						"          disciplinary_policy as boolean,",
-						"          lease_agreement as boolean,",
-						"          npo_certificate as boolean,",
-						"          building_plan as boolean,",
-						"          emergency_plan as boolean,",
-						"          zoning_certificate as boolean,",
-						"          constitution as boolean,",
-						"          form29 as boolean,",
-						"          form30 as boolean,",
-						"          fire_safety as boolean,",
-						"          health_clearance as boolean,",
-						"          form16 as boolean,",
-						"          form17 as boolean,",
-						"          western_cape as boolean,",
-						"          kwa_zulu_natal as boolean",
-						"     ),",
-						"     ungroupBy(tcbgrow_appid),",
-						"     lateral: true,",
-						"     ignoreNullPivots: false) ~> unpivot1",
-						"unpivot1 select(mapColumn(",
-						"          tcbgrow_appid,",
-						"          checklist_item,",
-						"          checklist_complete = business_plan",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select3",
-						"select3 filter(checklist_complete == true()) ~> filter1",
-						"filter1, checklist join(checklist_item == cog_checklistname,",
-						"     joinType:'inner',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
-						"select4 derive({cog_RegistrationStatus@odata.bind} = iif(    isNull(tcbgrow_appid),    toString(null()),    concat(\"/tcbgrow_schoolcompliances(tcbgrow_appid=\", toString(tcbgrow_appid), \")\")),",
-						"          {cog_Checklist@odata.bind} = iif(    isNull(cog_checklist),    toString(null()),    concat(\"/cog_checklists(\", cog_checklist, \")\")),",
-						"          cog_name = concat(cog_checklistname, \"-\", toString(tcbgrow_appid)),",
-						"          cog_registrationstatusappid = tcbgrow_appid) ~> derivedColumn2",
-						"join1 select(mapColumn(",
-						"          tcbgrow_appid,",
-						"          cog_checklist = cog_checklistid,",
-						"          cog_checklistname",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select4",
-						"derivedColumn2 select(mapColumn(",
-						"          {cog_RegistrationStatus@odata.bind},",
-						"          {cog_Checklist@odata.bind},",
-						"          cog_name,",
-						"          cog_registrationstatusappid,",
-						"          cog_checklist",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select5",
-						"select5 alterRow(upsertIf(true())) ~> alterRow2",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     saveOrder: 1,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_amount = tcbgrow_amountid,",
-						"          tcbgrow_appid,",
-						"          tcbgrow_checklistholder,",
-						"          tcbgrow_dsdapplicationsubmissiondate = tcbgrow_dsdapplicationsubmission,",
-						"          tcbgrow_dsdgrantapproval,",
-						"          tcbgrow_dsdgrantpaid,",
-						"          tcbgrow_dsdstatus,",
-						"          tcbgrow_effectivedate,",
-						"          tcbgrow_eligibleforotherstudy,",
-						"          tcbgrow_expirydate,",
-						"          tcbgrow_franchisecommencementdate,",
-						"          tcbgrow_nporegistered,",
-						"          tcbgrow_nporegistrationdate,",
-						"          tcbgrow_nporegistrationnumber,",
-						"          tcbgrow_numberofchildrensregistration,",
-						"          tcbgrow_othersubsidyenddate,",
-						"          tcbgrow_othersubsidystartdate,",
-						"          tcbgrow_schoolcapacity,",
-						"          {tcbgrow_School@odata.bind}",
-						"     )) ~> sink1",
-						"alterRow2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'cog_importkey',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     mapColumn(",
-						"          cog_name,",
-						"          cog_registrationstatusappid,",
-						"          {cog_RegistrationStatus@odata.bind},",
-						"          {cog_Checklist@odata.bind},",
-						"          cog_checklist",
-						"     )) ~> sink2"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Compliance')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "p_schoolcompliance_s",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tformat: 'parquet') ~> p_schoolcompliance_s",
-							"dataset": {
-								"referenceName": "p_schoolcompliance_s",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared p_schoolcompliance_s = let AdfDoc = AzureStorage.DataLakeContents(\"https://growecdstorage.dfs.core.windows.net/giraffe/parquet/p_schoolcompliance_s.parquet\"), Parquet = Parquet.Document(AdfDoc) in Parquet;\r\nshared UserQuery = let  \n    Source = #\"p_schoolcompliance_s\",  \n    // Select required columns FIRST (better performance)  \n    #\"Selected Columns\" =  \n        Table.SelectColumns(Source,{  \n            \"amount\",  \n            \"id\",  \n            \"registration_checklist\",  \n            \"dsd_application_submission_date\",  \n            \"dsd_grant_approved\",  \n            \"is_dsd_grant_paid\",  \n            \"dsd_status\",  \n            \"effective_date\",  \n            \"is_eligible_for_other_subsidy\",  \n            \"expiry_date\",  \n            \"grow_franchisee_commencement_date\",  \n            \"is_npo_registered\",  \n            \"npo_registration_date\",  \n            \"npo_registration_number\",  \n            \"number_of_childrens_registration\",  \n            \"other_subsidy_end_date\",  \n            \"other_subsidy_start_date\",  \n            \"school_id\",  \n            \"school_capacity\"  \n        }),  \n  \n    // Replace nulls (text + numeric in ONE step)  \n    #\"Replace Nulls\" =  \n        Table.TransformColumns(  \n            #\"Selected Columns\",  \n            {  \n                {\"npo_registration_number\", each if _ = null then \"\" else _},  \n                {\"dsd_grant_approved\", each if _ = null then \"\" else _},\n                {\"registration_checklist\", each if _ = null then \"\" else _},  \n                {\"amount\", each if _ = null then 0 else _},  \n                {\"school_capacity\", each if _ = null then 0 else _},  \n                {\"school_id\", each if _ = null then 0 else _},  \n                {\"number_of_childrens_registration\", each if _ = null then 0 else _}  \n            }  \n        ),  \n  \n    // Transform DSD Status + Boolean fields in ONE step  \n    #\"Transform Fields\" =  \n        Table.TransformColumns(  \n            #\"Replace Nulls\",  \n            {  \n                // Option set mapping  \n                {\"dsd_status\", each  \n                    if _ = \"Registered\" then \"301220002\"  \n                    else if _ = \"Gold/Full registration\" then \"301220006\"  \n                    else if _ = \"Bronze registration\" then \"301220007\"  \n                    else if _ = \"Expired\" then \"301220000\"  \n                    else if _ = \"Application Submitted\" then \"301220001\"  \n                    else if _ = \"Application Denied\" then \"301220005\"  \n                    else if _ = \"Not Registered\" then \"301220003\"  \n                    else if _ = \"Conditionally Registered\" then \"301220004\"\n                    else if _ = \"Silver/Conditional registration\" then \"301220004\"  \n                    else _  \n                },  \n  \n                // Yes/No → true/false directly (skip 0/1 conversion completely)  \n                {\"is_dsd_grant_paid\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical},  \n                {\"dsd_grant_approved\", each if Text.Lower(Text.From(_)) = \"yes\" then true else false, type logical}  \n            }  \n        ),  \n  \n    // Rename at the END (cleaner pipeline)  \n    #\"Renamed Columns\" =  \n        Table.RenameColumns(#\"Transform Fields\",{  \n            {\"amount\", \"tcbgrow_amount\"},  \n            {\"id\", \"tcbgrow_appid\"},  \n            {\"registration_checklist\", \"tcbgrow_checklistholder\"},  \n            {\"dsd_application_submission_date\", \"tcbgrow_dsdapplicationsubmissiondate\"},  \n            {\"dsd_grant_approved\", \"tcbgrow_dsdgrantapproval\"},  \n            {\"is_dsd_grant_paid\", \"tcbgrow_dsdgrantpaid\"},  \n            {\"dsd_status\", \"tcbgrow_dsdstatus\"},  \n            {\"effective_date\", \"tcbgrow_effectivedate\"},  \n            {\"is_eligible_for_other_subsidy\", \"tcbgrow_eligibleforotherstudy\"},  \n            {\"expiry_date\", \"tcbgrow_expirydate\"},  \n            {\"grow_franchisee_commencement_date\", \"tcbgrow_franchisecommencementdate\"},  \n            {\"is_npo_registered\", \"tcbgrow_nporegistered\"},  \n            {\"npo_registration_date\", \"tcbgrow_nporegistrationdate\"},  \n            {\"npo_registration_number\", \"tcbgrow_nporegistrationnumber\"},  \n            {\"number_of_childrens_registration\", \"tcbgrow_numberofchildrensregistration\"},  \n            {\"other_subsidy_end_date\", \"tcbgrow_othersubsidyenddate\"},  \n            {\"other_subsidy_start_date\", \"tcbgrow_othersubsidystartdate\"},  \n            {\"school_id\", \"tcbgrow_school\"},  \n            {\"school_capacity\", \"tcbgrow_schoolcapacity\"}  \n        }),  \n  \n    // Final datatype adjustments  \n    #\"Changed Column Types\" =  \n        Table.TransformColumnTypes(#\"Renamed Columns\",{  \n            {\"tcbgrow_eligibleforotherstudy\", type text},  \n            {\"tcbgrow_nporegistered\", type text},\n            {\"tcbgrow_dsdgrantapproval\", type text},\n            {\"tcbgrow_dsdgrantpaid\", type text}  \n        })  \n  \nin  \n    #\"Changed Column Types\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/School Expenses Dataflow')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "p_schoolexpenses_d",
-								"type": "DatasetReference"
-							},
-							"name": "parquetsource"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataverseSchoolIncomeExpenses",
-								"type": "DatasetReference"
-							},
-							"name": "sink1",
-							"rejectedDataLinkedService": {
-								"referenceName": "AzureDataLakeStorage1",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [
-						{
-							"name": "alterRow1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          tcbgrow_amount as long,",
-						"          tcbgrow_asofdate as timestamp,",
-						"          tcbgrow_description as string,",
-						"          tcbgrow_importexpenseid as long,",
-						"          tcbgrow_importschoolid as long,",
-						"          tcbgrow_source as string,",
-						"          tcbgrow_month as integer,",
-						"          tcbgrow_year as string,",
-						"          tcbgrow_transactiontype as long,",
-						"          tcbgrow_transactiondate as timestamp",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     inferDriftedColumnTypes: true,",
-						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> parquetsource",
-						"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
-						"parquetsource derive({tcbgrow_School@odata.bind} = iif(    isNull(tcbgrow_importschoolid),    toString(null()),    concat(\"/tcbgrow_schools(tcbgrow_appid=\", toString(tcbgrow_importschoolid), \")\")),",
-						"          tcbgrow_year = toString(tcbgrow_year)) ~> derivedColumn1",
-						"alterRow1 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:false,",
-						"     updateable:false,",
-						"     upsertable:true,",
-						"     alternateKeyName: 'tcbgrow_import_expense_key',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     outputAssertFailedRows: true,",
-						"     assertFailure_fileSystem: 'giraffe',",
-						"     assertFailure_folderPath: 'errors',",
-						"     mapColumn(",
-						"          tcbgrow_amount,",
-						"          tcbgrow_transactiondate,",
-						"          tcbgrow_asofdate,",
-						"          tcbgrow_description,",
-						"          tcbgrow_importexpenseid,",
-						"          tcbgrow_importschoolid,",
-						"          tcbgrow_source,",
-						"          tcbgrow_month,",
-						"          tcbgrow_year,",
-						"          tcbgrow_transactiontype,",
 						"          {tcbgrow_School@odata.bind}",
 						"     )) ~> sink1"
 					]
