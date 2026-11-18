@@ -39,7 +39,10 @@
 					"name": "derivedCustomerSegment"
 				},
 				{
-					"name": "join1"
+					"name": "joinCRMRegionforBranchGUID"
+				},
+				{
+					"name": "derivedBranch"
 				}
 			],
 			"scriptLines": [
@@ -72,8 +75,8 @@
 				"     format: 'parquet') ~> ParquetCentres",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     query: '<fetch>\\n     <entity name=\"cog_region\">\\n          <attribute name=\"statecode\"/>\\n          <attribute name=\"cog_regionid\"/>\\n          <attribute name=\"cog_name\"/>\\n          <attribute name=\"cog_regioncode\"/>\\n          <attribute name=\"cog_branch\"/>\\n          <order attribute=\"cog_regioncode\" descending=\"false\"/>\\n          <filter type=\"and\">\\n               <condition attribute=\"statecode\" operator=\"eq\" value=\"0\"/>\\n          </filter>\\n     </entity>\\n</fetch>') ~> CRMRegions",
-				"join1 alterRow(upsertIf(true())) ~> Upsert",
+				"     query: '<fetch>\\n     <entity name=\"cog_region\">\\n          <attribute name=\"cog_regionid\"/>\\n          <attribute name=\"cog_name\"/>\\n          <attribute name=\"cog_regioncode\"/>\\n          <attribute name=\"cog_branch\"/>\\n          <order attribute=\"cog_regioncode\" descending=\"false\"/>\\n          <filter type=\"and\">\\n               <condition attribute=\"statecode\" operator=\"eq\" value=\"0\"/>\\n          </filter>\\n     </entity>\\n</fetch>') ~> CRMRegions",
+				"derivedBranch alterRow(upsertIf(true())) ~> Upsert",
 				"ParquetCentres derive({cog_CountryId@odata.bind} = iif(\r",
 				"    isNull(cog_countryid),\r",
 				"    toString(null()),\r",
@@ -131,7 +134,8 @@
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1",
+				"     broadcast: 'auto')~> joinCRMRegionforBranchGUID",
+				"joinCRMRegionforBranchGUID derive(cog_Branch = concat(\"/cog_branches(\",toString(cog_centreid),\")\")) ~> derivedBranch",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
