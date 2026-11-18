@@ -149,7 +149,7 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> joinCRMRegionforBranchGUID",
-				"joinCRMRegionforBranchGUID derive({cog_Branch@odata.bind} = concat(\"/cog_branches(\",toString(cog_branch),\")\")) ~> derivedBranch",
+				"joinCRMRegionforBranchGUID derive({cog_Branch@odata.bind} = concat(\"/cog_branchs(\",toString(cog_branch),\")\")) ~> derivedBranch",
 				"CRMRegions select(mapColumn(",
 				"          cog_branch,",
 				"          cog_regioncode",
