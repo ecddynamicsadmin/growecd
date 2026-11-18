@@ -22,84 +22,20 @@
 		},
 		"schema": [
 			{
-				"name": "mobilephone",
-				"type": "UTF8"
+				"name": "cog_requirescoursename",
+				"type": "BOOLEAN"
 			},
 			{
-				"name": "emailaddress1",
-				"type": "UTF8"
+				"name": "cog_requirescategory",
+				"type": "BOOLEAN"
 			},
 			{
-				"name": "firstname",
-				"type": "UTF8"
-			},
-			{
-				"name": "lastname",
-				"type": "UTF8"
-			},
-			{
-				"name": "birthdate",
-				"type": "INT96"
-			},
-			{
-				"name": "cog_gendercode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_racecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_raceother",
-				"type": "UTF8"
-			},
-			{
-				"name": "address1_city",
-				"type": "UTF8"
-			},
-			{
-				"name": "address1_line1",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_countryid",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_region",
-				"type": "UTF8"
-			},
-			{
-				"name": "cog_giraffeprofileid",
+				"name": "cog_giraffeid",
 				"type": "INT32"
 			},
 			{
-				"name": "cog_centreid",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_rolecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_startdate",
-				"type": "INT96"
-			},
-			{
-				"name": "cog_childprotectionclearancecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_employmenttypecode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_highestqualificationcode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_workhourstotal",
-				"type": "INT32"
+				"name": "cog_name",
+				"type": "UTF8"
 			},
 			{
 				"name": "cog_giraffeupdatedon",
@@ -108,10 +44,6 @@
 			{
 				"name": "overriddencreatedon",
 				"type": "INT96"
-			},
-			{
-				"name": "cog_applicationuser",
-				"type": "INT32"
 			}
 		]
 	}
