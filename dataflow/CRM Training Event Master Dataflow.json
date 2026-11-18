@@ -47,7 +47,7 @@
 				"ParquetTrainingEventMAster derive({cog_EventTypeId@odata.bind} = iif(\r",
 				"    isNull(cog_eventtypeid),\r",
 				"    toString(null()),\r",
-				"    concat(\"/cog_trainingeventtypes(cog_giraffeid='\",toString(cog_eventtypeid),\"')\")\r",
+				"    concat(\"/cog_trainingeventtypes(cog_giraffeid=\",toString(cog_eventtypeid),\")\")\r",
 				")) ~> DerivedColumns",
 				"Upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
