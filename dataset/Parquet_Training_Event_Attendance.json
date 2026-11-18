@@ -22,43 +22,39 @@
 		},
 		"schema": [
 			{
-				"name": "mobilephone",
-				"type": "UTF8"
+				"name": "cog_giraffeid",
+				"type": "INT64"
 			},
 			{
-				"name": "emailaddress1",
-				"type": "UTF8"
+				"name": "cog_trainingeventid",
+				"type": "INT64"
 			},
 			{
-				"name": "firstname",
-				"type": "UTF8"
-			},
-			{
-				"name": "lastname",
-				"type": "UTF8"
-			},
-			{
-				"name": "birthdate",
+				"name": "cog_giraffeupdatedon",
 				"type": "INT96"
 			},
 			{
-				"name": "cog_gendercode",
-				"type": "INT_8"
+				"name": "overriddencreatedon",
+				"type": "INT96"
 			},
 			{
-				"name": "cog_racecode",
-				"type": "INT_8"
+				"name": "cog_contact",
+				"type": "INT32"
 			},
 			{
-				"name": "cog_raceother",
-				"type": "UTF8"
+				"name": "cog_centreid",
+				"type": "INT32"
 			},
 			{
-				"name": "address1_city",
-				"type": "UTF8"
+				"name": "cog_applicationuser",
+				"type": "INT32"
 			},
 			{
-				"name": "address1_line1",
+				"name": "cog_attendeeid",
+				"type": "INT64"
+			},
+			{
+				"name": "cog_centrename",
 				"type": "UTF8"
 			},
 			{
@@ -70,48 +66,28 @@
 				"type": "UTF8"
 			},
 			{
-				"name": "cog_giraffeprofileid",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_centreid",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_rolecode",
+				"name": "cog_usertype",
 				"type": "INT_8"
 			},
 			{
-				"name": "cog_startdate",
-				"type": "INT96"
+				"name": "cog_recordedmobile",
+				"type": "UTF8"
 			},
 			{
-				"name": "cog_childprotectionclearancecode",
+				"name": "cog_recordedemail",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_attendancestatuscode",
 				"type": "INT_8"
 			},
 			{
-				"name": "cog_employmenttypecode",
+				"name": "cog_absencereason",
+				"type": "UTF8"
+			},
+			{
+				"name": "cog_roleateventcode",
 				"type": "INT_8"
-			},
-			{
-				"name": "cog_highestqualificationcode",
-				"type": "INT_8"
-			},
-			{
-				"name": "cog_workhourstotal",
-				"type": "INT32"
-			},
-			{
-				"name": "cog_giraffeupdatedon",
-				"type": "INT96"
-			},
-			{
-				"name": "overriddencreatedon",
-				"type": "INT96"
-			},
-			{
-				"name": "cog_applicationuser",
-				"type": "INT32"
 			}
 		]
 	}
