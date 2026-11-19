@@ -78,7 +78,8 @@
 						"          cog_giraffeupdatedon,",
 						"          overriddencreatedon,",
 						"          cog_name",
-						"     )) ~> SinkRegions"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkRegions"
 					]
 				}
 			},
@@ -219,7 +220,7 @@
 						"          {cog_ApplicationUser@odata.bind},",
 						"          {parentcustomerid_account@odata.bind}",
 						"     ),",
-						"     partitionBy('roundRobin', 16)) ~> SinkContacts"
+						"     partitionBy('roundRobin', 10)) ~> SinkContacts"
 					]
 				}
 			},
@@ -421,7 +422,8 @@
 						"          {cog_Branch@odata.bind},",
 						"          cog_centretypeother,",
 						"          cog_propertytypeother",
-						"     )) ~> SinkCentres"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkCentres"
 					]
 				}
 			},
@@ -480,7 +482,8 @@
 						"     mapColumn(",
 						"          cog_countrycode,",
 						"          cog_name",
-						"     )) ~> SinkCountries"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkCountries"
 					]
 				}
 			},
@@ -565,7 +568,8 @@
 						"          cog_learnerstotal,",
 						"          {cog_Account@odata.bind},",
 						"          overriddencreatedon",
-						"     )) ~> SinkLearnerData"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkLearnerData"
 					]
 				}
 			},
@@ -634,7 +638,8 @@
 						"          cog_name,",
 						"          cog_regioncode,",
 						"          {cog_Country@odata.bind}",
-						"     )) ~> SinkRegions"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkRegions"
 					]
 				}
 			},
@@ -742,7 +747,8 @@
 						"          {cog_CentreId@odata.bind},",
 						"          {cog_ApplicationUser@odata.bind},",
 						"          cog_name",
-						"     )) ~> SinkTrainingEventAttendance"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventAttendance"
 					]
 				}
 			},
@@ -819,7 +825,8 @@
 						"          cog_giraffeupdatedon,",
 						"          overriddencreatedon,",
 						"          {cog_EventTypeId@odata.bind}",
-						"     )) ~> SinkTrainingEventMaster"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventMaster"
 					]
 				}
 			},
@@ -886,7 +893,8 @@
 						"          cog_name,",
 						"          cog_giraffeupdatedon,",
 						"          overriddencreatedon",
-						"     )) ~> SinkTrainingEventTypes"
+						"     ),",
+						"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventTypes"
 					]
 				}
 			},
