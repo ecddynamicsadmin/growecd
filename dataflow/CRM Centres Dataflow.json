@@ -192,7 +192,8 @@
 				"          {cog_Branch@odata.bind},",
 				"          cog_centretypeother,",
 				"          cog_propertytypeother",
-				"     )) ~> SinkCentres"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkCentres"
 			]
 		}
 	}

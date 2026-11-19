@@ -57,7 +57,8 @@
 				"          cog_name,",
 				"          cog_giraffeupdatedon,",
 				"          overriddencreatedon",
-				"     )) ~> SinkTrainingEventTypes"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventTypes"
 			]
 		}
 	}

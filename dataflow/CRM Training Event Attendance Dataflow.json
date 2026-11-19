@@ -98,7 +98,8 @@
 				"          {cog_CentreId@odata.bind},",
 				"          {cog_ApplicationUser@odata.bind},",
 				"          cog_name",
-				"     )) ~> SinkTrainingEventAttendance"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventAttendance"
 			]
 		}
 	}

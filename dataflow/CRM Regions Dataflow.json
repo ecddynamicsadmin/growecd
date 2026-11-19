@@ -59,7 +59,8 @@
 				"          cog_name,",
 				"          cog_regioncode,",
 				"          {cog_Country@odata.bind}",
-				"     )) ~> SinkRegions"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkRegions"
 			]
 		}
 	}

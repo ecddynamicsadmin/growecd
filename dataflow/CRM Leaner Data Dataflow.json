@@ -75,7 +75,8 @@
 				"          cog_learnerstotal,",
 				"          {cog_Account@odata.bind},",
 				"          overriddencreatedon",
-				"     )) ~> SinkLearnerData"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkLearnerData"
 			]
 		}
 	}

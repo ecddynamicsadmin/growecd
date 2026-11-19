@@ -67,7 +67,8 @@
 				"          cog_giraffeupdatedon,",
 				"          overriddencreatedon,",
 				"          {cog_EventTypeId@odata.bind}",
-				"     )) ~> SinkTrainingEventMaster"
+				"     ),",
+				"     partitionBy('roundRobin', 10)) ~> SinkTrainingEventMaster"
 			]
 		}
 	}
