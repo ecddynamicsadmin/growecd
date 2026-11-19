@@ -511,7 +511,7 @@
 							"source": {
 								"type": "MariaDBSource",
 								"query": {
-									"value": "SELECT\n    mobilenumber                AS mobilephone,\n    email                       AS emailaddress1,\n    firstname                   AS firstname,\n    lastname                    AS lastname,\n    birthdate                   AS birthdate,\n    gender                      AS cog_gendercode,\n    race                        AS cog_racecode,\n    race_text                   AS cog_raceother,\n    city                        AS address1_city,\n    physical_address            AS address1_line1,\n    countrycode                 AS cog_countryid,\n    regioncode                  AS cog_region,\n    profileid                   AS cog_giraffeprofileid,\n    centreid                    AS cog_centreid,\n    usertype                    AS cog_rolecode,\n    start_date                  AS cog_startdate,\n    child_protection            AS cog_childprotectionclearancecode,\n    employment_type             AS cog_employmenttypecode,\n    qualification               AS cog_highestqualificationcode,\n    work_hours_total            AS cog_workhourstotal,\n    updated_at                 AS cog_giraffeupdatedon,\n    created_at                 AS overriddencreatedon,\n    userid                     AS cog_applicationuser   \n\nFROM growecd.centre_profiles\nWHERE updated_at >= '@{formatDateTime(pipeline().parameters.WatermarkDate, 'yyyy-MM-dd HH:mm:ss')}'\n  AND COALESCE(usertype, 0) <> 20",
+									"value": "SELECT\n    p.mobilenumber        AS mobilephone,\n    p.email               AS emailaddress1,\n    p.firstname           AS firstname,\n    p.lastname            AS lastname,\n    p.birthdate           AS birthdate,\n    p.gender              AS cog_gendercode,\n    p.race                AS cog_racecode,\n    p.race_text           AS cog_raceother,\n    p.city                AS address1_city,\n    p.physical_address    AS address1_line1,\n    p.countrycode         AS cog_countryid,\n    p.regioncode          AS cog_region,\n    p.profileid           AS cog_giraffeprofileid,\n    p.centreid            AS cog_centreid,\n    p.usertype            AS cog_rolecode,\n    p.start_date          AS cog_startdate,\n    p.child_protection    AS cog_childprotectionclearancecode,\n    p.employment_type     AS cog_employmenttypecode,\n    p.qualification       AS cog_highestqualificationcode,\n    p.work_hours_total    AS cog_workhourstotal,\n    p.updated_at          AS cog_giraffeupdatedon,\n    p.created_at          AS overriddencreatedon,\n    p.userid              AS cog_applicationuser\nFROM growecd.centre_profiles AS p\nLEFT JOIN growecd.centres AS c\n       ON c.centreid = p.centreid\nWHERE p.updated_at >= '@{formatDateTime(pipeline().parameters.WatermarkDate, 'yyyy-MM-dd HH:mm:ss')}'\n  AND COALESCE(p.usertype, 0) <> 20\n  AND COALESCE(c.is_test, 0) <> 1",
 									"type": "Expression"
 								}
 							},
@@ -14394,7 +14394,7 @@
 						")) ~> DerivedColumns",
 						"DerivedColumns derive({cog_CustomerSegment@odata.bind} = iif(    isNull(cog_programme),    toString(null()),    concat(\"/cog_customersegments(cog_giraffeid=\",toString(cog_programme),\")\"))) ~> derivedCustomerSegment",
 						"derivedCustomerSegment, CRMRegions join(cog_region == cog_regioncode,",
-						"     joinType:'inner',",
+						"     joinType:'left',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> joinCRMRegionforBranchGUID",

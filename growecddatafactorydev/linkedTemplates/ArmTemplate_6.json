@@ -375,7 +375,7 @@
 						")) ~> DerivedColumns",
 						"DerivedColumns derive({cog_CustomerSegment@odata.bind} = iif(    isNull(cog_programme),    toString(null()),    concat(\"/cog_customersegments(cog_giraffeid=\",toString(cog_programme),\")\"))) ~> derivedCustomerSegment",
 						"derivedCustomerSegment, CRMRegions join(cog_region == cog_regioncode,",
-						"     joinType:'inner',",
+						"     joinType:'left',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
 						"     broadcast: 'auto')~> joinCRMRegionforBranchGUID",
