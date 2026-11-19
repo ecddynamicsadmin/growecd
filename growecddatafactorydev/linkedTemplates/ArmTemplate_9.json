@@ -357,6 +357,410 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CRM Integration Master')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Centres",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Set WatermarkDate",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Centres",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Application Users",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Centres",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM App Users",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Learner Data",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "User Profiles",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Learner Data",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "User Profiles",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Application Users",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Centre Profiles",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Training Event Types",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Learner Data",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Training Event Types",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Set WatermarkDate",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "WatermarkDate",
+							"value": {
+								"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Training Events",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Training Event Master",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Training Events",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Training Event Attendance",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Training Events",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Training Event Attendance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Compliance",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Compliance",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Salaries",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Compliance",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Salaries",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Income",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Salaries",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Income",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Fees",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Income",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Fees",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "School Expenses",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "School Fees",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "School Expenses",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					{
+						"name": "Training Event Master",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Training Event Types",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "CRM Training Event Master",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WatermarkDate": {
+									"value": "@variables('WatermarkDate')",
+									"type": "Expression"
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"WatermarkDate": {
+						"type": "String"
+					}
+				},
+				"folder": {
+					"name": "G2"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/GrowECD Master')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
