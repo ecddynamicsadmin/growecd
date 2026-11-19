@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ECD Owners",
+				"name": "Centres",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -19,7 +19,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Owners",
+						"referenceName": "CRM Centres",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -32,11 +32,11 @@
 				}
 			},
 			{
-				"name": "Schools",
+				"name": "Application Users",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ECD Owners",
+						"activity": "Centres",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -48,7 +48,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Schools",
+						"referenceName": "CRM App Users",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -61,11 +61,11 @@
 				}
 			},
 			{
-				"name": "Staff",
+				"name": "Learner Data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "School Age Groups",
+						"activity": "User Profiles",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -77,7 +77,30 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Staff",
+						"referenceName": "CRM Learner Data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "User Profiles",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Application Users",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "CRM Centre Profiles",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -90,11 +113,11 @@
 				}
 			},
 			{
-				"name": "School Age Groups",
+				"name": "Training Event Types",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Schools",
+						"activity": "Learner Data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -106,36 +129,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Age Groups",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"WatermarkDate": {
-							"value": "@variables('WatermarkDate')",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "School Learners",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Staff",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "Learners",
+						"referenceName": "CRM Training Event Types",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -159,17 +153,17 @@
 				"typeProperties": {
 					"variableName": "WatermarkDate",
 					"value": {
-						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-32),'yyyy-MM-dd HH:mm:ss'))",
+						"value": "@concat(formatDateTime(addDays(convertTimeZone(utcNow(),'UTC','South Africa Standard Time'),-3),'yyyy-MM-dd HH:mm:ss'))",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Owner Training Attendance",
+				"name": "Training Events",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Learners Stats",
+						"activity": "Training Event Master",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -181,7 +175,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Owner Training Attendance",
+						"referenceName": "CRM Training Events",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -194,11 +188,11 @@
 				}
 			},
 			{
-				"name": "Teacher Training Attendance",
+				"name": "Training Event Attendance",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Owner Training Attendance",
+						"activity": "Training Events",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -210,36 +204,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Teacher Training Attendance",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"WatermarkDate": {
-							"value": "@variables('WatermarkDate')",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Staff Attendance Stats",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Teacher Training Attendance",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "Staff Attendance Stats",
+						"referenceName": "CRM Training Event Attendance",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -254,14 +219,7 @@
 			{
 				"name": "Compliance",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Staff Attendance Stats",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -397,11 +355,11 @@
 				}
 			},
 			{
-				"name": "Learners Stats",
+				"name": "Training Event Master",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "School Learners",
+						"activity": "Training Event Types",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -413,7 +371,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Learners Stats",
+						"referenceName": "CRM Training Event Master",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
@@ -430,6 +388,9 @@
 			"WatermarkDate": {
 				"type": "String"
 			}
+		},
+		"folder": {
+			"name": "G2"
 		},
 		"annotations": []
 	}
