@@ -13,6 +13,69 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolAgeGroup')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_school_age_group"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolCompliance')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBGrowECD",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "school_government_compliences"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaSchoolExpenses')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MariaDBCRM",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Maria Db"
+				},
+				"annotations": [],
+				"type": "MariaDBTable",
+				"schema": [],
+				"typeProperties": {
+					"tableName": "vw_schoolexpenses_3months"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/MariaSchoolFees')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1026,213 +1089,6 @@
 					{
 						"name": "owner_id",
 						"type": "INT64"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Attendance')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Centre Profiles in the Dataverse",
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "training_event_attendances.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffetwo"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "cog_giraffeid",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_trainingeventid",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_giraffeupdatedon",
-						"type": "INT96"
-					},
-					{
-						"name": "overriddencreatedon",
-						"type": "INT96"
-					},
-					{
-						"name": "cog_contact",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_centreid",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_applicationuser",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_attendeeid",
-						"type": "INT64"
-					},
-					{
-						"name": "cog_centrename",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_countryid",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_region",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_usertype",
-						"type": "INT_8"
-					},
-					{
-						"name": "cog_recordedmobilenumber",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_recordedemail",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_attendancestatuscode",
-						"type": "INT_8"
-					},
-					{
-						"name": "cog_absencereason",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_roleateventcode",
-						"type": "INT_8"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Master')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Centre Profiles in the Dataverse",
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "training_event_master.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffetwo"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "cog_yearintroduced",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_category",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_giraffeid",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_eventtypeid",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_giraffeupdatedon",
-						"type": "INT96"
-					},
-					{
-						"name": "overriddencreatedon",
-						"type": "INT96"
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Parquet_Training_Event_Types')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Centre Profiles in the Dataverse",
-				"linkedServiceName": {
-					"referenceName": "AzureDataLakeStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Parquet"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "training_event_types.parquet",
-						"folderPath": "parquet",
-						"fileSystem": "giraffetwo"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "cog_requirescoursename",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "cog_requirescategory",
-						"type": "BOOLEAN"
-					},
-					{
-						"name": "cog_giraffeid",
-						"type": "INT32"
-					},
-					{
-						"name": "cog_name",
-						"type": "UTF8"
-					},
-					{
-						"name": "cog_giraffeupdatedon",
-						"type": "INT96"
-					},
-					{
-						"name": "overriddencreatedon",
-						"type": "INT96"
 					}
 				]
 			},

@@ -7,6 +7,14 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "growecddatafactorydev"
 		},
+		"mysql_crm_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'mysql_crm'"
+		},
+		"mysql_growecd_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'mysql_growecd'"
+		},
 		"AzureDataLakeStorage1_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
@@ -31,13 +39,33 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'MariaDBGrowECD'"
 		},
-		"mysql_crm_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'mysql_crm'"
+		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
 		},
-		"mysql_growecd_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'mysql_growecd'"
+		"mysql_crm_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"mysql_crm_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "crm"
+		},
+		"mysql_crm_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
+		},
+		"mysql_growecd_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "102.130.112.164"
+		},
+		"mysql_growecd_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "growecd_growecd"
+		},
+		"mysql_growecd_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "cognate"
 		},
 		"AzureDataLakeStorage1_properties_typeProperties_url": {
 			"type": "string",
@@ -63,9 +91,13 @@
 			"type": "string",
 			"defaultValue": "cognate"
 		},
-		"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+		"GrowRestService_properties_typeProperties_url": {
 			"type": "string",
-			"defaultValue": "https://GrowECDKeyVault.vault.azure.net/"
+			"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+		},
+		"GrowRestService_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "95c7af2f-65e4-41fe-af67-f83d437175e4"
 		},
 		"MariaDBCRM_properties_typeProperties_server": {
 			"type": "string",
@@ -90,117 +122,12 @@
 		"MariaDBGrowECD_properties_typeProperties_username": {
 			"type": "string",
 			"defaultValue": "cognate"
-		},
-		"mysql_crm_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "102.130.112.164"
-		},
-		"mysql_crm_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "crm"
-		},
-		"mysql_crm_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "cognate"
-		},
-		"mysql_growecd_properties_typeProperties_server": {
-			"type": "string",
-			"defaultValue": "102.130.112.164"
-		},
-		"mysql_growecd_properties_typeProperties_database": {
-			"type": "string",
-			"defaultValue": "growecd_growecd"
-		},
-		"mysql_growecd_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "cognate"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobFS",
-				"typeProperties": {
-					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
-					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CommonDataServiceForApps",
-				"typeProperties": {
-					"deploymentType": "Online",
-					"serviceUri": "https://growcrmdev.crm4.dynamics.com",
-					"authenticationType": "AADServicePrincipal",
-					"servicePrincipalId": "[parameters('CRM_properties_typeProperties_servicePrincipalId')]",
-					"servicePrincipalCredential": {
-						"type": "SecureString",
-						"value": "[parameters('CRM_servicePrincipalCredential')]"
-					},
-					"servicePrincipalCredentialType": "ServicePrincipalKey"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Dataverse1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "CommonDataServiceForApps",
-				"typeProperties": {
-					"deploymentType": "Online",
-					"serviceUri": "https://growecddev.crm4.dynamics.com/",
-					"authenticationType": "AADServicePrincipal",
-					"servicePrincipalId": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]",
-					"servicePrincipalCredential": {
-						"type": "SecureString",
-						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
-					},
-					"servicePrincipalCredentialType": "ServicePrincipalKey"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Giraffe')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MariaDB",
-				"typeProperties": {
-					"server": "[parameters('Giraffe_properties_typeProperties_server')]",
-					"port": 3306,
-					"database": "[parameters('Giraffe_properties_typeProperties_database')]",
-					"username": "[parameters('Giraffe_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('Giraffe_password')]"
-					},
-					"driverVersion": "v2",
-					"sslMode": 0
-				}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/GrowAzureKeyVault')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -210,50 +137,6 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaDBCRM')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MariaDB",
-				"typeProperties": {
-					"server": "[parameters('MariaDBCRM_properties_typeProperties_server')]",
-					"port": 3306,
-					"database": "[parameters('MariaDBCRM_properties_typeProperties_database')]",
-					"username": "[parameters('MariaDBCRM_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('MariaDBCRM_password')]"
-					},
-					"driverVersion": "v2",
-					"sslMode": 0
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MariaDBGrowECD')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MariaDB",
-				"typeProperties": {
-					"server": "[parameters('MariaDBGrowECD_properties_typeProperties_server')]",
-					"port": 3306,
-					"database": "[parameters('MariaDBGrowECD_properties_typeProperties_database')]",
-					"username": "[parameters('MariaDBGrowECD_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('MariaDBGrowECD_password')]"
-					},
-					"driverVersion": "v2",
-					"sslMode": 0
 				}
 			},
 			"dependsOn": []
@@ -324,6 +207,305 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CRM')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CommonDataServiceForApps",
+				"typeProperties": {
+					"deploymentType": "Online",
+					"serviceUri": "https://growcrmdev.crm4.dynamics.com",
+					"authenticationType": "AADServicePrincipal",
+					"servicePrincipalId": "[parameters('CRM_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredential": {
+						"type": "SecureString",
+						"value": "[parameters('CRM_servicePrincipalCredential')]"
+					},
+					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Dataverse1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "CommonDataServiceForApps",
+				"typeProperties": {
+					"deploymentType": "Online",
+					"serviceUri": "https://growecddev.crm4.dynamics.com/",
+					"authenticationType": "AADServicePrincipal",
+					"servicePrincipalId": "[parameters('Dataverse1_properties_typeProperties_servicePrincipalId')]",
+					"servicePrincipalCredential": {
+						"type": "SecureString",
+						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
+					},
+					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Giraffe')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MariaDB",
+				"typeProperties": {
+					"server": "[parameters('Giraffe_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('Giraffe_properties_typeProperties_database')]",
+					"username": "[parameters('Giraffe_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('Giraffe_password')]"
+					},
+					"driverVersion": "v2",
+					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GrowRestService')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"Rest Base URL": {
+						"type": "String",
+						"defaultValue": "https://growecddev.crm4.dynamics.com/api/data/v9.2/"
+					}
+				},
+				"annotations": [],
+				"type": "RestService",
+				"typeProperties": {
+					"url": "[parameters('GrowRestService_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "OAuth2ClientCredential",
+					"clientId": "[parameters('GrowRestService_properties_typeProperties_clientId')]",
+					"clientSecret": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "GrowAzureKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "DataverseSPN"
+					},
+					"tokenEndpoint": "https://login.microsoftonline.com/8f0d8756-b8a7-4f68-b7cc-13ca06cda82a/oauth2/token"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaDBCRM')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MariaDB",
+				"typeProperties": {
+					"server": "[parameters('MariaDBCRM_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('MariaDBCRM_properties_typeProperties_database')]",
+					"username": "[parameters('MariaDBCRM_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MariaDBCRM_password')]"
+					},
+					"driverVersion": "v2",
+					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MariaDBGrowECD')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MariaDB",
+				"typeProperties": {
+					"server": "[parameters('MariaDBGrowECD_properties_typeProperties_server')]",
+					"port": 3306,
+					"database": "[parameters('MariaDBGrowECD_properties_typeProperties_database')]",
+					"username": "[parameters('MariaDBGrowECD_properties_typeProperties_username')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('MariaDBGrowECD_password')]"
+					},
+					"driverVersion": "v2",
+					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SPcredentialTCBApp')]",
+			"type": "Microsoft.DataFactory/factories/credentials",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "ServicePrincipal",
+				"typeProperties": {
+					"tenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a",
+					"servicePrincipalId": "95c7af2f-65e4-41fe-af67-f83d437175e4",
+					"servicePrincipalKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "GrowAzureKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "DataverseSPN"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/GrowAzureKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Staff_Deactivate_OneChunk')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEachStaffChunkfile",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.ChunkData",
+								"type": "Expression"
+							},
+							"batchCount": 5,
+							"activities": [
+								{
+									"name": "PatchContactInactive",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "PATCH",
+										"headers": {
+											"OData-MaxVersion": "4.0",
+											"OData-Version": "4.0",
+											"Accept": "application/json",
+											"Content-Type": "application/json; charset=utf-8",
+											"If-Match": "*"
+										},
+										"url": {
+											"value": "@concat(pipeline().parameters.DataverseBaseUrl, '/api/data/v9.2/contacts(new_staff_id=''', item().new_staff_id, ''')')",
+											"type": "Expression"
+										},
+										"body": {
+											"value": "{\"statecode\": 1, \"statuscode\": 2}",
+											"type": "Expression"
+										},
+										"authentication": {
+											"resource": {
+												"value": "@pipeline().parameters.DataverseBaseUrl",
+												"type": "Expression"
+											},
+											"credential": {
+												"referenceName": "SPcredentialTCBApp",
+												"type": "CredentialReference"
+											},
+											"userTenant": "8f0d8756-b8a7-4f68-b7cc-13ca06cda82a"
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"ChunkData": {
+						"type": "array"
+					},
+					"DataverseBaseUrl": {
+						"type": "string",
+						"defaultValue": "https://growecddev.crm4.dynamics.com"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/credentials/SPcredentialTCBApp')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CRM_Application_Users')]",
@@ -485,78 +667,6 @@
 				"schema": [],
 				"typeProperties": {
 					"entityName": "cog_trainingeventattendance"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM_Training_Event_Master')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Dataverse Account",
-				"linkedServiceName": {
-					"referenceName": "CRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_trainingeventmaster"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM_Training_Event_Types')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Dataverse Account",
-				"linkedServiceName": {
-					"referenceName": "CRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_trainingeventtype"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/CRM')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CRM_Training_Events')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "Dataverse Account",
-				"linkedServiceName": {
-					"referenceName": "CRM",
-					"type": "LinkedServiceReference"
-				},
-				"folder": {
-					"name": "G2 Dataverse"
-				},
-				"annotations": [],
-				"type": "CommonDataServiceForAppsEntity",
-				"schema": [],
-				"typeProperties": {
-					"entityName": "cog_trainingevent"
 				}
 			},
 			"dependsOn": [

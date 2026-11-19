@@ -150,6 +150,12 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"mysql_crm_password": {
+						"value": "[parameters('mysql_crm_password')]"
+					},
+					"mysql_growecd_password": {
+						"value": "[parameters('mysql_growecd_password')]"
+					},
 					"AzureDataLakeStorage1_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					},
@@ -168,11 +174,26 @@
 					"MariaDBGrowECD_password": {
 						"value": "[parameters('MariaDBGrowECD_password')]"
 					},
-					"mysql_crm_password": {
-						"value": "[parameters('mysql_crm_password')]"
+					"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
-					"mysql_growecd_password": {
-						"value": "[parameters('mysql_growecd_password')]"
+					"mysql_crm_properties_typeProperties_server": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_server')]"
+					},
+					"mysql_crm_properties_typeProperties_database": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_database')]"
+					},
+					"mysql_crm_properties_typeProperties_username": {
+						"value": "[parameters('mysql_crm_properties_typeProperties_username')]"
+					},
+					"mysql_growecd_properties_typeProperties_server": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_server')]"
+					},
+					"mysql_growecd_properties_typeProperties_database": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_database')]"
+					},
+					"mysql_growecd_properties_typeProperties_username": {
+						"value": "[parameters('mysql_growecd_properties_typeProperties_username')]"
 					},
 					"AzureDataLakeStorage1_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
@@ -192,8 +213,11 @@
 					"Giraffe_properties_typeProperties_username": {
 						"value": "[parameters('Giraffe_properties_typeProperties_username')]"
 					},
-					"GrowAzureKeyVault_properties_typeProperties_baseUrl": {
-						"value": "[parameters('GrowAzureKeyVault_properties_typeProperties_baseUrl')]"
+					"GrowRestService_properties_typeProperties_url": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_url')]"
+					},
+					"GrowRestService_properties_typeProperties_clientId": {
+						"value": "[parameters('GrowRestService_properties_typeProperties_clientId')]"
 					},
 					"MariaDBCRM_properties_typeProperties_server": {
 						"value": "[parameters('MariaDBCRM_properties_typeProperties_server')]"
@@ -212,24 +236,6 @@
 					},
 					"MariaDBGrowECD_properties_typeProperties_username": {
 						"value": "[parameters('MariaDBGrowECD_properties_typeProperties_username')]"
-					},
-					"mysql_crm_properties_typeProperties_server": {
-						"value": "[parameters('mysql_crm_properties_typeProperties_server')]"
-					},
-					"mysql_crm_properties_typeProperties_database": {
-						"value": "[parameters('mysql_crm_properties_typeProperties_database')]"
-					},
-					"mysql_crm_properties_typeProperties_username": {
-						"value": "[parameters('mysql_crm_properties_typeProperties_username')]"
-					},
-					"mysql_growecd_properties_typeProperties_server": {
-						"value": "[parameters('mysql_growecd_properties_typeProperties_server')]"
-					},
-					"mysql_growecd_properties_typeProperties_database": {
-						"value": "[parameters('mysql_growecd_properties_typeProperties_database')]"
-					},
-					"mysql_growecd_properties_typeProperties_username": {
-						"value": "[parameters('mysql_growecd_properties_typeProperties_username')]"
 					}
 				}
 			},
@@ -328,12 +334,6 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
-					},
-					"GrowRestService_properties_typeProperties_url": {
-						"value": "[parameters('GrowRestService_properties_typeProperties_url')]"
-					},
-					"GrowRestService_properties_typeProperties_clientId": {
-						"value": "[parameters('GrowRestService_properties_typeProperties_clientId')]"
 					}
 				}
 			},

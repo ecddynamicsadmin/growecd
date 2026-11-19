@@ -13681,9 +13681,15 @@
 						"type": "SecureString",
 						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
 					}
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/CRM')]",
@@ -13702,9 +13708,15 @@
 						"value": "[parameters('CRM_servicePrincipalCredential')]"
 					},
 					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Dataverse1')]",
@@ -13723,9 +13735,15 @@
 						"value": "[parameters('Dataverse1_servicePrincipalCredential')]"
 					},
 					"servicePrincipalCredentialType": "ServicePrincipalKey"
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Giraffe')]",
@@ -13745,9 +13763,15 @@
 					},
 					"driverVersion": "v2",
 					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/GrowAzureKeyVault')]",
@@ -13813,9 +13837,15 @@
 					},
 					"driverVersion": "v2",
 					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/MariaDBGrowECD')]",
@@ -13835,9 +13865,15 @@
 					},
 					"driverVersion": "v2",
 					"sslMode": 0
+				},
+				"connectVia": {
+					"referenceName": "GrowECD-IRR",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/GrowECD-IRR')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/mysql_crm')]",
